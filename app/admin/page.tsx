@@ -10,21 +10,21 @@ import { useRouter as useNavigate } from 'next/navigation';
 const useAuth = () => ({ user: { id: 'admin1', email: 'admin@sriorganic.com' } });
 const mockDelay = () => new Promise(r => setTimeout(r, 300));
 const fetchProducts = async () => { await mockDelay(); return []; };
-const upsertProduct = async (p) => { await mockDelay(); return p; };
-const dbDeleteProduct = async (id) => { await mockDelay(); };
+const upsertProduct = async (p: any, _img?: any) => { await mockDelay(); return p; };
+const dbDeleteProduct = async (id: any) => { await mockDelay(); };
 const fetchCategories = async () => { await mockDelay(); return ['Hair Care', 'Skin Care', 'Nutrition', 'Pooja Items']; };
-const insertCategory = async (c) => { await mockDelay(); return c; };
-const dbDeleteCategory = async (c) => { await mockDelay(); };
+const insertCategory = async (c: any) => { await mockDelay(); return c; };
+const dbDeleteCategory = async (c: any) => { await mockDelay(); };
 const fetchCoupons = async () => { await mockDelay(); return []; };
-const upsertCoupon = async (c) => { await mockDelay(); return c; };
-const dbDeleteCoupon = async (c) => { await mockDelay(); };
+const upsertCoupon = async (c: any) => { await mockDelay(); return c; };
+const dbDeleteCoupon = async (c: any) => { await mockDelay(); };
 const fetchProfiles = async () => { await mockDelay(); return [{ id: 'admin1', role: 'Admin', email: 'admin@sriorganic.com', name: 'Admin User', mobile: '9876543210', joinedDate: new Date().toISOString() }]; };
-const updateUserRole = async () => { await mockDelay(); };
+const updateUserRole = async (_id: any, _role: any) => { await mockDelay(); };
 const fetchWhatsappRequests = async () => { await mockDelay(); return []; };
-const updateWhatsappRequestStatus = async () => { await mockDelay(); };
+const updateWhatsappRequestStatus = async (_id: any, _status: any) => { await mockDelay(); };
 const fetchOrders = async () => { await mockDelay(); return []; };
-const insertOrder = async () => { await mockDelay(); };
-const updateOrderStatusDb = async () => { await mockDelay(); };
+const insertOrder = async (_order: any) => { await mockDelay(); };
+const updateOrderStatusDb = async (_id: any, _status: any) => { await mockDelay(); };
 type Product = any;
 type Order = any;
 type Coupon = any;
@@ -32,7 +32,7 @@ type UserProfile = any;
 
 
 export default function AdminPortal() {
-  const router = useNavigate(); const navigate = (path) => router.push(path);
+  const router = useNavigate(); const navigate = (path: string) => router.push(path);
   const { user } = useAuth();
   
   // Authentication states
@@ -233,7 +233,7 @@ export default function AdminPortal() {
     setProdDesc(prod.description);
     setProdHerbs(prod.herbs);
     setProdBenefits(prod.benefits.join('\n'));
-    setProdSizes(prod.sizes.length > 0 ? prod.sizes.map(s => ({ ...s, isAvailable: s.isAvailable !== false })) : [{ size: '', price: 0, isAvailable: true }]);
+    setProdSizes(prod.sizes.length > 0 ? prod.sizes.map((s: any) => ({ ...s, isAvailable: s.isAvailable !== false })) : [{ size: '', price: 0, isAvailable: true }]);
     setProdIsAvailable(prod.isAvailable !== false);
 
     setProdDetails(prod.details || '');
@@ -507,7 +507,7 @@ export default function AdminPortal() {
     const eMemo = decodeURIComponent('%F0%9F%93%9D'); // 📝
     const eMoney = decodeURIComponent('%F0%9F%92%B0'); // 💰
     
-    const itemsText = order.items.map(it => {
+    const itemsText = order.items.map((it: any) => {
       const sizeStr = it.size && it.size !== '—' ? ` - ${it.size}` : '';
       return `${ePkg} ${it.name}${sizeStr} x ${it.quantity} (Rs. ${it.price * it.quantity})`;
     }).join('\n');
@@ -736,7 +736,7 @@ export default function AdminPortal() {
     // 2. Filter by source (OFFLINE, ONLINE, MANUAL)
     if (ordersSourceFilter !== 'ALL') {
       list = list.filter(o => {
-        const src = o.source || (o.items.some(it => it.productId === 'custom') ? 'MANUAL' : (o.customerAddress.includes('Offline') ? 'OFFLINE' : 'ONLINE'));
+        const src = o.source || (o.items.some((it: any) => it.productId === 'custom') ? 'MANUAL' : (o.customerAddress.includes('Offline') ? 'OFFLINE' : 'ONLINE'));
         return src === ordersSourceFilter;
       });
     }
@@ -806,8 +806,8 @@ export default function AdminPortal() {
     ];
 
     filteredBills.forEach(o => {
-      const src = o.source || (o.items.some(it => it.productId === 'custom') ? 'MANUAL' : (o.customerAddress.includes('Offline') ? 'OFFLINE' : 'ONLINE'));
-      const itemsString = o.items.map(it => `${it.name} x${it.quantity} (${it.size}, Rs. ${it.price})`).join(" | ");
+      const src = o.source || (o.items.some((it: any) => it.productId === 'custom') ? 'MANUAL' : (o.customerAddress.includes('Offline') ? 'OFFLINE' : 'ONLINE'));
+      const itemsString = o.items.map((it: any) => `${it.name} x${it.quantity} (${it.size}, Rs. ${it.price})`).join(" | ");
 
       const cleanPhone = o.customerPhone.split('_')[0];
       const oDate = new Date(o.createdAt);
@@ -1329,7 +1329,7 @@ export default function AdminPortal() {
                                               navigator.clipboard.writeText(msg);
                                               alert('Message copied to clipboard!');
                                               // Open WhatsApp Web using the override phone number "7904199050"
-                                              const adminNumber = import.meta.env.VITE_ADMIN_WHATSAPP_1 || "917904199050";
+                                              const adminNumber = process.env.NEXT_PUBLIC_ADMIN_WHATSAPP_1 || "917904199050";
                                               window.open(`https://wa.me/${adminNumber}?text=${encodeURIComponent(msg)}`, '_blank');
                                             }}
                                             className="bg-[#10B981] hover:bg-[#059669] text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
@@ -1755,7 +1755,7 @@ export default function AdminPortal() {
 
                               {/* Pack sizes grid */}
                               <div className="flex flex-wrap gap-2 pt-1">
-                                {prod.sizes.map((sz, sIdx) => (
+                                {prod.sizes.map((sz: any, sIdx: any) => (
                                   <button
                                     key={sIdx}
                                     onClick={() => {
@@ -1879,7 +1879,7 @@ export default function AdminPortal() {
                 {(() => {
                   const getSourceOfOrder = (o: Order) => {
                     if (o.source) return o.source;
-                    if (o.items.some(it => it.productId === 'custom')) return 'MANUAL';
+                    if (o.items.some((it: any) => it.productId === 'custom')) return 'MANUAL';
                     if (o.customerAddress.includes('Offline')) return 'OFFLINE';
                     return 'ONLINE';
                   };
@@ -1934,7 +1934,7 @@ export default function AdminPortal() {
 
                   // 5. Total Items Sold
                   const totalItemsSold = analyticsBills.reduce((sum, o) => {
-                    return sum + o.items.reduce((itemSum, it) => itemSum + it.quantity, 0);
+                    return sum + o.items.reduce((itemSum: any, it: any) => itemSum + it.quantity, 0);
                   }, 0);
 
                   // 6. Avg Order Value
@@ -1943,7 +1943,7 @@ export default function AdminPortal() {
                   // 7. Top Product
                   const productCounts: Record<string, number> = {};
                   analyticsBills.forEach(o => {
-                    o.items.forEach(it => {
+                    o.items.forEach((it: any) => {
                       productCounts[it.name] = (productCounts[it.name] || 0) + it.quantity;
                     });
                   });
@@ -1960,7 +1960,7 @@ export default function AdminPortal() {
                   const getTopItemsByRevenue = (filteredOrders: Order[]) => {
                     const itemsMap: { [name: string]: { name: string; qty: number; revenue: number } } = {};
                     filteredOrders.forEach(o => {
-                      o.items.forEach(it => {
+                      o.items.forEach((it: any) => {
                         const name = it.name;
                         if (!itemsMap[name]) {
                           itemsMap[name] = { name, qty: 0, revenue: 0 };
@@ -2267,7 +2267,7 @@ export default function AdminPortal() {
                     const todaySalesVal = todayOrdersAll.reduce((sum, o) => sum + o.totalPrice, 0);
                     const todayBillsCount = todayOrdersAll.length;
                     const todayItemsSoldCount = todayOrdersAll.reduce((sum, o) => {
-                      return sum + o.items.reduce((itemSum, it) => itemSum + it.quantity, 0);
+                      return sum + o.items.reduce((itemSum: any, it: any) => itemSum + it.quantity, 0);
                     }, 0);
                     const todayAvgOrderValue = todayBillsCount > 0 ? Math.round(todaySalesVal / todayBillsCount) : 0;
 
@@ -2350,7 +2350,7 @@ export default function AdminPortal() {
                                 <tbody>
                                   {filteredTodayOrders.map((o, idx) => {
                                     const src = getSourceOfOrder(o);
-                                    const itemCount = o.items.reduce((sum, it) => sum + it.quantity, 0);
+                                    const itemCount = o.items.reduce((sum: any, it: any) => sum + it.quantity, 0);
                                     return (
                                       <tr key={idx} className="border-b border-[#F3F4F6] hover:bg-[#FAF9F6]/30 font-semibold text-primary">
                                         <td className="py-3.5 px-4 font-mono font-bold text-[#2B3E2F]">{o.id}</td>
@@ -2748,7 +2748,7 @@ export default function AdminPortal() {
                         </thead>
                         <tbody className="divide-y divide-outline-variant/10">
                           {filteredBills.map(o => {
-                            const src = o.source || (o.items.some(it => it.productId === 'custom') ? 'MANUAL' : (o.customerAddress.includes('Offline') ? 'OFFLINE' : 'ONLINE'));
+                            const src = o.source || (o.items.some((it: any) => it.productId === 'custom') ? 'MANUAL' : (o.customerAddress.includes('Offline') ? 'OFFLINE' : 'ONLINE'));
                             return (
                               <tr 
                                 key={o.id} 
@@ -2837,7 +2837,7 @@ export default function AdminPortal() {
                         <div className="space-y-4">
                           <span className="block text-xs font-bold text-primary uppercase tracking-wider">Items Summary</span>
                           <div className="space-y-3.5">
-                            {selectedOrder.items.map((it, idx) => (
+                            {selectedOrder.items.map((it: any, idx: any) => (
                               <div key={idx} className="flex justify-between items-center text-sm text-primary">
                                 <div>
                                   <span className="font-bold">{it.name}</span>
@@ -2849,7 +2849,7 @@ export default function AdminPortal() {
                           </div>
                           <div className="border-t border-outline-variant/20 pt-5 space-y-2.5">
                             {(() => {
-                              const subtotal = selectedOrder.items.reduce((sum, it) => sum + (it.price * it.quantity), 0);
+                              const subtotal = selectedOrder.items.reduce((sum: any, it: any) => sum + (it.price * it.quantity), 0);
                               const couponDisc = selectedOrder.couponDiscount || 0;
                               const manualDisc = selectedOrder.manualDiscount || 0;
                               const delivFee = selectedOrder.deliveryCharge || 0;
@@ -2956,7 +2956,7 @@ export default function AdminPortal() {
                               </td>
                               <td className="px-6 py-5">
                                 <div className="flex flex-wrap gap-2">
-                                  {p.sizes.map((s, idx) => (
+                                  {p.sizes.map((s: any, idx: any) => (
                                     <span key={idx} className="bg-secondary/10 text-secondary border border-secondary/15 px-3 py-1 rounded text-xs font-bold">
                                       {s.size}: ₹{s.price}
                                     </span>
