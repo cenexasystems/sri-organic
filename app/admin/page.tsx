@@ -7,28 +7,29 @@ import {
   Globe, ShoppingBag, Gift, ChevronLeft, ChevronRight, Download
 } from 'lucide-react';
 import { useRouter as useNavigate } from 'next/navigation';
-const useAuth = () => ({ user: { id: 'admin1', email: 'admin@sriorganic.com' } });
-const mockDelay = () => new Promise(r => setTimeout(r, 300));
-const fetchProducts = async () => { await mockDelay(); return []; };
-const upsertProduct = async (p: any, _img?: any) => { await mockDelay(); return p; };
-const dbDeleteProduct = async (id: any) => { await mockDelay(); };
-const fetchCategories = async () => { await mockDelay(); return ['Hair Care', 'Skin Care', 'Nutrition', 'Pooja Items']; };
-const insertCategory = async (c: any) => { await mockDelay(); return c; };
-const dbDeleteCategory = async (c: any) => { await mockDelay(); };
-const fetchCoupons = async () => { await mockDelay(); return []; };
-const upsertCoupon = async (c: any) => { await mockDelay(); return c; };
-const dbDeleteCoupon = async (c: any) => { await mockDelay(); };
-const fetchProfiles = async () => { await mockDelay(); return [{ id: 'admin1', role: 'Admin', email: 'admin@sriorganic.com', name: 'Admin User', mobile: '9876543210', joinedDate: new Date().toISOString() }]; };
-const updateUserRole = async (_id: any, _role: any) => { await mockDelay(); };
-const fetchWhatsappRequests = async () => { await mockDelay(); return []; };
-const updateWhatsappRequestStatus = async (_id: any, _status: any) => { await mockDelay(); };
-const fetchOrders = async () => { await mockDelay(); return []; };
-const insertOrder = async (_order: any) => { await mockDelay(); };
-const updateOrderStatusDb = async (_id: any, _status: any) => { await mockDelay(); };
-type Product = any;
-type Order = any;
-type Coupon = any;
-type UserProfile = any;
+import { useAuth } from '@/lib/useAuth';
+import {
+  fetchProducts,
+  upsertProduct,
+  dbDeleteProduct,
+  fetchCategories,
+  insertCategory,
+  dbDeleteCategory,
+  fetchCoupons,
+  upsertCoupon,
+  dbDeleteCoupon,
+  fetchProfiles,
+  updateUserRole,
+  fetchWhatsappRequests,
+  updateWhatsappRequestStatus,
+  fetchOrders,
+  insertOrder,
+  updateOrderStatusDb,
+  Product,
+  Order,
+  Coupon,
+  UserProfile
+} from '@/lib/db';
 
 
 export default function AdminPortal() {
@@ -231,7 +232,7 @@ export default function AdminPortal() {
     setProdName(prod.name);
     setProdCategory(prod.category);
     setProdDesc(prod.description);
-    setProdHerbs(prod.herbs);
+    setProdHerbs(prod.herbs || '');
     setProdBenefits(prod.benefits.join('\n'));
     setProdSizes(prod.sizes.length > 0 ? prod.sizes.map((s: any) => ({ ...s, isAvailable: s.isAvailable !== false })) : [{ size: '', price: 0, isAvailable: true }]);
     setProdIsAvailable(prod.isAvailable !== false);

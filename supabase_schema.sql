@@ -235,51 +235,42 @@ ALTER TABLE orders            ENABLE ROW LEVEL SECURITY;
 ALTER TABLE order_items       ENABLE ROW LEVEL SECURITY;
 ALTER TABLE whatsapp_requests ENABLE ROW LEVEL SECURITY;
 
+-- Create a function to check if the current user is an Admin (bypasses RLS)
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role = 'Admin'
+  );
+$$ LANGUAGE sql SECURITY DEFINER;
+
 -- PROFILES: Users can read own profile; Admins can read/update all
 CREATE POLICY "Users can view own profile"      ON profiles FOR SELECT USING (auth.uid() = id);
 CREATE POLICY "Users can update own profile"    ON profiles FOR UPDATE USING (auth.uid() = id);
-CREATE POLICY "Admins can view all profiles"    ON profiles FOR SELECT USING (
-  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'Admin')
-);
-CREATE POLICY "Admins can update all profiles"  ON profiles FOR UPDATE USING (
-  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'Admin')
-);
+CREATE POLICY "Admins can view all profiles"    ON profiles FOR SELECT USING ( public.is_admin() );
+CREATE POLICY "Admins can update all profiles"  ON profiles FOR UPDATE USING ( public.is_admin() );
 
 -- CATEGORIES: Public read; Admin write
 CREATE POLICY "Anyone can view categories"      ON categories FOR SELECT USING (true);
-CREATE POLICY "Admins can manage categories"    ON categories FOR ALL USING (
-  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'Admin')
-);
+CREATE POLICY "Admins can manage categories"    ON categories FOR ALL USING ( public.is_admin() );
 
 -- PRODUCTS & SIZES: Public read; Admin write
 CREATE POLICY "Anyone can view products"        ON products FOR SELECT USING (true);
-CREATE POLICY "Admins can manage products"      ON products FOR ALL USING (
-  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'Admin')
-);
+CREATE POLICY "Admins can manage products"      ON products FOR ALL USING ( public.is_admin() );
 CREATE POLICY "Anyone can view product sizes"   ON product_sizes FOR SELECT USING (true);
-CREATE POLICY "Admins can manage product sizes" ON product_sizes FOR ALL USING (
-  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'Admin')
-);
+CREATE POLICY "Admins can manage product sizes" ON product_sizes FOR ALL USING ( public.is_admin() );
 
 -- COUPONS: Public read (storefront needs to validate); Admin write
 CREATE POLICY "Anyone can view coupons"         ON coupons FOR SELECT USING (true);
-CREATE POLICY "Admins can manage coupons"       ON coupons FOR ALL USING (
-  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'Admin')
-);
+CREATE POLICY "Admins can manage coupons"       ON coupons FOR ALL USING ( public.is_admin() );
 
 -- ORDERS & ITEMS: Admin full access
-CREATE POLICY "Admins can manage orders"        ON orders FOR ALL USING (
-  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'Admin')
-);
-CREATE POLICY "Admins can manage order items"   ON order_items FOR ALL USING (
-  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'Admin')
-);
+CREATE POLICY "Admins can manage orders"        ON orders FOR ALL USING ( public.is_admin() );
+CREATE POLICY "Admins can manage order items"   ON order_items FOR ALL USING ( public.is_admin() );
 
 -- WHATSAPP REQUESTS: Customers can insert; Admins can read/update
 CREATE POLICY "Anyone can create requests"      ON whatsapp_requests FOR INSERT WITH CHECK (true);
-CREATE POLICY "Admins can manage requests"      ON whatsapp_requests FOR ALL USING (
-  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'Admin')
-);
+CREATE POLICY "Admins can manage requests"      ON whatsapp_requests FOR ALL USING ( public.is_admin() );
 
 -- STORAGE: Public read for product images; Admin upload
 CREATE POLICY "Public read product images"
@@ -290,12 +281,12 @@ CREATE POLICY "Admins can upload product images"
   ON storage.objects FOR INSERT
   WITH CHECK (
     bucket_id = 'product-images'
-    AND EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'Admin')
+    AND public.is_admin()
   );
 
 CREATE POLICY "Admins can delete product images"
   ON storage.objects FOR DELETE
   USING (
     bucket_id = 'product-images'
-    AND EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'Admin')
+    AND public.is_admin()
   );
