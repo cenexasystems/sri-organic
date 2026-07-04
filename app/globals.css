@@ -8,15 +8,17 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: #2B3E2F;
+  --color-on-primary: #FFFFFF;
+  --color-primary-container: #1d2d22;
+  --color-secondary: #C27D38;
+  --color-secondary-container: #a16428;
+  --color-on-surface-variant: #4B5563;
+  --color-surface-container-low: #F5F2EB;
+  --color-outline-variant: #E5E7EB;
+  --color-error: #EF4444;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
