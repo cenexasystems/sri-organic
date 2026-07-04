@@ -3,28 +3,6 @@ import Image from "next/image";
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#f9f6f0] text-gray-800 font-sans selection:bg-green-200">
-      {/* Navigation */}
-      <header className="sticky top-0 z-10 bg-[#f9f6f0]/90 backdrop-blur-md border-b border-green-900/10">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-green-700 rounded-full flex items-center justify-center">
-              <span className="text-[#f9f6f0] font-bold text-xl leading-none">S</span>
-            </div>
-            <span className="text-2xl font-bold text-green-900 tracking-tight">Sri Organic</span>
-          </div>
-          <nav className="hidden md:flex gap-8">
-            <a href="#" className="text-green-900 hover:text-green-700 font-medium transition-colors">Home</a>
-            <a href="#products" className="text-green-900 hover:text-green-700 font-medium transition-colors">Products</a>
-            <a href="#about" className="text-green-900 hover:text-green-700 font-medium transition-colors">About Us</a>
-            <a href="#contact" className="text-green-900 hover:text-green-700 font-medium transition-colors">Contact</a>
-          </nav>
-          <button className="md:hidden text-green-900">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-            </svg>
-          </button>
-        </div>
-      </header>
 
       <main>
         {/* Hero Section */}
@@ -59,46 +37,46 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Product 1 */}
               <div className="bg-[#f9f6f0] rounded-2xl p-6 shadow-sm border border-green-900/5 hover:shadow-md transition-shadow group">
-                <div className="aspect-square bg-green-100 rounded-xl mb-6 flex items-center justify-center text-6xl group-hover:scale-105 transition-transform">
-                  🍅
+                <div className="aspect-square bg-green-100 rounded-xl mb-6 flex items-center justify-center text-6xl group-hover:scale-105 transition-transform overflow-hidden relative">
+                  <div className="absolute inset-0 flex items-center justify-center text-5xl">🌿</div>
                 </div>
-                <h3 className="text-xl font-bold text-green-900 mb-2">Organic Tomatoes</h3>
-                <p className="text-green-800/70 mb-4 text-sm">Farm-fresh, pesticide-free tomatoes bursting with flavor.</p>
+                <h3 className="text-xl font-bold text-green-900 mb-2">Herbal Hair Oil</h3>
+                <p className="text-green-800/70 mb-4 text-sm">Controls premature greying, boosts volume, and reduces dandruff naturally.</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-bold text-green-800">$4.99 / lb</span>
-                  <button className="w-10 h-10 rounded-full bg-green-700 text-white flex items-center justify-center hover:bg-green-800 transition-colors">
-                    +
-                  </button>
+                  <span className="text-lg font-bold text-green-800">Starting at ₹220</span>
+                  <a href="/products" className="px-4 py-2 rounded-full bg-[#1B3022] text-white flex items-center justify-center hover:bg-[#0C1510] transition-colors text-sm font-bold">
+                    View
+                  </a>
                 </div>
               </div>
 
               {/* Product 2 */}
               <div className="bg-[#f9f6f0] rounded-2xl p-6 shadow-sm border border-green-900/5 hover:shadow-md transition-shadow group">
-                <div className="aspect-square bg-green-100 rounded-xl mb-6 flex items-center justify-center text-6xl group-hover:scale-105 transition-transform">
-                  🥬
+                <div className="aspect-square bg-green-100 rounded-xl mb-6 flex items-center justify-center text-6xl group-hover:scale-105 transition-transform overflow-hidden relative">
+                  <div className="absolute inset-0 flex items-center justify-center text-5xl">🍃</div>
                 </div>
-                <h3 className="text-xl font-bold text-green-900 mb-2">Crisp Lettuce</h3>
-                <p className="text-green-800/70 mb-4 text-sm">Crunchy, hydrating organic lettuce for perfect salads.</p>
+                <h3 className="text-xl font-bold text-green-900 mb-2">Shikakai Powder</h3>
+                <p className="text-green-800/70 mb-4 text-sm">Strengthens hair roots and healthy scalp with zero chemicals.</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-bold text-green-800">$2.49 / head</span>
-                  <button className="w-10 h-10 rounded-full bg-green-700 text-white flex items-center justify-center hover:bg-green-800 transition-colors">
-                    +
-                  </button>
+                  <span className="text-lg font-bold text-green-800">Starting at ₹140</span>
+                  <a href="/products" className="px-4 py-2 rounded-full bg-[#1B3022] text-white flex items-center justify-center hover:bg-[#0C1510] transition-colors text-sm font-bold">
+                    View
+                  </a>
                 </div>
               </div>
 
               {/* Product 3 */}
               <div className="bg-[#f9f6f0] rounded-2xl p-6 shadow-sm border border-green-900/5 hover:shadow-md transition-shadow group">
-                <div className="aspect-square bg-green-100 rounded-xl mb-6 flex items-center justify-center text-6xl group-hover:scale-105 transition-transform">
-                  🍯
+                <div className="aspect-square bg-green-100 rounded-xl mb-6 flex items-center justify-center text-6xl group-hover:scale-105 transition-transform overflow-hidden relative">
+                  <div className="absolute inset-0 flex items-center justify-center text-5xl">🌾</div>
                 </div>
-                <h3 className="text-xl font-bold text-green-900 mb-2">Raw Organic Honey</h3>
-                <p className="text-green-800/70 mb-4 text-sm">Pure, unpasteurized honey from local organic apiaries.</p>
+                <h3 className="text-xl font-bold text-green-900 mb-2">Multi Millet Mix</h3>
+                <p className="text-green-800/70 mb-4 text-sm">100% Nutritious 40+ ancient grains for a healthy gut and high energy.</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-bold text-green-800">$8.99 / jar</span>
-                  <button className="w-10 h-10 rounded-full bg-green-700 text-white flex items-center justify-center hover:bg-green-800 transition-colors">
-                    +
-                  </button>
+                  <span className="text-lg font-bold text-green-800">Starting at ₹220</span>
+                  <a href="/products" className="px-4 py-2 rounded-full bg-[#1B3022] text-white flex items-center justify-center hover:bg-[#0C1510] transition-colors text-sm font-bold">
+                    View
+                  </a>
                 </div>
               </div>
             </div>
