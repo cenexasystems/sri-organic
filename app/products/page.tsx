@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type Dispatch, type SetStateAction } from 'react';
+import { useEffect, useMemo, useState, Suspense, type Dispatch, type SetStateAction } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Search, SlidersHorizontal, Filter, CheckCircle2 } from 'lucide-react';
@@ -26,8 +26,8 @@ function FilterSideBlock({
     <div className="space-y-10">
       <div>
         <div className="flex items-center gap-2 mb-4">
-           <div className="w-1 h-4 bg-[#2C392A] rounded-full"></div>
-           <h3 className="text-[13px] font-black text-[#2C392A] uppercase tracking-wider">
+           <div className="w-1 h-4 bg-[#111111] rounded-full"></div>
+           <h3 className="text-[13px] font-black text-[#111111] uppercase tracking-wider">
               {t('cat.title')}
            </h3>
         </div>
@@ -36,10 +36,10 @@ function FilterSideBlock({
              <button
                key={cat}
                onClick={() => setActiveCategory(cat)}
-               className={`w-full text-left px-3 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center justify-between group ${activeCategory === cat ? 'bg-[#2C392A] text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50 hover:text-[#2C392A]'}`}
+               className={`w-full text-left px-3 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center justify-between group ${activeCategory === cat ? 'bg-[#111111] text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50 hover:text-[#111111]'}`}
              >
               <span>{cat === 'All' ? t('cat.view_all') : t('cat.' + cat)}</span>
-              <div className={`w-1.5 h-1.5 rounded-full transition-all ${activeCategory === cat ? 'bg-white' : 'bg-transparent group-hover:bg-[#7DAA8F]/40'}`}></div>
+              <div className={`w-1.5 h-1.5 rounded-full transition-all ${activeCategory === cat ? 'bg-white' : 'bg-transparent group-hover:bg-[#D4AF37]/40'}`}></div>
             </button>
           ))}
         </div>
@@ -48,7 +48,7 @@ function FilterSideBlock({
   );
 }
 
-export default function Products() {
+function ProductsContent() {
   const searchParams = useSearchParams();
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [activeCategory, setActiveCategory] = useState(searchParams.get('cat') || 'All');
@@ -115,32 +115,32 @@ export default function Products() {
   }, [products, search, activeCategory, sort, variantsMap]);
 
   const SkeletonCard = () => (
-    <div className="rounded-2xl border border-[#EAD7B7]/50 bg-white overflow-hidden animate-pulse">
-      <div className="aspect-square bg-[#EAD7B7]/30" />
+    <div className="rounded-2xl border border-[#e5e7eb]/50 bg-white overflow-hidden animate-pulse">
+      <div className="aspect-square bg-[#e5e7eb]/30" />
       <div className="p-3 space-y-2">
-        <div className="h-2 bg-[#EAD7B7]/40 rounded w-1/2" />
-        <div className="h-3 bg-[#EAD7B7]/40 rounded w-4/5" />
-        <div className="h-3 bg-[#EAD7B7]/30 rounded w-3/5" />
+        <div className="h-2 bg-[#e5e7eb]/40 rounded w-1/2" />
+        <div className="h-3 bg-[#e5e7eb]/40 rounded w-4/5" />
+        <div className="h-3 bg-[#e5e7eb]/30 rounded w-3/5" />
         <div className="flex gap-1 mt-2">
-          {[1,2,3,4].map(i => <div key={i} className="h-5 bg-[#EAD7B7]/30 rounded-lg w-10" />)}
+          {[1,2,3,4].map(i => <div key={i} className="h-5 bg-[#e5e7eb]/30 rounded-lg w-10" />)}
         </div>
-        <div className="flex justify-between items-center pt-2 border-t border-[#EAD7B7]/30 mt-2">
-          <div className="h-5 bg-[#EAD7B7]/40 rounded w-14" />
-          <div className="h-8 bg-[#EAD7B7]/40 rounded-xl w-16" />
+        <div className="flex justify-between items-center pt-2 border-t border-[#e5e7eb]/30 mt-2">
+          <div className="h-5 bg-[#e5e7eb]/40 rounded w-14" />
+          <div className="h-8 bg-[#e5e7eb]/40 rounded-xl w-16" />
         </div>
       </div>
     </div>
   );
 
   return (
-    <div className="bg-[#fbfaf6] min-h-screen">
+    <div className="bg-[#FAF9F5] min-h-screen">
       {/* Header Panel */}
-      <div className="bg-white border-b border-[#EAD7B7]/30">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:py-10 text-center">
+      <div className="bg-white border-b border-[#e5e7eb]/30 pt-28 md:pt-32">
+        <div className="mx-auto max-w-7xl px-4 pb-8 sm:pb-10 text-center">
           <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
-            className="text-2xl sm:text-4xl font-black font-headline text-[#2C392A] mb-2">{t('products.title')}</motion.h1>
+            className="text-2xl sm:text-4xl font-black font-headline text-[#111111] mb-2">{t('products.title')}</motion.h1>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}
-            className="text-sm sm:text-base text-[#5F6D59] font-medium">{t('products.sub')}</motion.p>
+            className="text-sm sm:text-base text-[#78716c] font-medium">{t('products.sub')}</motion.p>
         </div>
       </div>
 
@@ -149,7 +149,7 @@ export default function Products() {
         <aside className="hidden lg:block w-64 shrink-0">
            <div className="sticky top-24 bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
               <div className="flex justify-between items-center mb-6">
-                 <h2 className="font-black text-lg flex items-center gap-2 text-[#2C392A]"><Filter size={18}/> Filters</h2>
+                 <h2 className="font-black text-lg flex items-center gap-2 text-[#111111]"><Filter size={18}/> Filters</h2>
                  {(search || activeCategory !== 'All') && (
                    <button onClick={clear} className="text-xs font-bold text-red-500 hover:underline">{t('products.clear')}</button>
                  )}
@@ -172,7 +172,7 @@ export default function Products() {
                <input
                  value={search}
                  onChange={e => setSearch(e.target.value)}
-                 className="w-full h-10 sm:h-12 pl-12 pr-4 bg-white border border-gray-200 rounded-2xl focus:ring-2 focus:ring-[#7DAA8F] focus:border-transparent outline-none shadow-sm transition-all" 
+                 className="w-full h-10 sm:h-12 pl-12 pr-4 bg-white border border-gray-200 rounded-2xl focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent outline-none shadow-sm transition-all" 
                  placeholder={t('nav.search_placeholder')}
                />
             </div>
@@ -180,14 +180,14 @@ export default function Products() {
                <select 
                  value={sort}
                  onChange={e => setSort(e.target.value)}
-                 className="h-10 sm:h-12 px-4 bg-white border border-gray-200 rounded-2xl text-sm font-bold shadow-sm outline-none cursor-pointer text-[#2C392A]"
+                 className="h-10 sm:h-12 px-4 bg-white border border-gray-200 rounded-2xl text-sm font-bold shadow-sm outline-none cursor-pointer text-[#111111]"
                >
                  <option value="default">{t('products.sort.default')}</option>
                  <option value="price-asc">{t('products.sort.price_low')}</option>
                  <option value="price-desc">{t('products.sort.price_high')}</option>
                  <option value="rating">{t('products.sort.rating')}</option>
                </select>
-              <button onClick={() => setShowFilters(!showFilters)} className="lg:hidden h-10 w-10 sm:h-12 sm:w-12 flex items-center justify-center bg-white border border-gray-200 rounded-2xl shadow-sm text-[#2C392A]">
+              <button onClick={() => setShowFilters(!showFilters)} className="lg:hidden h-10 w-10 sm:h-12 sm:w-12 flex items-center justify-center bg-white border border-gray-200 rounded-2xl shadow-sm text-[#111111]">
                   <SlidersHorizontal size={20}/>
                </button>
             </div>
@@ -212,7 +212,7 @@ export default function Products() {
           <div className="flex items-center justify-between mb-6">
              <div className="flex items-center gap-2 text-sm font-bold text-gray-500">
                 {loading ? (
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 border-2 border-[#7DAA8F] border-t-transparent animate-spin rounded-full"></div> Loading...</div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 border-2 border-[#D4AF37] border-t-transparent animate-spin rounded-full"></div> Loading...</div>
                 ) : (
                   <>Showing <span className="text-gray-900">{filtered.length}</span> results</>
                 )}
@@ -226,13 +226,13 @@ export default function Products() {
               {Array.from({ length: 12 }).map((_, i) => <SkeletonCard key={i} />)}
             </div>
           ) : !loading && filtered.length === 0 ? (
-            <div className="bg-white border border-[#EAD7B7]/40 rounded-3xl p-10 sm:p-20 text-center flex flex-col items-center">
-               <div className="w-20 h-20 bg-[#fbfaf6] rounded-full flex items-center justify-center mb-6">
-                 <Search className="text-[#EAD7B7]" size={32}/>
+            <div className="bg-white border border-[#e5e7eb]/40 rounded-3xl p-10 sm:p-20 text-center flex flex-col items-center">
+               <div className="w-20 h-20 bg-[#FAF9F5] rounded-full flex items-center justify-center mb-6">
+                 <Search className="text-[#e5e7eb]" size={32}/>
                </div>
-               <h3 className="text-xl font-black mb-2 text-[#2C392A]">{t('products.none')}</h3>
-               <p className="text-[#5F6D59] max-w-xs mx-auto mb-6 text-sm">No products found matching your filters.</p>
-               <button onClick={clear} className="text-sm font-black text-[#7DAA8F] hover:underline">Clear all filters</button>
+               <h3 className="text-xl font-black mb-2 text-[#111111]">{t('products.none')}</h3>
+               <p className="text-[#78716c] max-w-xs mx-auto mb-6 text-sm">No products found matching your filters.</p>
+               <button onClick={clear} className="text-sm font-black text-[#D4AF37] hover:underline">Clear all filters</button>
             </div>
           ) : (
             <motion.div layout className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4 items-stretch">
@@ -253,13 +253,13 @@ export default function Products() {
           )}
 
           {/* Info Banner */}
-          <div className="mt-12 p-6 sm:p-8 bg-green-50 border border-green-100 rounded-3xl flex flex-col sm:flex-row items-center gap-6">
+          <div className="mt-12 p-6 sm:p-8 bg-stone-50 border border-stone-200 rounded-3xl flex flex-col sm:flex-row items-center gap-6">
              <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center shrink-0">
-                <CheckCircle2 size={32} className="text-green-600" />
+                <CheckCircle2 size={32} className="text-[#111111]" />
              </div>
              <div>
-                <h4 className="font-black text-lg text-green-900 leading-tight">Authentic Siddha Quality</h4>
-                <p className="text-sm text-green-700 mt-1">Every herb in our collection is sourced directly from trusted traditional practitioners and verified for purity.</p>
+                <h4 className="font-black text-lg text-[#111111] leading-tight">Authentic Siddha Quality</h4>
+                <p className="text-sm text-stone-500 mt-1">Every herb in our collection is sourced directly from trusted traditional practitioners and verified for purity.</p>
              </div>
           </div>
         </div>
@@ -271,5 +271,13 @@ export default function Products() {
         onClose={() => setIsModalOpen(false)}
       />
     </div>
+  );
+}
+
+export default function Products() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <ProductsContent />
+    </Suspense>
   );
 }
