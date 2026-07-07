@@ -47,8 +47,8 @@ export default function BotanicalExplorer() {
     <section className="py-32 px-8 md:px-16 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16">
         
-        {/* Left text */}
-        <div className="w-full md:w-1/3">
+        {/* Text */}
+        <div className="w-full md:w-1/3 order-1 md:order-2">
           <div className="flex items-center gap-4 mb-6">
             <div className="w-8 h-[1px] bg-[#D4AF37]"></div>
             <span className="text-[#D4AF37] text-[10px] font-bold tracking-[0.2em] uppercase">Interactive</span>
@@ -67,8 +67,8 @@ export default function BotanicalExplorer() {
           </div>
         </div>
 
-        {/* Right Image with Hotspots */}
-        <div className="w-full md:w-2/3 relative">
+        {/* Image with Hotspots */}
+        <div className="w-full md:w-2/3 relative order-2 md:order-1">
           <div className="relative w-full aspect-square md:aspect-[4/3] rounded-[40px] overflow-hidden bg-stone-100 shadow-2xl">
             {/* Base Image */}
             <img 

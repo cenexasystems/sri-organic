@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-1 md:col-span-1">
             <Link href="/" className="mb-6 inline-block bg-white p-3 rounded-2xl">
-              <img src="/logo.png" alt="Sri Dasarathi" className="h-20 w-auto object-contain" />
+              <img src="/logo.svg" alt="Sri Dasarathi" className="h-20 w-auto object-contain" />
             </Link>
             <p className="text-white/70 text-sm leading-relaxed mb-6 max-w-sm">
               Cultivating integrity through uncompromising standards. We bring you the purest expression of ancient agriculture, preserving flavors and vital nutrients.

@@ -175,7 +175,7 @@ export default function Home() {
         <BotanicalExplorer />
 
         {/* New Product Showcase */}
-        <section className="py-32 px-8 md:px-16 bg-white relative z-20">
+        <section id="products" className="py-32 px-8 md:px-16 bg-white relative z-20">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-6">
               <div>
@@ -221,7 +221,7 @@ export default function Home() {
         </section>
 
         {/* Reviews Section - Moving Marquee */}
-        <section className="py-32 bg-[#111111] text-white overflow-hidden relative">
+        <section id="reviews" className="py-32 bg-[#111111] text-white overflow-hidden relative">
           <div className="max-w-7xl mx-auto px-8 md:px-16">
             <div className="flex flex-col items-center text-center mb-24">
               <div className="w-8 h-[1px] bg-[#D4AF37] mb-6"></div>
@@ -338,7 +338,7 @@ export default function Home() {
         </section>
 
         {/* Our Process Section */}
-        <section className="py-32 px-8 md:px-16 bg-[#111111] text-white overflow-hidden relative">
+        <section id="process" className="py-32 px-8 md:px-16 bg-[#111111] text-white overflow-hidden relative">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col items-center text-center mb-24">
               <div className="w-8 h-[1px] bg-[#D4AF37] mb-6"></div>
