@@ -36,7 +36,7 @@ const buildUsageNote = (product: Product) => {
   return 'Use as per traditional practice. Store in a clean, dry place.';
 };
 
-const accordionClass = 'rounded-[22px] border border-[#ead7b7]/60 bg-white px-4 py-3 shadow-sm';
+const accordionClass = 'rounded-[22px] border border-[#e5e7eb]/60 bg-white px-4 py-3 shadow-sm';
 
 interface ProductDetailModalProps {
   product: Product | null;
@@ -137,14 +137,14 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-6 overflow-y-auto">
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-0 md:p-6 overflow-y-auto">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.5 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-[#2c392a]/40 backdrop-blur-sm cursor-pointer"
+            className="fixed inset-0 bg-[#111111]/40 backdrop-blur-sm cursor-pointer"
           />
 
           {/* Modal Container */}
@@ -153,106 +153,82 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 250 }}
-            className="relative bg-[#fbfaf6] w-full h-[100dvh] md:h-auto md:max-h-[90vh] md:max-w-4xl md:rounded-3xl shadow-2xl overflow-y-auto z-10"
+            className="relative bg-[#FAF9F5] w-full max-w-4xl h-auto max-h-[90vh] md:rounded-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden z-10 flex flex-col"
           >
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 md:top-6 md:right-6 w-10 h-10 rounded-full bg-white/95 border border-[#ead7b7]/60 hover:border-[#7daa8f] flex items-center justify-center text-[#2c392a] hover:text-[#7daa8f] shadow-md transition-all duration-300 z-40 cursor-pointer"
+              className="absolute top-4 right-4 md:top-6 md:right-6 w-10 h-10 rounded-full bg-white/95 border border-[#e5e7eb]/60 hover:border-[#D4AF37] flex items-center justify-center text-[#111111] hover:text-[#D4AF37] shadow-md transition-all duration-300 z-40 cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
             {/* Top Action Bar (Mobile Only) */}
-            <div className="lg:hidden sticky top-0 z-30 border-b border-white/60 bg-[#fbfaf6]/92 px-4 py-3 backdrop-blur sm:px-6">
-              <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
+            <div className="lg:hidden sticky top-0 z-30 border-b border-white/60 bg-[#FAF9F5]/92 px-4 py-3 backdrop-blur sm:px-6">
+              <div className="mx-auto flex items-center justify-between gap-3">
                 <button
                   onClick={onClose}
-                  className="inline-flex items-center gap-2 rounded-full border border-[#ead7b7]/60 bg-white px-3 py-2 text-[11px] font-black text-[#2c392a] shadow-sm"
+                  className="inline-flex items-center gap-2 rounded-full border border-[#e5e7eb]/60 bg-white px-3 py-2 text-[11px] font-black text-[#111111] shadow-sm"
                 >
                   <X size={14} /> Close
-                </button>
-                <button
-                  type="button"
-                  onClick={() => void toggle(product)}
-                  className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-[11px] font-black shadow-sm ${
-                    favorite ? 'border-rose-200 bg-rose-50 text-rose-600' : 'border-[#ead7b7]/60 bg-white text-[#5f6d59]'
-                  }`}
-                  aria-label={favorite ? 'Remove from favourites' : 'Add to favourites'}
-                >
-                  <Heart size={14} className={favorite ? 'fill-rose-500 text-rose-500' : 'text-current'} />
-                  {favorite ? 'Saved' : 'Save'}
                 </button>
               </div>
             </div>
 
-            <div className="flex flex-col lg:flex-row h-full">
+            <div className="flex flex-col md:flex-row h-full overflow-y-auto">
               {/* Image Section */}
-              <div className="w-full lg:w-1/2 p-4 pt-4 sm:p-6 lg:p-8 shrink-0">
-                <div className="relative overflow-hidden rounded-[34px] border border-white/70 bg-gradient-to-b from-[#f2ede2] via-white to-[#edf3ea] shadow-[0_24px_60px_rgba(45,60,35,0.14)] h-full">
-                  <div className="absolute left-4 top-4 z-10 rounded-full bg-white/80 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-[#5f6d59] shadow-sm backdrop-blur">
-                    Premium focus
-                  </div>
-                  <div className="relative aspect-[4/5] min-h-[40svh] sm:aspect-[16/13] h-full">
-                    <img
-                      src={heroImage}
-                      alt={product.name}
-                      loading="lazy"
-                      decoding="async"
-                      onError={onImgError}
-                      className="h-full w-full object-contain p-6 sm:p-10 mix-blend-multiply"
-                    />
-                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.45),transparent_56%)]" />
-                  </div>
+              <div className="w-full md:w-1/2 shrink-0 bg-stone-100 border-r border-stone-200 relative min-h-[350px] md:min-h-0">
+                <div className="absolute top-8 left-8 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full border border-stone-200 flex flex-col gap-1 shadow-sm z-10">
+                   <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#D4AF37]">{product.category}</span>
                 </div>
+                <img
+                  src={heroImage}
+                  alt={product.name}
+                  loading="lazy"
+                  decoding="async"
+                  onError={onImgError}
+                  className="absolute inset-0 h-full w-full object-cover mix-blend-multiply drop-shadow-xl"
+                />
               </div>
 
               {/* Details Section */}
-              <div className="w-full lg:w-1/2 p-4 sm:p-6 lg:p-8 lg:pl-0 flex flex-col gap-6">
+              <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col gap-10 relative bg-white">
                 
                 {/* Header info */}
-                <div className="space-y-2">
-                  <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#7daa8f]">{t('cat.' + product.category)}</p>
-                  <h1 className="text-[1.8rem] leading-tight font-black text-[#2c392a] sm:text-4xl">{displayName}</h1>
-                  {product.nameTa && <p className="text-base font-bold text-[#5f6d59] ta-text sm:text-lg">{product.nameTa}</p>}
-
-                  <div className="flex flex-wrap items-center gap-2 pt-1">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-[11px] font-black text-[#2c392a] shadow-sm ring-1 ring-[#ead7b7]/50">
-                      <Star size={12} className="fill-amber-400 text-amber-400" />
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#D4AF37]">{t('cat.' + product.category)}</p>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-stone-50 px-2 py-1 text-[10px] font-black text-[#111111]">
+                      <Star size={10} className="fill-amber-400 text-amber-400" />
                       {(product.rating || 4.7).toFixed(1)}
                     </span>
-                    <span className="inline-flex items-center gap-2 rounded-full bg-[#f7f4ed] px-3 py-1.5 text-[11px] font-black text-[#5f6d59] shadow-sm ring-1 ring-[#ead7b7]/45">
-                      <span className="text-[#7daa8f]">{formatCurrency(basePrice)}</span>
-                      {hasDiscount && <span className="text-[#b0a89a] line-through">{formatCurrency(product.price)}</span>}
-                    </span>
-                    {discount > 0 && <span className="rounded-full bg-[#2c392a] px-3 py-1.5 text-[11px] font-black text-white">{discount}% OFF</span>}
+                  </div>
+                  <div>
+                    <h1 className="text-4xl md:text-5xl leading-[1.1] font-bold text-[#111111] tracking-tight">{displayName}</h1>
+                    {product.nameTa && <p className="text-lg font-medium text-stone-400 ta-text mt-2">{product.nameTa}</p>}
+                  </div>
+
+                  <div className="flex flex-wrap items-end gap-3 pt-4">
+                    <span className="text-3xl font-bold text-[#111111] leading-none">{formatCurrency(currentPrice)}</span>
+                    {hasDiscount && <span className="text-stone-400 line-through text-lg pb-1">{formatCurrency(product.price)}</span>}
+                    {discount > 0 && <span className="ml-2 rounded-full bg-[#D4AF37] px-3 py-1 text-[10px] font-black text-white uppercase tracking-widest pb-1">{discount}% OFF</span>}
                   </div>
                 </div>
 
                 {/* Pack Selection Desktop */}
-                <div className="hidden lg:block rounded-[24px] bg-white/95 p-4 shadow-sm ring-1 ring-[#ead7b7]/55">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#7daa8f]">Pack size</p>
-                      <p className="mt-1 text-[11px] font-bold text-[#95a28f]">{selectedPackOption?.label ?? product.unitLabel}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-[10px] font-bold text-[#7daa8f]">Price</p>
-                      <p className="text-lg font-black text-[#2c392a]">{formatCurrency(lineTotal)}</p>
-                    </div>
-                  </div>
-
+                <div className="border-t border-stone-100 pt-8">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-stone-400 mb-4">Select Quantity</p>
                   {getCompactPackOptions(product).length > 0 && (
-                    <div className="mt-3 flex gap-2 overflow-x-auto pb-1 hide-scrollbar">
+                    <div className="flex flex-wrap gap-3">
                       {getCompactPackOptions(product).map((option) => (
                         <button
                           key={option.label}
                           type="button"
                           onClick={() => setSelectedPackOption(option)}
-                          className={`shrink-0 rounded-full border px-3 py-2 text-[11px] font-black transition-colors ${
+                          className={`rounded-full px-6 py-2.5 text-xs font-bold tracking-wider transition-all ${
                             selectedPackOption?.label === option.label
-                              ? 'border-[#2c392a] bg-[#2c392a] text-white'
-                              : 'border-[#ead7b7]/70 bg-[#f7f4ed] text-[#5f6d59]'
+                              ? 'border-[#111111] bg-[#111111] text-white shadow-xl'
+                              : 'border border-stone-200 bg-white text-[#111111] hover:border-[#D4AF37]'
                           }`}
                         >
                           {option.label}
@@ -262,45 +238,37 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
                   )}
                 </div>
 
-                {/* Accordions */}
-                <div className="grid gap-2.5">
-                  <details className={accordionClass} open>
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-black text-[#2c392a]">
+                {/* Accordions (Clean Style) */}
+                <div className="border-t border-stone-100 pt-4 grid">
+                  <details className="group border-b border-stone-100 py-5" open>
+                    <summary className="flex cursor-pointer list-none items-center justify-between text-xs tracking-widest uppercase font-bold text-[#111111]">
                       <span>Description</span>
-                      <ChevronDown size={16} className="text-[#7daa8f] transition-transform group-open:rotate-180" />
+                      <ChevronDown size={14} className="text-[#D4AF37] transition-transform group-open:rotate-180" />
                     </summary>
-                    <p className="mt-3 text-sm leading-relaxed text-[#5f6d59]">{displayDesc || 'Carefully selected herbal product made for daily use.'}</p>
+                    <p className="mt-4 text-sm leading-relaxed text-stone-500 font-medium">{displayDesc || 'Carefully selected botanical product made for daily wellness.'}</p>
                   </details>
 
-                  <details className={accordionClass}>
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-black text-[#2c392a]">
-                      <span>Benefits & care</span>
-                      <ChevronDown size={16} className="text-[#7daa8f] transition-transform group-open:rotate-180" />
+                  <details className="group border-b border-stone-100 py-5">
+                    <summary className="flex cursor-pointer list-none items-center justify-between text-xs tracking-widest uppercase font-bold text-[#111111]">
+                      <span>Benefits & Care</span>
+                      <ChevronDown size={14} className="text-[#D4AF37] transition-transform group-open:rotate-180" />
                     </summary>
-                    <div className="mt-3 space-y-2 text-sm leading-relaxed text-[#5f6d59]">
+                    <div className="mt-4 space-y-3 text-sm leading-relaxed text-stone-500 font-medium">
                       <p className="whitespace-pre-line">{displayBen || 'Traditional Siddha preparation for daily household use.'}</p>
                       <p>{buildUsageNote(product)}</p>
                     </div>
                   </details>
                 </div>
 
-                {/* Add to Cart Sticky Footer */}
-                <div className="sticky bottom-0 mt-auto pt-6 pb-2 bg-[#fbfaf6]">
-                  <div className="flex items-center gap-3">
-                    <div className="min-w-[80px] hidden lg:block">
-                      <p className="text-[11px] font-bold text-[#7daa8f]">Total</p>
-                      <p className="text-xl font-black leading-tight text-[#2c392a]">{formatCurrency(lineTotal)}</p>
-                    </div>
-                    <button
-                      onClick={handleAdd}
-                      className="flex-1 rounded-2xl bg-[#2c392a] hover:bg-[#1a2318] transition-colors py-4 text-sm font-black text-white shadow-[0_16px_30px_rgba(44,57,42,0.28)]"
-                      type="button"
-                    >
-                      <span className="inline-flex items-center justify-center gap-2">
-                        <ShoppingCart size={18} /> Add to Cart
-                      </span>
-                    </button>
-                  </div>
+                {/* Add to Cart Footer */}
+                <div className="mt-auto pt-8 flex gap-4">
+                  <button
+                    onClick={handleAdd}
+                    className="flex-1 rounded-full bg-[#111111] hover:bg-[#D4AF37] transition-colors py-4 text-xs tracking-widest uppercase font-bold text-white flex items-center justify-center gap-3 shadow-xl shadow-black/10"
+                    type="button"
+                  >
+                    <ShoppingCart size={16} /> Add to Cart
+                  </button>
                 </div>
 
               </div>

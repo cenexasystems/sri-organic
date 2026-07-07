@@ -21,11 +21,13 @@ export default function NavBar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const [isLoggedIn] = useState(false); // Simulate auth state
+
   const navLinks = [
-    { name: "OUR STORY", href: "/story" },
-    { name: "THE HARVEST", href: "/harvest" },
-    { name: "SHOP ALL", href: "/products" },
-    { name: "JOURNAL", href: "/journal" },
+    { name: "ABOUT US", href: "/#about" },
+    { name: "THE HARVEST", href: "/#products" },
+    { name: "OUR PROCESS", href: "/#process" },
+    { name: "REVIEWS", href: "/#reviews" },
   ];
 
   const isHome = pathname === "/";
@@ -48,7 +50,7 @@ export default function NavBar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className="group relative text-[10px] font-bold tracking-[0.15em] transition-opacity hover:opacity-100"
+                className="group relative text-[10px] whitespace-nowrap font-bold tracking-[0.15em] transition-opacity hover:opacity-100"
                 style={{ opacity: isActive ? 1 : 0.8 }}
               >
                 {link.name}
@@ -64,17 +66,15 @@ export default function NavBar() {
         {/* Center Logo */}
         <div className="flex-1 flex justify-center py-1">
           <Link href="/" className="flex items-center">
-            <img src="/logo.png" alt="Sri Dasarathi" className="h-12 md:h-14 w-auto object-contain mix-blend-multiply drop-shadow-sm" />
+            <img src="/logo.svg" alt="Sri Dasarathi" className="h-12 md:h-14 w-auto object-contain mix-blend-multiply drop-shadow-sm" />
           </Link>
         </div>
 
         {/* Right Icons */}
         <div className="hidden md:flex items-center justify-end space-x-8 flex-1">
-          <button className="hover:opacity-70 transition-opacity">
-            <Search size={18} strokeWidth={2} />
-          </button>
-          <Link href="/login" className="hover:opacity-70 transition-opacity">
+          <Link href="/login" className="hover:opacity-70 transition-opacity flex items-center gap-2">
             <User size={18} strokeWidth={2} />
+            <span className="text-[10px] font-bold tracking-widest hidden lg:block">{isLoggedIn ? 'PROFILE' : 'LOGIN'}</span>
           </Link>
           <Link href="/cart" className="relative hover:opacity-70 transition-opacity flex items-center">
             <ShoppingBag size={18} strokeWidth={2} />
@@ -116,7 +116,7 @@ export default function NavBar() {
               <div className="h-px w-full bg-white/10 my-2"></div>
               
               <Link href="/login" className="text-white text-xs font-bold tracking-[0.2em] uppercase flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
-                <User size={16} /> MEMBER LOGIN
+                <User size={16} /> {isLoggedIn ? 'PROFILE' : 'MEMBER LOGIN'}
               </Link>
               <Link href="/cart" className="text-white text-xs font-bold tracking-[0.2em] uppercase flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
                 <ShoppingBag size={16} /> CART (0)
