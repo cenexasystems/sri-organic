@@ -1,10 +1,17 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Leaf, Mail, MapPin, Phone } from "lucide-react";
 
 export default function Footer() {
+  const pathname = usePathname();
+  const isCart = pathname === "/cart";
+
   return (
     <footer className="bg-[#111111] text-white pt-20 pb-10">
       <div className="max-w-7xl mx-auto px-8 md:px-16">
+        {!isCart && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-1 md:col-span-1">
             <Link href="/" className="mb-6 inline-block bg-white p-3 rounded-2xl">
@@ -24,20 +31,10 @@ export default function Footer() {
           <div>
             <h4 className="font-bold tracking-[0.2em] text-[11px] uppercase mb-6 text-[#F3D78E]">Explore</h4>
             <ul className="space-y-4 text-sm text-white/70">
-              <li><Link href="/story" className="hover:text-white transition-colors">Our Story</Link></li>
-              <li><Link href="/harvest" className="hover:text-white transition-colors">The Harvest</Link></li>
-              <li><Link href="/products" className="hover:text-white transition-colors">Shop All</Link></li>
-              <li><Link href="/journal" className="hover:text-white transition-colors">Journal</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-bold tracking-[0.2em] text-[11px] uppercase mb-6 text-[#F3D78E]">Legal</h4>
-            <ul className="space-y-4 text-sm text-white/70">
-              <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
-              <li><Link href="/returns" className="hover:text-white transition-colors">Return Policy</Link></li>
-              <li><Link href="/shipping" className="hover:text-white transition-colors">Shipping Info</Link></li>
+              <li><Link href="/#about" className="hover:text-white transition-colors">About Us</Link></li>
+              <li><Link href="/#products" className="hover:text-white transition-colors">The Harvest</Link></li>
+              <li><Link href="/#process" className="hover:text-white transition-colors">Our Process</Link></li>
+              <li><Link href="/#reviews" className="hover:text-white transition-colors">Reviews</Link></li>
             </ul>
           </div>
 
@@ -58,13 +55,15 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-        </div>
+          </div>
+        )}
 
-        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-white/50 tracking-widest uppercase text-center md:text-left">
+        <div className={`border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-white/50 tracking-widest uppercase text-center md:text-left ${!isCart ? 'border-t' : ''}`}>
           <p className="flex-1">&copy; {new Date().getFullYear()} Sri Organic. All rights reserved.</p>
           <p className="flex-1 md:text-center">
-            <a href="https://www.cenexasystems.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-              Powered by Cenexa System
+            Powered by{" "}
+            <a href="https://www.cenexasystems.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors text-white">
+              Cenexa System
             </a>
           </p>
           <p className="flex-1 md:text-right">Organic &bull; Pure &bull; Natural</p>

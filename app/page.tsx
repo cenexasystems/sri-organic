@@ -38,7 +38,7 @@ export default function Home() {
           {/* Background Video with Parallax */}
           <motion.div style={{ y: yBg }} className="absolute inset-0 z-0 h-[120%] -top-[10%]">
             <video 
-              src="/bg2.mp4" 
+              src="/bg2.webm" 
               autoPlay 
               muted 
               loop 

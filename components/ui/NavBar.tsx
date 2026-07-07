@@ -66,7 +66,7 @@ export default function NavBar() {
         {/* Center Logo */}
         <div className="flex-1 flex justify-center py-1">
           <Link href="/" className="flex items-center">
-            <img src="/logo.svg" alt="Sri Dasarathi" className="h-12 md:h-14 w-auto object-contain mix-blend-multiply drop-shadow-sm" />
+            <img src="/logo.png" alt="Sri Dasarathi" className="h-12 md:h-14 w-auto object-contain mix-blend-multiply drop-shadow-sm" />
           </Link>
         </div>
 
