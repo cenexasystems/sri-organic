@@ -31,7 +31,7 @@ export default function NavBar() {
   const { user } = useAuth();
   const isLoggedIn = !!user;
 
-  if (pathname.startsWith('/admin')) {
+  if (pathname.startsWith('/admin') || pathname.startsWith('/invoice')) {
     return null;
   }
 

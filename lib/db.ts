@@ -281,6 +281,76 @@ export const fetchOrders = async (): Promise<Order[]> => {
   }));
 };
 
+export const fetchOrderById = async (id: string): Promise<Order | null> => {
+  const { data: o, error: oError } = await supabase.from('orders').select('*, order_items(*)').eq('id', id).single();
+  if (oError) {
+    if (oError.code === 'PGRST116') return null; // Not found
+    throw oError;
+  }
+
+  return {
+    id: o.id,
+    customerName: o.customer_name,
+    customerPhone: o.customer_phone,
+    customerEmail: o.customer_email,
+    customerAddress: o.customer_address,
+    source: o.source,
+    items: o.order_items.map((it: any) => ({
+      productId: it.product_id,
+      name: it.name,
+      size: it.size,
+      quantity: it.quantity,
+      price: it.price,
+    })),
+    subtotal: o.subtotal,
+    totalPrice: o.total_price,
+    status: o.status,
+    createdAt: o.created_at,
+    couponCode: o.coupon_code,
+    couponDiscount: o.coupon_discount,
+    manualDiscount: o.manual_discount,
+    deliveryCharge: o.delivery_charge,
+    cashReceived: o.cash_received,
+    changeReturned: o.change_returned,
+  };
+};
+
+export const fetchOrdersByEmail = async (email: string): Promise<Order[]> => {
+  const { data: ordersData, error: oError } = await supabase
+    .from('orders')
+    .select('*, order_items(*)')
+    .eq('customer_email', email)
+    .order('created_at', { ascending: false });
+    
+  if (oError) throw oError;
+
+  return ordersData.map((o: any) => ({
+    id: o.id,
+    customerName: o.customer_name,
+    customerPhone: o.customer_phone,
+    customerEmail: o.customer_email,
+    customerAddress: o.customer_address,
+    source: o.source,
+    items: o.order_items.map((it: any) => ({
+      productId: it.product_id,
+      name: it.name,
+      size: it.size,
+      quantity: it.quantity,
+      price: it.price,
+    })),
+    subtotal: o.subtotal,
+    totalPrice: o.total_price,
+    status: o.status,
+    createdAt: o.created_at,
+    couponCode: o.coupon_code,
+    couponDiscount: o.coupon_discount,
+    manualDiscount: o.manual_discount,
+    deliveryCharge: o.delivery_charge,
+    cashReceived: o.cash_received,
+    changeReturned: o.change_returned,
+  }));
+};
+
 export const insertOrder = async (order: Order) => {
   const { error: oError } = await supabase.from('orders').insert([{
     id: order.id,
@@ -323,24 +393,43 @@ export const updateOrderStatusDb = async (id: string, status: string) => {
 // ============================
 // WHATSAPP REQUESTS
 // ============================
-export const fetchWhatsappRequests = async (): Promise<WhatsappRequest[]> => {
-  const { data, error } = await supabase.from('whatsapp_requests').select('*').order('created_at', { ascending: false });
+export const fetchWhatsappRequests = async (): Promise<Order[]> => {
+  const { data, error } = await supabase
+    .from('orders')
+    .select('*, order_items(*)')
+    .eq('source', 'ONLINE')
+    .order('created_at', { ascending: false });
+    
   if (error) throw error;
   
-  return data.map((r: any) => ({
-    id: r.id,
-    customerName: r.customer_name,
-    customerPhone: r.customer_phone,
-    customerEmail: r.customer_email,
-    customerAddress: r.customer_address,
-    totalPrice: r.total_price,
-    status: r.status,
-    items: r.items,
-    createdAt: r.created_at,
+  return data.map((o: any) => ({
+    id: o.id,
+    customerName: o.customer_name,
+    customerPhone: o.customer_phone,
+    customerEmail: o.customer_email,
+    customerAddress: o.customer_address,
+    source: o.source,
+    items: (o.order_items || []).map((it: any) => ({
+      productId: it.product_id,
+      name: it.name,
+      size: it.size,
+      quantity: it.quantity,
+      price: it.price,
+    })),
+    subtotal: o.subtotal,
+    totalPrice: o.total_price,
+    status: o.status,
+    createdAt: o.created_at,
+    couponCode: o.coupon_code,
+    couponDiscount: o.coupon_discount,
+    manualDiscount: o.manual_discount,
+    deliveryCharge: o.delivery_charge,
+    cashReceived: o.cash_received,
+    changeReturned: o.change_returned,
   }));
 };
 
 export const updateWhatsappRequestStatus = async (id: string, status: string) => {
-  const { error } = await supabase.from('whatsapp_requests').update({ status }).eq('id', id);
+  const { error } = await supabase.from('orders').update({ status }).eq('id', id);
   if (error) throw error;
 };

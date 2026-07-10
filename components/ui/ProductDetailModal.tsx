@@ -72,6 +72,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
     };
   }, [isOpen]);
 
+
   useEffect(() => {
     if (!product) return;
     const packOpts = getCompactPackOptions(product);
@@ -107,17 +108,17 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
   };
 
   const handleMobileChangeQty = (nextQty: number) => {
+    const pack = mobilePack ?? getCompactPackOptions(product)[0] ?? null;
+    const unit = pack?.label ?? product.unitLabel;
     if (nextQty <= 0) {
-      removeItem(product.id);
+      removeItem(product.id, unit);
       setMobileQty(0);
       return;
     }
-    const pack = mobilePack ?? getCompactPackOptions(product)[0] ?? null;
-    const unit = pack?.label ?? product.unitLabel;
     if (mobileQty <= 0) {
       addItem(product, nextQty, unit);
     } else {
-      updateQuantity(product.id, nextQty);
+      updateQuantity(product.id, unit, nextQty);
     }
     setMobileQty(nextQty);
   };
@@ -125,9 +126,10 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
   const handleMobilePackChange = (option: { quantity: number; unit: string; label: string; price: number }) => {
     if (option.label === mobilePack?.label) return;
     const currentQty = mobileQty;
+    const currentUnit = mobilePack?.label ?? getCompactPackOptions(product)[0]?.label ?? product.unitLabel;
     setMobilePack(option);
     if (currentQty > 0) {
-      removeItem(product.id);
+      removeItem(product.id, currentUnit);
       addItem(product, currentQty, option.label);
     }
   };
@@ -137,7 +139,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-0 md:p-6 overflow-y-auto">
+        <div className="fixed inset-0 z-[110] flex items-start md:items-center justify-center p-0 md:p-6 overflow-y-auto overscroll-contain">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -153,18 +155,18 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 250 }}
-            className="relative bg-[#FAF9F5] w-full max-w-4xl h-auto max-h-[90vh] md:rounded-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden z-10 flex flex-col"
+            className="relative bg-[#FAF9F5] w-full max-w-4xl min-h-[100dvh] md:min-h-0 h-auto md:max-h-[90vh] md:rounded-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] overflow-visible md:overflow-hidden z-10 flex flex-col"
           >
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 md:top-6 md:right-6 w-10 h-10 rounded-full bg-white/95 border border-[#e5e7eb]/60 hover:border-[#D4AF37] flex items-center justify-center text-[#111111] hover:text-[#D4AF37] shadow-md transition-all duration-300 z-40 cursor-pointer"
+              className="hidden md:flex absolute top-4 right-4 md:top-6 md:right-6 w-10 h-10 rounded-full bg-white/95 border border-[#e5e7eb]/60 hover:border-[#D4AF37] items-center justify-center text-[#111111] hover:text-[#D4AF37] shadow-md transition-all duration-300 z-40 cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
             {/* Top Action Bar (Mobile Only) */}
-            <div className="lg:hidden sticky top-0 z-30 border-b border-white/60 bg-[#FAF9F5]/92 px-4 py-3 backdrop-blur sm:px-6">
+            <div className="md:hidden sticky top-0 z-30 border-b border-white/60 bg-[#FAF9F5]/92 px-4 py-3 backdrop-blur sm:px-6 shrink-0">
               <div className="mx-auto flex items-center justify-between gap-3">
                 <button
                   onClick={onClose}
@@ -175,9 +177,9 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row h-full overflow-y-auto">
+            <div className="flex flex-col md:flex-row flex-none md:flex-1 md:min-h-0 overflow-y-visible md:overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {/* Image Section */}
-              <div className="w-full md:w-1/2 shrink-0 bg-stone-100 border-r border-stone-200 relative min-h-[350px] md:min-h-0">
+              <div className="w-full md:w-1/2 shrink-0 bg-stone-100 border-r border-stone-200 relative aspect-square md:aspect-auto md:min-h-0">
                 <div className="absolute top-8 left-8 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full border border-stone-200 flex flex-col gap-1 shadow-sm z-10">
                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#D4AF37]">{product.category}</span>
                 </div>
@@ -192,7 +194,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
               </div>
 
               {/* Details Section */}
-              <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col gap-10 relative bg-white">
+              <div className="w-full md:w-1/2 px-8 pt-8 pb-0 md:px-12 md:pt-12 md:pb-0 flex flex-col gap-10 relative bg-white">
                 
                 {/* Header info */}
                 <div className="space-y-4">
@@ -261,7 +263,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
                 </div>
 
                 {/* Add to Cart Footer */}
-                <div className="mt-auto pt-8 flex gap-4">
+                <div className="mt-auto sticky bottom-0 z-20 bg-white pt-4 pb-8 -mx-8 px-8 border-t border-stone-100 md:pb-12 md:-mx-12 md:px-12 flex gap-4">
                   <button
                     onClick={handleAdd}
                     className="flex-1 rounded-full bg-[#111111] hover:bg-[#D4AF37] transition-colors py-4 text-xs tracking-widest uppercase font-bold text-white flex items-center justify-center gap-3 shadow-xl shadow-black/10"

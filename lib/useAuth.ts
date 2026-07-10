@@ -34,6 +34,7 @@ export function useAuth() {
     return () => {
       subscription.unsubscribe();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const signInWithGoogle = async () => {
@@ -47,8 +48,10 @@ export function useAuth() {
         }
       });
       if (error) throw error;
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      }
       setLoading(false);
     }
   };
@@ -66,8 +69,10 @@ export function useAuth() {
       });
       if (error) throw error;
       setMessage('Check your email for the login link!');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -77,7 +82,7 @@ export function useAuth() {
     setLoading(true);
     try {
       await supabase.auth.signOut();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
     } finally {
       setLoading(false);

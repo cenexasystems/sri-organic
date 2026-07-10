@@ -8,12 +8,16 @@ export default function Footer() {
   const pathname = usePathname();
   const isCart = pathname === "/cart";
 
+  if (pathname.startsWith("/admin") || pathname.startsWith("/invoice")) {
+    return null;
+  }
+
   return (
-    <footer className="bg-[#111111] text-white pt-20 pb-10">
-      <div className="max-w-7xl mx-auto px-8 md:px-16">
+    <footer className="bg-[#111111] text-white pt-16 md:pt-20 pb-10">
+      <div className="max-w-7xl mx-auto px-6 md:px-16">
         {!isCart && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-          <div className="col-span-1 md:col-span-1">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-16">
+          <div className="lg:col-span-5 pr-0 lg:pr-12">
             <Link href="/" className="mb-6 inline-block bg-white p-3 rounded-2xl">
               <img src="/logo.svg" alt="Sri Dasarathi" className="h-20 w-auto object-contain" />
             </Link>
@@ -28,7 +32,7 @@ export default function Footer() {
             </div>
           </div>
           
-          <div>
+          <div className="lg:col-span-3">
             <h4 className="font-bold tracking-[0.2em] text-[11px] uppercase mb-6 text-[#F3D78E]">Explore</h4>
             <ul className="space-y-4 text-sm text-white/70">
               <li><Link href="/#about" className="hover:text-white transition-colors">About Us</Link></li>
@@ -38,7 +42,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div>
+          <div className="lg:col-span-4">
             <h4 className="font-bold tracking-[0.2em] text-[11px] uppercase mb-6 text-[#F3D78E]">Contact</h4>
             <ul className="space-y-4 text-sm text-white/70">
               <li className="flex items-start gap-3">
@@ -64,7 +68,7 @@ export default function Footer() {
             Powered by{" "}
             <a href="https://www.cenexasystems.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors text-white">
               Cenexa System
-            </a>
+            </a> &copy; {new Date().getFullYear()} 
           </p>
           <p className="flex-1 md:text-right">Organic &bull; Pure &bull; Natural</p>
         </div>
