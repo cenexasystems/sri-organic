@@ -180,7 +180,7 @@ export default function CartPage() {
           <div className="text-center py-16 bg-white rounded-3xl shadow-sm border border-stone-200">
             <h3 className="text-2xl font-bold text-[#111111] mb-4">Your cart is empty</h3>
             <p className="text-stone-500 mb-8">Looks like you haven't added anything to your cart yet.</p>
-            <Link href="/#products" className="inline-flex items-center gap-2 rounded-full bg-[#111111] px-8 py-3 text-xs font-bold tracking-widest uppercase text-white hover:bg-[#D4AF37] transition-colors">
+            <Link href="/products" className="inline-flex items-center gap-2 rounded-full bg-[#111111] px-8 py-3 text-xs font-bold tracking-widest uppercase text-white hover:bg-[#D4AF37] transition-colors">
               Continue Shopping <ArrowRight size={14} />
             </Link>
           </div>

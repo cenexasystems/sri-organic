@@ -317,25 +317,25 @@ export default function Home() {
               </div>
             </div>
             
-            <a 
-              href="https://www.google.com/maps/search/?api=1&query=47+Ambal+Nagar+Ponneri+601204" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="w-full md:w-2/3 aspect-square md:aspect-[21/9] bg-stone-200 relative overflow-hidden group rounded-[40px] shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer block"
-            >
-               <Image 
-                 src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2000&auto=format&fit=crop"
-                 alt="Store Location Map"
-                 fill
-                 sizes="(max-width: 768px) 100vw, 66vw"
-                 className="object-cover group-hover:scale-110 transition-transform duration-1000 grayscale opacity-90 group-hover:opacity-100"
-               />
-               <div className="absolute inset-0 bg-[#111111]/40 group-hover:bg-black/20 transition-colors duration-500 flex items-center justify-center backdrop-blur-[2px] group-hover:backdrop-blur-0">
+            <div className="w-full md:w-2/3 aspect-square md:aspect-[21/9] bg-stone-200 relative overflow-hidden group rounded-[40px] shadow-sm hover:shadow-2xl transition-all duration-500">
+               <iframe 
+                 src="https://maps.google.com/maps?q=47%20Ambal%20Nagar,%20Andarkuppam,%20Ponneri,%20601204&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+                 className="absolute inset-0 w-full h-full border-0 grayscale opacity-80 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000"
+                 allowFullScreen
+                 loading="lazy"
+                 referrerPolicy="no-referrer-when-downgrade"
+               ></iframe>
+               <a 
+                 href="https://www.google.com/maps/search/?api=1&query=47+Ambal+Nagar+Ponneri+601204" 
+                 target="_blank" 
+                 rel="noopener noreferrer"
+                 className="absolute inset-0 bg-[#111111]/10 group-hover:bg-transparent transition-colors duration-500 flex items-center justify-center cursor-pointer"
+               >
                  <div className="bg-white/90 backdrop-blur-md px-8 py-4 rounded-full text-[#111111] font-bold text-sm tracking-widest uppercase flex items-center gap-3 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 shadow-xl">
                    Open in Google Maps <ArrowUpRight className="w-4 h-4" />
                  </div>
-               </div>
-            </a>
+               </a>
+            </div>
           </div>
         </section>
 

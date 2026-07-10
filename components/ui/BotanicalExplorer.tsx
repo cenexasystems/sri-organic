@@ -44,7 +44,7 @@ export default function BotanicalExplorer() {
   const [activeSpot, setActiveSpot] = useState<number | null>(null);
 
   return (
-    <section className="py-16 md:py-32 px-6 md:px-16 bg-white overflow-hidden">
+    <section className="py-16 md:py-32 px-6 md:px-16 bg-white">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 md:gap-16">
         
         {/* Text */}
@@ -69,17 +69,19 @@ export default function BotanicalExplorer() {
 
         {/* Image with Hotspots */}
         <div className="w-full md:w-2/3 relative order-2 md:order-1">
-          <div className="relative w-full aspect-square md:aspect-[4/3] rounded-[40px] overflow-hidden bg-stone-100 shadow-2xl">
-            {/* Base Image */}
-            <img 
-              src="/traditional_black_rice_1783344030589.png" 
-              alt="Organic Spices and Grains" 
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            {/* Dark Overlay */}
-            <div className="absolute inset-0 bg-black/20 transition-opacity duration-500" style={{ opacity: activeSpot ? 0.6 : 0.2 }} />
+          <div className="relative w-full aspect-square md:aspect-[4/3]">
+            {/* Base Image Layer with rounded corners clipping */}
+            <div className="absolute inset-0 rounded-[40px] overflow-hidden bg-stone-100 shadow-2xl">
+              <img 
+                src="/traditional_black_rice_1783344030589.png" 
+                alt="Organic Spices and Grains" 
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              {/* Dark Overlay */}
+              <div className="absolute inset-0 bg-black/20 transition-opacity duration-500" style={{ opacity: activeSpot ? 0.6 : 0.2 }} />
+            </div>
 
-            {/* Hotspots */}
+            {/* Hotspots layer (no overflow-hidden, can overflow freely) */}
             {hotspots.map((spot) => (
               <div 
                 key={spot.id} 
@@ -116,10 +118,10 @@ export default function BotanicalExplorer() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                      className={`absolute top-14 w-[260px] md:w-[280px] bg-white/95 backdrop-blur-xl p-5 md:p-6 rounded-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] border border-stone-200 z-50 ${
+                      className={`absolute top-14 w-[240px] md:w-[280px] bg-white/95 backdrop-blur-xl p-5 md:p-6 rounded-3xl shadow-2xl border border-stone-200 z-50 ${
                         spot.x > 50 
-                          ? 'right-[-20px] md:right-auto md:left-1/2 md:-translate-x-1/2' 
-                          : 'left-[-20px] md:left-1/2 md:-translate-x-1/2'
+                          ? 'right-0 md:right-auto md:left-1/2 md:-translate-x-1/2' 
+                          : 'left-0 md:left-1/2 md:-translate-x-1/2'
                       }`}
                     >
                       <div className="flex items-center gap-3 mb-3">

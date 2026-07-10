@@ -8,7 +8,7 @@ export default function Footer() {
   const pathname = usePathname();
   const isCart = pathname === "/cart";
 
-  if (pathname.startsWith("/admin") || pathname.startsWith("/invoice")) {
+  if (pathname.startsWith("/admin") || pathname.startsWith("/invoice") || pathname.startsWith("/login")) {
     return null;
   }
 

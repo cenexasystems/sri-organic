@@ -1085,7 +1085,7 @@ export default function AdminPortal() {
           </div>
 
           {/* MAIN DASHBOARD CONTENT AREA */}
-          <div data-lenis-prevent="true" className="flex-grow flex flex-col pt-5 px-6 pb-6 md:pt-6 md:px-10 md:pb-8 overflow-y-auto w-full">
+          <div data-lenis-prevent="true" className="flex-grow flex flex-col pt-5 px-6 pb-6 md:pt-6 md:px-10 md:pb-8 overflow-y-auto overscroll-contain w-full">
             
             {/* TAB 1: WHATSAPP CENTER (Matches Vercel Screenshot layout) */}
             {activeTab === 'whatsapp' && (
