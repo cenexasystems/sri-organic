@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { fetchProducts as dbFetchProducts, Product as DbProduct } from '@/lib/db';
+import { fetchProducts as dbFetchProducts } from '@/lib/db';
 
 export interface Product {
   id: string;
@@ -169,32 +169,34 @@ interface CartItem {
 interface CartStore {
   items: CartItem[];
   addItem: (product: Product, quantity: number, unit: string) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  removeItem: (productId: string, unit: string) => void;
+  updateQuantity: (productId: string, unit: string, quantity: number) => void;
+  clearCart: () => void;
 }
 
 export const useCartStore = create<CartStore>((set) => ({
   items: [],
   addItem: (product, quantity, unit) =>
     set((state) => {
-      const existing = state.items.find((i) => i.product.id === product.id);
+      const existing = state.items.find((i) => i.product.id === product.id && i.unit === unit);
       if (existing) {
         return {
           items: state.items.map((i) =>
-            i.product.id === product.id ? { ...i, quantity: i.quantity + quantity } : i
+            (i.product.id === product.id && i.unit === unit) ? { ...i, quantity: i.quantity + quantity } : i
           ),
         };
       }
       return { items: [...state.items, { product, quantity, unit }] };
     }),
-  removeItem: (productId) =>
+  removeItem: (productId, unit) =>
     set((state) => ({
-      items: state.items.filter((i) => i.product.id !== productId),
+      items: state.items.filter((i) => !(i.product.id === productId && i.unit === unit)),
     })),
-  updateQuantity: (productId, quantity) =>
+  updateQuantity: (productId, unit, quantity) =>
     set((state) => ({
-      items: state.items.map((i) => (i.product.id === productId ? { ...i, quantity } : i)),
+      items: state.items.map((i) => (i.product.id === productId && i.unit === unit ? { ...i, quantity } : i)),
     })),
+  clearCart: () => set({ items: [] }),
 }));
 
 interface FavStore {

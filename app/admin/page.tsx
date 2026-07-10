@@ -708,8 +708,12 @@ export default function AdminPortal() {
         return oDate.toDateString() === now.toDateString();
       }
       if (periodFilter === 'week') {
-        const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-        return oDate >= oneWeekAgo;
+        const currentDay = now.getDay();
+        const diffToMonday = currentDay === 0 ? 6 : currentDay - 1; // 0 is Sunday, make Monday=0
+        const startOfWeek = new Date(now);
+        startOfWeek.setDate(now.getDate() - diffToMonday);
+        startOfWeek.setHours(0, 0, 0, 0);
+        return oDate >= startOfWeek;
       }
       if (periodFilter === 'month') {
         return oDate.getMonth() === now.getMonth() && oDate.getFullYear() === now.getFullYear();
@@ -1215,63 +1219,63 @@ export default function AdminPortal() {
                     ) : (
                       <table className="w-full text-left text-xs min-w-[900px]">
                         <thead>
-                          <tr className="bg-surface-container-low text-primary font-bold border-b border-outline-variant/25">
-                            <th className="px-4 py-3">Order ID</th>
-                            <th className="px-4 py-3">Customer</th>
-                            <th className="px-4 py-3">Phone</th>
-                            <th className="px-4 py-3 text-center">Address</th>
-                            <th className="px-4 py-3 text-center">Products</th>
-                            <th className="px-4 py-3">Est. Total</th>
-                            <th className="px-4 py-3">Date & Time</th>
-                            <th className="px-4 py-3">Status</th>
-                            <th className="px-4 py-3 text-right">Details</th>
+                          <tr className="text-[#888888] text-[10px] font-bold tracking-widest uppercase border-b border-outline-variant/20">
+                            <th className="px-4 py-4 font-bold">ORD ID</th>
+                            <th className="px-4 py-4 font-bold">CUSTOMER</th>
+                            <th className="px-4 py-4 font-bold">PHONE</th>
+                            <th className="px-4 py-4 font-bold">ADDRESS</th>
+                            <th className="px-4 py-4 font-bold text-center">PRODUCTS</th>
+                            <th className="px-4 py-4 font-bold">EST. TOTAL</th>
+                            <th className="px-4 py-4 font-bold">DATE & TIME</th>
+                            <th className="px-4 py-4 font-bold">STATUS</th>
+                            <th className="px-4 py-4 font-bold text-right">DETAILS</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-outline-variant/10">
                           {filteredOrdersList.map(o => (
                             <Fragment key={o.id}>
                               <tr className="hover:bg-[#FAF9F5]/20 transition-colors">
-                                <td className="px-4 py-3 font-bold text-primary">{getWhatsAppInvoice(o.id)}</td>
-                                <td className="px-4 py-3 font-semibold text-primary">{o.customerName}</td>
-                                <td className="px-4 py-3 font-medium">{o.customerPhone.split('_')[0]}</td>
-                                <td className="px-4 py-3 max-w-[120px] truncate text-center text-on-surface-variant mx-auto">{o.customerAddress}</td>
-                                <td className="px-4 py-3 text-center">
-                                  <span className="bg-primary/5 text-primary border border-primary/10 px-2 py-0.5 rounded-full font-bold text-[10px]">
+                                <td className="px-4 py-4 font-bold text-[#111111]">{o.id}</td>
+                                <td className="px-4 py-4 font-bold text-[#111111]">{o.customerName}</td>
+                                <td className="px-4 py-4 font-medium text-[#444444]">{o.customerPhone.split('_')[0]}</td>
+                                <td className="px-4 py-4 max-w-[150px] truncate text-[#666666]">{o.customerAddress}</td>
+                                <td className="px-4 py-4 text-center">
+                                  <span className="bg-[#E0E7FF] text-[#4F46E5] px-2 py-0.5 rounded-full font-bold text-[10px]">
                                     {o.items.reduce((sum: number, it: any) => sum + it.quantity, 0)}
                                   </span>
                                 </td>
-                                <td className="px-4 py-3 font-bold text-primary">₹{o.totalPrice}</td>
-                                <td className="px-4 py-3 text-on-surface-variant font-medium text-[11px]">
-                                  {new Date(o.createdAt).toLocaleDateString(undefined, { 
+                                <td className="px-4 py-4 font-bold text-[#111111]">₹{o.totalPrice.toLocaleString('en-IN')}</td>
+                                <td className="px-4 py-4 text-[#888888] font-medium text-[11px]">
+                                  {new Date(o.createdAt).toLocaleDateString('en-GB', { 
                                     day: '2-digit', 
                                     month: 'short', 
                                     year: 'numeric' 
-                                  })} {new Date(o.createdAt).toLocaleTimeString(undefined, { 
+                                  })} <br/> {new Date(o.createdAt).toLocaleTimeString('en-US', { 
                                     hour: '2-digit', 
                                     minute: '2-digit' 
-                                  })}
+                                  }).toLowerCase()}
                                 </td>
-                                <td className="px-4 py-3">
+                                <td className="px-4 py-4">
                                   <select
                                     value={o.status}
                                     onChange={(e) => updateOrderStatus(o.id, e.target.value as Order['status'])}
-                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase border bg-white focus:outline-none transition-all cursor-pointer ${
+                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold border focus:outline-none transition-all cursor-pointer ${
                                       o.status === 'Completed'
-                                        ? 'text-green-700 border-green-200 bg-green-50'
+                                        ? 'text-[#16A34A] border-[#16A34A]/30 bg-[#F0FDF4]'
                                         : o.status === 'Processing'
-                                        ? 'text-blue-700 border-blue-200 bg-[#EFF6FF]'
+                                        ? 'text-[#2563EB] border-[#2563EB]/30 bg-[#EFF6FF]'
                                         : o.status === 'Cancelled'
-                                        ? 'text-red-700 border-red-200 bg-red-50'
-                                        : 'text-yellow-700 border-yellow-200 bg-[#FEFCE8]'
+                                        ? 'text-[#DC2626] border-[#DC2626]/30 bg-[#FEF2F2]'
+                                        : 'text-[#D97706] border-[#D97706]/30 bg-[#FFFBEB]'
                                     }`}
                                   >
                                     <option value="Pending">Pending</option>
-                                    <option value="Processing">Processing</option>
+                                    <option value="Processing">Contacted</option>
                                     <option value="Completed">Completed</option>
                                     <option value="Cancelled">Cancelled</option>
                                   </select>
                                 </td>
-                                <td className="px-4 py-3 text-right">
+                                <td className="px-4 py-4 text-right">
                                   <button
                                     onClick={() => {
                                       setExpandedOrderId(expandedOrderId === o.id ? null : o.id);
@@ -1279,7 +1283,7 @@ export default function AdminPortal() {
                                     className={`font-bold text-xs px-5 py-2.5 rounded-xl transition-all inline-block cursor-pointer ${
                                       expandedOrderId === o.id
                                         ? 'bg-[#1F2937] text-white hover:bg-black'
-                                        : 'bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100'
+                                        : 'bg-blue-50 text-[#4F46E5] border border-blue-100 hover:bg-blue-100'
                                     }`}
                                   >
                                     {expandedOrderId === o.id ? 'Close' : 'View'}
