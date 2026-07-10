@@ -58,7 +58,7 @@ export default function Home() {
 
           <motion.div 
             style={{ opacity: opacityText }}
-            className="w-full max-w-7xl mx-auto px-8 md:px-16 relative z-20 flex flex-col md:flex-row md:items-end justify-between gap-12"
+            className="w-full max-w-7xl mx-auto px-8 md:px-16 relative z-20 flex flex-col xl:flex-row xl:items-end justify-between gap-12"
           >
             {/* Left side: Heading */}
             <div className="flex-1 max-w-2xl">
@@ -66,20 +66,20 @@ export default function Home() {
                 <div className="w-8 h-[1px] bg-[#F3D78E]"></div>
                 <span className="text-[#F3D78E] text-[10px] font-bold tracking-[0.2em] uppercase">Cultivating Integrity</span>
               </div>
-              <h1 className="text-6xl md:text-8xl lg:text-[7rem] font-bold text-white leading-[1.05] tracking-tight">
+              <h1 className="text-[12vw] sm:text-5xl md:text-8xl lg:text-[7rem] font-bold text-white leading-[1.05] tracking-tight">
                 Sri Organic <br />
                 Reimagined.
               </h1>
             </div>
 
             {/* Right side: Description and Button */}
-            <div className="flex-1 max-w-md md:text-right flex flex-col md:items-end gap-8 pb-4">
+            <div className="flex-1 max-w-md text-left xl:text-right flex flex-col items-start xl:items-end gap-8 pb-4">
               <p className="text-white/90 text-sm md:text-base font-medium leading-relaxed">
                 Discover the purest expression of agriculture. Our heirloom grains are grown with uncompromising standards, preserving ancient flavors and vital nutrients.
               </p>
               <Link 
                 href="/products" 
-                className="bg-white text-black px-8 py-3.5 text-xs font-bold uppercase tracking-widest hover:bg-[#FAF9F5] transition-colors shadow-lg self-start md:self-end"
+                className="bg-white text-black px-8 py-3.5 text-xs font-bold uppercase tracking-widest hover:bg-[#FAF9F5] transition-colors shadow-lg self-start xl:self-end"
               >
                 Explore The Harvest
               </Link>
@@ -108,7 +108,7 @@ export default function Home() {
         </section>
 
         {/* About Section */}
-        <section id="about" className="py-32 px-8 md:px-16 bg-[#FAF9F5] relative rounded-t-[3rem] shadow-[0_-10px_40px_rgba(0,0,0,0.02)] z-20">
+        <section id="about" className="py-16 md:py-32 px-6 md:px-16 bg-[#FAF9F5] relative rounded-t-[3rem] shadow-[0_-10px_40px_rgba(0,0,0,0.02)] z-20">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-16 md:gap-24">
             {/* Left: Text Content */}
             <div className="w-full md:w-1/2 flex flex-col justify-center">
@@ -148,6 +148,7 @@ export default function Home() {
                   src="/organic_groceries_1783344052624.png" 
                   alt="Sri Organic Heritage" 
                   fill 
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover hover:scale-105 transition-transform duration-[2000ms] ease-out"
                 />
                 <div className="absolute inset-0 bg-black/10" />
@@ -175,9 +176,9 @@ export default function Home() {
         <BotanicalExplorer />
 
         {/* New Product Showcase */}
-        <section id="products" className="py-32 px-8 md:px-16 bg-white relative z-20">
+        <section id="products" className="py-16 md:py-32 px-6 md:px-16 bg-white relative z-20">
           <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 md:mb-24 gap-6">
               <div>
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-8 h-[1px] bg-[#D4AF37]"></div>
@@ -221,9 +222,9 @@ export default function Home() {
         </section>
 
         {/* Reviews Section - Moving Marquee */}
-        <section id="reviews" className="py-32 bg-[#111111] text-white overflow-hidden relative">
-          <div className="max-w-7xl mx-auto px-8 md:px-16">
-            <div className="flex flex-col items-center text-center mb-24">
+        <section id="reviews" className="py-16 md:py-32 bg-[#111111] text-white overflow-hidden relative">
+          <div className="max-w-7xl mx-auto px-6 md:px-16">
+            <div className="flex flex-col items-center text-center mb-16 md:mb-24">
               <div className="w-8 h-[1px] bg-[#D4AF37] mb-6"></div>
               <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Reviews.</h2>
             </div>
@@ -251,7 +252,7 @@ export default function Home() {
                   ].map((review, i) => (
                     <div 
                       key={i}
-                      className="w-[350px] p-10 border border-white/10 hover:border-white/30 transition-colors bg-[#111111] whitespace-normal"
+                      className="w-[280px] md:w-[350px] p-8 md:p-10 border border-white/10 hover:border-white/30 transition-colors bg-[#111111] whitespace-normal"
                     >
                       <div className="flex gap-1 text-[#D4AF37] mb-8">
                         {[1,2,3,4,5].map(star => <span key={star}>★</span>)}
@@ -269,8 +270,8 @@ export default function Home() {
         </section>
 
         {/* Certifications / Stats Banner */}
-        <section className="py-20 px-8 md:px-16 bg-[#111111] border-y border-white/10 text-white relative z-20">
-          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12 text-center divide-x divide-white/10">
+        <section className="py-12 md:py-20 px-6 md:px-16 bg-[#111111] border-y border-white/10 text-white relative z-20">
+          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-y-12 md:gap-y-0 gap-x-4 md:gap-x-12 text-center md:divide-x divide-white/10">
             <div className="flex flex-col items-center justify-center space-y-4 px-4">
               <ShieldCheck className="w-8 h-8 text-[#D4AF37]" />
               <h4 className="text-3xl font-black">100%</h4>
@@ -295,7 +296,7 @@ export default function Home() {
         </section>
 
         {/* Map / Location Section */}
-        <section className="py-32 px-8 md:px-16 bg-[#FAF9F5]">
+        <section className="py-16 md:py-32 px-6 md:px-16 bg-[#FAF9F5]">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-16 items-center">
             <div className="w-full md:w-1/3">
               <div className="flex items-center gap-4 mb-6">
@@ -320,12 +321,13 @@ export default function Home() {
               href="https://www.google.com/maps/search/?api=1&query=47+Ambal+Nagar+Ponneri+601204" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="w-full md:w-2/3 aspect-[21/9] bg-stone-200 relative overflow-hidden group rounded-[40px] shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer block"
+              className="w-full md:w-2/3 aspect-square md:aspect-[21/9] bg-stone-200 relative overflow-hidden group rounded-[40px] shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer block"
             >
                <Image 
                  src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2000&auto=format&fit=crop"
                  alt="Store Location Map"
                  fill
+                 sizes="(max-width: 768px) 100vw, 66vw"
                  className="object-cover group-hover:scale-110 transition-transform duration-1000 grayscale opacity-90 group-hover:opacity-100"
                />
                <div className="absolute inset-0 bg-[#111111]/40 group-hover:bg-black/20 transition-colors duration-500 flex items-center justify-center backdrop-blur-[2px] group-hover:backdrop-blur-0">
@@ -338,9 +340,9 @@ export default function Home() {
         </section>
 
         {/* Our Process Section */}
-        <section id="process" className="py-32 px-8 md:px-16 bg-[#111111] text-white overflow-hidden relative">
+        <section id="process" className="py-16 md:py-32 px-6 md:px-16 bg-[#111111] text-white overflow-hidden relative">
           <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col items-center text-center mb-24">
+            <div className="flex flex-col items-center text-center mb-16 md:mb-24">
               <div className="w-8 h-[1px] bg-[#D4AF37] mb-6"></div>
               <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">From Soil to Soul.</h2>
               <p className="text-white/60 max-w-lg text-sm">The journey of our botanicals, preserved at every step to ensure maximum clinical efficacy and purity.</p>

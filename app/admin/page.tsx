@@ -68,7 +68,7 @@ export default function AdminPortal() {
 
   // Form states for product
   const [prodName, setProdName] = useState('');
-  const [prodCategory, setProdCategory] = useState('Hair Care');
+  const [prodCategory, setProdCategory] = useState('');
   const [prodDesc, setProdDesc] = useState('');
   const [prodHerbs, setProdHerbs] = useState('');
   const [prodBenefits, setProdBenefits] = useState('');
@@ -253,7 +253,7 @@ export default function AdminPortal() {
   const startAddProduct = () => {
     setEditingProduct(null);
     setProdName('');
-    setProdCategory('Hair Care');
+    setProdCategory(categories.length > 0 ? categories[0] : '');
     setProdDesc('');
     setProdHerbs('');
     setProdBenefits('');
@@ -271,6 +271,17 @@ export default function AdminPortal() {
   // Save product (Add or Edit)
   const saveProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    let finalCategory = prodCategory;
+    if (!finalCategory && categories.length > 0) {
+      finalCategory = categories[0];
+    }
+    
+    if (!finalCategory) {
+      alert('Please create and select a category first.');
+      return;
+    }
+
     const cleanSizes = prodSizes
       .filter(s => s.size.trim() !== '' && s.price > 0)
       .map(s => ({ size: s.size, price: s.price, isAvailable: s.isAvailable !== false }));
@@ -294,15 +305,15 @@ export default function AdminPortal() {
     const newProd: Product = {
       id: editingProduct ? editingProduct.id : prodName.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       name: prodName,
-      category: prodCategory,
+      category: finalCategory,
       description: prodDesc,
       image: editingProduct ? editingProduct.image : '/mahizham_hair_oil.png',
-      herbs: prodHerbs,
-      benefits: benefitsArray,
+      herbs: prodHerbs || 'Proprietary Blend',
+      benefits: benefitsArray.length > 0 ? benefitsArray : ['Supports overall well-being'],
       sizes: cleanSizes,
       isAvailable: prodIsAvailable,
-      details: prodDetails,
-      howToUse: prodHowToUse,
+      details: prodDetails || 'Premium formulation crafted with care.',
+      howToUse: prodHowToUse || 'Use as directed on the packaging.',
       tamilName: prodTamilName,
       nutritionalInfo: nutritionalInfoArray.length > 0 ? nutritionalInfoArray : undefined
     };
@@ -1070,7 +1081,7 @@ export default function AdminPortal() {
           </div>
 
           {/* MAIN DASHBOARD CONTENT AREA */}
-          <div className="flex-grow flex flex-col pt-5 px-6 pb-6 md:pt-6 md:px-10 md:pb-8 overflow-y-auto w-full">
+          <div data-lenis-prevent="true" className="flex-grow flex flex-col pt-5 px-6 pb-6 md:pt-6 md:px-10 md:pb-8 overflow-y-auto w-full">
             
             {/* TAB 1: WHATSAPP CENTER (Matches Vercel Screenshot layout) */}
             {activeTab === 'whatsapp' && (
@@ -3052,21 +3063,6 @@ export default function AdminPortal() {
                           </select>
                         </div>
 
-                        {/* Herbs count/label */}
-                        <div className="space-y-2">
-                          <label className="block text-xs font-bold text-primary uppercase tracking-wider">Botanical Ingredients (Short Summary)</label>
-                          <input
-                            type="text"
-                            value={prodHerbs}
-                            onChange={(e) => setProdHerbs(e.target.value)}
-                            className="w-full border border-outline-variant/40 rounded-xl py-3.5 px-4 text-xs text-primary focus:outline-none focus:border-secondary"
-                            placeholder="e.g. Shikakai, Methi, Vetiver with unique herbs"
-                            required
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Description (Card short description) */}
                         <div className="space-y-2">
                           <label className="block text-xs font-bold text-primary uppercase tracking-wider">Card Description (Short)</label>
@@ -3079,46 +3075,8 @@ export default function AdminPortal() {
                             required
                           />
                         </div>
-
-                        {/* Detailed Description */}
-                        <div className="space-y-2">
-                          <label className="block text-xs font-bold text-primary uppercase tracking-wider">Product Details (Detailed Packaging Info)</label>
-                          <textarea
-                            value={prodDetails}
-                            onChange={(e) => setProdDetails(e.target.value)}
-                            rows={4}
-                            className="w-full border border-outline-variant/40 rounded-xl py-3.5 px-4 text-xs text-primary focus:outline-none focus:border-secondary"
-                            placeholder="NO Chemicals&#10;Artificial Scents&#10;Best before 6 months..."
-                          />
-                        </div>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* How to Use */}
-                        <div className="space-y-2">
-                          <label className="block text-xs font-bold text-primary uppercase tracking-wider">How to Use Instructions</label>
-                          <textarea
-                            value={prodHowToUse}
-                            onChange={(e) => setProdHowToUse(e.target.value)}
-                            rows={4}
-                            className="w-full border border-outline-variant/40 rounded-xl py-3.5 px-4 text-xs text-primary focus:outline-none focus:border-secondary"
-                            placeholder="Suggested Use :&#10;* Apply on your scalp..."
-                          />
-                        </div>
-
-                        {/* Benefits */}
-                        <div className="space-y-2">
-                          <label className="block text-xs font-bold text-primary uppercase tracking-wider">Benefits (One per line)</label>
-                          <textarea
-                            value={prodBenefits}
-                            onChange={(e) => setProdBenefits(e.target.value)}
-                            rows={4}
-                            className="w-full border border-outline-variant/40 rounded-xl py-3.5 px-4 text-xs text-primary focus:outline-none focus:border-secondary"
-                            placeholder="* Controls premature greying&#10;* Boosts volume and hair growth"
-                            required
-                          />
-                        </div>
-                      </div>
 
                       {(prodCategory === 'Nutrition' || prodName.toLowerCase().includes('wellness')) && (
                         <div className="grid grid-cols-1 gap-6">
