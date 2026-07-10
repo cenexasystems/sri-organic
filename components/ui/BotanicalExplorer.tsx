@@ -44,8 +44,8 @@ export default function BotanicalExplorer() {
   const [activeSpot, setActiveSpot] = useState<number | null>(null);
 
   return (
-    <section className="py-32 px-8 md:px-16 bg-white overflow-hidden">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16">
+    <section className="py-16 md:py-32 px-6 md:px-16 bg-white overflow-hidden">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 md:gap-16">
         
         {/* Text */}
         <div className="w-full md:w-1/3 order-1 md:order-2">
@@ -116,7 +116,11 @@ export default function BotanicalExplorer() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                      className="absolute top-14 left-1/2 -translate-x-1/2 w-[280px] bg-white/95 backdrop-blur-xl p-6 rounded-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] border border-stone-200"
+                      className={`absolute top-14 w-[260px] md:w-[280px] bg-white/95 backdrop-blur-xl p-5 md:p-6 rounded-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] border border-stone-200 z-50 ${
+                        spot.x > 50 
+                          ? 'right-[-20px] md:right-auto md:left-1/2 md:-translate-x-1/2' 
+                          : 'left-[-20px] md:left-1/2 md:-translate-x-1/2'
+                      }`}
                     >
                       <div className="flex items-center gap-3 mb-3">
                         <div className="w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center text-[#D4AF37]">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Leaf, Loader2, CheckCircle2 } from 'lucide-react';
@@ -11,31 +11,14 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const { signInWithGoogle, signInWithMagicLink, signOut, loading, error, message, user } = useAuth();
 
+  useEffect(() => {
+    if (user) {
+      router.push('/profile');
+    }
+  }, [user, router]);
+
   if (user) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAF9F5] text-[#1B3022] font-body p-6">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md bg-white p-10 sm:p-12 rounded-[2.5rem] border border-outline-variant/30 shadow-2xl relative flex flex-col items-center text-center"
-        >
-          <button 
-            onClick={() => router.push('/')}
-            className="absolute top-8 left-8 text-[#6B7280] hover:text-[#1B3022] transition-colors cursor-pointer"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <CheckCircle2 className="w-16 h-16 text-green-600 mb-6" />
-          <h1 className="font-display text-3xl font-bold mb-3">You're logged in!</h1>
-          <p className="text-gray-500 mb-8">Authenticated as: {user.email}</p>
-          <button 
-            onClick={signOut}
-            className="w-full bg-[#1B3022] text-[#FAF9F5] font-body text-sm font-bold tracking-widest uppercase py-4 rounded-xl shadow-lg hover:bg-[#0C1510] cursor-pointer"
-          >
-            Sign Out
-          </button>
-        </motion.div>
-      </div>
-    );
+    return <div className="min-h-screen bg-[#FAF9F5]" />; // blank while redirecting
   }
 
   return (
