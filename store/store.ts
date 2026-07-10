@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { fetchProducts as dbFetchProducts } from '@/lib/db';
 
 export interface Product {
@@ -174,30 +175,37 @@ interface CartStore {
   clearCart: () => void;
 }
 
-export const useCartStore = create<CartStore>((set) => ({
-  items: [],
-  addItem: (product, quantity, unit) =>
-    set((state) => {
-      const existing = state.items.find((i) => i.product.id === product.id && i.unit === unit);
-      if (existing) {
-        return {
-          items: state.items.map((i) =>
-            (i.product.id === product.id && i.unit === unit) ? { ...i, quantity: i.quantity + quantity } : i
-          ),
-        };
-      }
-      return { items: [...state.items, { product, quantity, unit }] };
+export const useCartStore = create<CartStore>()(
+  persist(
+    (set) => ({
+      items: [],
+      addItem: (product, quantity, unit) =>
+        set((state) => {
+          const existing = state.items.find((i) => i.product.id === product.id && i.unit === unit);
+          if (existing) {
+            return {
+              items: state.items.map((i) =>
+                (i.product.id === product.id && i.unit === unit) ? { ...i, quantity: i.quantity + quantity } : i
+              ),
+            };
+          }
+          return { items: [...state.items, { product, quantity, unit }] };
+        }),
+      removeItem: (productId, unit) =>
+        set((state) => ({
+          items: state.items.filter((i) => !(i.product.id === productId && i.unit === unit)),
+        })),
+      updateQuantity: (productId, unit, quantity) =>
+        set((state) => ({
+          items: state.items.map((i) => (i.product.id === productId && i.unit === unit ? { ...i, quantity } : i)),
+        })),
+      clearCart: () => set({ items: [] }),
     }),
-  removeItem: (productId, unit) =>
-    set((state) => ({
-      items: state.items.filter((i) => !(i.product.id === productId && i.unit === unit)),
-    })),
-  updateQuantity: (productId, unit, quantity) =>
-    set((state) => ({
-      items: state.items.map((i) => (i.product.id === productId && i.unit === unit ? { ...i, quantity } : i)),
-    })),
-  clearCart: () => set({ items: [] }),
-}));
+    {
+      name: 'cart-storage',
+    }
+  )
+);
 
 interface FavStore {
   favorites: string[];

@@ -44,7 +44,7 @@ export function useAuth() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/admin`
+          redirectTo: `${window.location.origin}/cart`
         }
       });
       if (error) throw error;
@@ -64,7 +64,7 @@ export function useAuth() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/admin`,
+          emailRedirectTo: `${window.location.origin}/cart`,
         },
       });
       if (error) throw error;

@@ -20,6 +20,17 @@ function ScrollToTop() {
 }
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  
+  if (pathname.startsWith('/admin')) {
+    return (
+      <>
+        <ScrollToTop />
+        {children}
+      </>
+    );
+  }
+
   return (
     <ReactLenis root options={{ lerp: 0.08, duration: 1.5, smoothWheel: true }}>
       <ScrollToTop />

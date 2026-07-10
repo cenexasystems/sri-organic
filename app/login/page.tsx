@@ -13,7 +13,7 @@ export default function Login() {
 
   useEffect(() => {
     if (user) {
-      router.push('/profile');
+      router.push('/cart');
     }
   }, [user, router]);
 
@@ -43,8 +43,8 @@ export default function Login() {
           <ArrowLeft className="w-5 h-5" />
         </button>
 
-        <div className="w-16 h-16 rounded-full bg-[#FAF9F5] border border-outline-variant/50 flex items-center justify-center mb-6 shadow-sm">
-          <Leaf className="w-8 h-8 text-[#1B3022]" />
+        <div className="mb-6 flex justify-center w-full">
+          <img src="/logo.png" alt="Sri Organic" className="h-16 w-auto object-contain mix-blend-multiply" />
         </div>
         
         <h1 className="font-display text-4xl font-bold tracking-tight text-[#1B3022] mb-3">
@@ -113,6 +113,11 @@ export default function Login() {
         </p>
 
       </motion.div>
+
+      {/* Simple Footer */}
+      <div className="absolute bottom-6 left-0 right-0 text-center text-xs text-[#6B7280] uppercase tracking-widest px-4">
+        &copy; 2026 Sri Organic. All rights reserved.<br className="md:hidden" /> <span className="hidden md:inline"> | </span>Powered by Cenexa System
+      </div>
     </div>
   );
 }

@@ -12,10 +12,18 @@ import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/lib/useAuth";
 
+import { useEffect } from "react";
+
 export default function CartPage() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const { items, updateQuantity, removeItem, clearCart } = useCartStore();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [user, loading, router]);
   
   const [formData, setFormData] = useState({
     name: "",
@@ -164,8 +172,20 @@ export default function CartPage() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#FAF9F5] flex items-center justify-center pt-24 md:pt-32">
+        <div className="text-[#D4AF37] text-sm tracking-widest uppercase font-bold animate-pulse">Loading Cart...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null; // Will redirect via useEffect
+  }
+
   return (
-    <div className="min-h-screen bg-[#FAF9F5] pt-24 md:pt-32 pb-16 md:pb-24">
+    <div className="min-h-screen bg-[#FAF9F5] pt-24 pb-16 md:pt-32 md:pb-24">
       <div className="max-w-7xl mx-auto px-6 md:px-16">
         
         <div className="mb-12">
