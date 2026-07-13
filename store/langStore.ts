@@ -23,6 +23,12 @@ const translations: Record<string, Record<string, string>> = {
     'cat.Hair Care': 'Hair Care',
     'cat.Food & Nutrition': 'Food & Nutrition',
     'cat.Skin Care': 'Skin Care',
+    'cat.Rice': 'Rice Varieties',
+    'cat.Oils': 'Cooking Oils',
+    'cat.Dals & Grains': 'Dals & Grains',
+    'cat.Spices & Nuts': 'Spices & Nuts',
+    'cat.Pooja Items': 'Pooja Items',
+    'cat.Ghee & Honey': 'Ghee & Honey',
   },
 };
 
