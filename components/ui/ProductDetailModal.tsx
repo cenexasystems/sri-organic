@@ -222,20 +222,27 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
                   <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-stone-400 mb-4">Select Quantity</p>
                   {getCompactPackOptions(product).length > 0 && (
                     <div className="flex flex-wrap gap-3">
-                      {getCompactPackOptions(product).map((option) => (
-                        <button
-                          key={option.label}
-                          type="button"
-                          onClick={() => setSelectedPackOption(option)}
-                          className={`rounded-full px-6 py-2.5 text-xs font-bold tracking-wider transition-all ${
-                            selectedPackOption?.label === option.label
-                              ? 'border-[#111111] bg-[#111111] text-white shadow-xl'
-                              : 'border border-stone-200 bg-white text-[#111111] hover:border-[#D4AF37]'
-                          }`}
-                        >
-                          {option.label}
-                        </button>
-                      ))}
+                      {getCompactPackOptions(product).map((option) => {
+                        const isOutOfStock = option.isAvailable === false;
+                        return (
+                          <button
+                            key={option.label}
+                            type="button"
+                            disabled={isOutOfStock}
+                            onClick={() => setSelectedPackOption(option)}
+                            className={`relative overflow-hidden rounded-full px-6 py-2.5 text-xs font-bold tracking-wider transition-all ${
+                              isOutOfStock
+                                ? 'border-stone-200 bg-stone-100 text-stone-400 cursor-not-allowed opacity-60'
+                                : selectedPackOption?.label === option.label
+                                ? 'border-[#111111] bg-[#111111] text-white shadow-xl'
+                                : 'border border-stone-200 bg-white text-[#111111] hover:border-[#D4AF37]'
+                            }`}
+                          >
+                            {option.label}
+                            {isOutOfStock && <div className="absolute inset-0 pointer-events-none"><div className="w-[120%] h-[1px] bg-stone-400/50 absolute top-1/2 left-[-10%] -rotate-12"></div></div>}
+                          </button>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
@@ -266,10 +273,15 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
                 <div className="mt-auto sticky bottom-0 z-20 bg-white pt-4 pb-8 -mx-8 px-8 border-t border-stone-100 md:pb-12 md:-mx-12 md:px-12 flex gap-4">
                   <button
                     onClick={handleAdd}
-                    className="flex-1 rounded-full bg-[#111111] hover:bg-[#D4AF37] transition-colors py-4 text-xs tracking-widest uppercase font-bold text-white flex items-center justify-center gap-3 shadow-xl shadow-black/10"
+                    disabled={selectedPackOption?.isAvailable === false}
+                    className={`flex-1 rounded-full transition-colors py-4 text-xs tracking-widest uppercase font-bold text-white flex items-center justify-center gap-3 shadow-xl ${
+                      selectedPackOption?.isAvailable === false 
+                        ? 'bg-stone-400 cursor-not-allowed opacity-80 shadow-none' 
+                        : 'bg-[#111111] hover:bg-[#D4AF37] shadow-black/10'
+                    }`}
                     type="button"
                   >
-                    <ShoppingCart size={16} /> Add to Cart
+                    <ShoppingCart size={16} /> {selectedPackOption?.isAvailable === false ? 'Out of Stock' : 'Add to Cart'}
                   </button>
                 </div>
 

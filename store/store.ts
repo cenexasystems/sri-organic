@@ -19,7 +19,7 @@ export interface Product {
   unitType: 'weight' | 'volume' | 'unit';
   unitLabel: string;
   imageUrl: string;
-  predefinedOptions: { quantity: number; unit: string; label: string; price: number }[];
+  predefinedOptions: { quantity: number; unit: string; label: string; price: number; isAvailable?: boolean }[];
 }
 
 interface ProductStore {
@@ -107,6 +107,7 @@ export const useProductStore = create<ProductStore>((set) => ({
           unit: s.size.replace(/[0-9]/g, '').trim().toLowerCase() || 'unit',
           label: s.size,
           price: s.price,
+          isAvailable: s.isAvailable !== false,
         }));
 
         // Determine unit type

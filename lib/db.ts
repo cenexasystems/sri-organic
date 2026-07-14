@@ -383,6 +383,13 @@ export const insertOrder = async (order: Order) => {
     const { error: iError } = await supabase.from('order_items').insert(itemsToInsert);
     if (iError) throw iError;
   }
+
+  if (order.couponCode) {
+    const { data: coupon } = await supabase.from('coupons').select('used_count').eq('code', order.couponCode).single();
+    if (coupon) {
+      await supabase.from('coupons').update({ used_count: coupon.used_count + 1 }).eq('code', order.couponCode);
+    }
+  }
 };
 
 export const updateOrderStatusDb = async (id: string, status: string) => {

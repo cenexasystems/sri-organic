@@ -66,6 +66,7 @@ export default function AdminPortal() {
   const [productsSearch, setProductsSearch] = useState('');
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isAddingProduct, setIsAddingProduct] = useState(false);
+  const [isSavingProduct, setIsSavingProduct] = useState(false);
   const [prodImageFile, setProdImageFile] = useState<File | null>(null);
 
   // Form states for product
@@ -320,6 +321,7 @@ export default function AdminPortal() {
       nutritionalInfo: nutritionalInfoArray.length > 0 ? nutritionalInfoArray : undefined
     };
 
+    setIsSavingProduct(true);
     try {
       const imgUrl = await upsertProduct(newProd, prodImageFile || undefined);
       newProd.image = imgUrl;
@@ -333,6 +335,8 @@ export default function AdminPortal() {
     } catch (err) {
       console.error(err);
       alert('Failed to save product');
+    } finally {
+      setIsSavingProduct(false);
     }
   };
 
@@ -1618,7 +1622,9 @@ export default function AdminPortal() {
                             className="w-full bg-white border border-outline-variant/35 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-primary transition-all text-[#1F2937] font-semibold cursor-pointer"
                           >
                             <option value="">No Coupon</option>
-                            {coupons.map((c, i) => (
+                            {coupons
+                              .filter(c => c.status === 'ACTIVE' && (c.usageLimit === 0 || c.usedCount < c.usageLimit))
+                              .map((c, i) => (
                               <option key={i} value={c.code}>{c.code} ({c.discount}% off)</option>
                             ))}
                           </select>
@@ -3066,37 +3072,48 @@ export default function AdminPortal() {
                         </div>
 
                         {/* Product Image */}
-                        <div 
-                          className="space-y-2 focus:outline-none focus:ring-2 focus:ring-secondary/50 rounded-xl p-1 -m-1"
-                          tabIndex={0}
-                          onPaste={(e) => {
-                            const items = e.clipboardData?.items;
-                            if (!items) return;
-                            for (let i = 0; i < items.length; i++) {
-                              if (items[i].type.indexOf('image') !== -1) {
-                                const file = items[i].getAsFile();
-                                if (file) {
-                                  setProdImageFile(file);
+                        <div className="space-y-3">
+                          <label className="block text-xs font-bold text-primary uppercase tracking-wider">Product Image Upload</label>
+                          
+                          {/* Paste Zone */}
+                          <div 
+                            className="border-2 border-dashed border-outline-variant/40 rounded-xl p-6 text-center bg-[#FAF9F5]/30 hover:bg-[#FAF9F5] focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/50 cursor-pointer transition-all"
+                            tabIndex={0}
+                            onPaste={(e) => {
+                              const items = e.clipboardData?.items;
+                              if (!items) return;
+                              for (let i = 0; i < items.length; i++) {
+                                if (items[i].type.indexOf('image') !== -1) {
+                                  const file = items[i].getAsFile();
+                                  if (file) {
+                                    setProdImageFile(file);
+                                  }
+                                  break;
                                 }
-                                break;
                               }
-                            }
-                          }}
-                        >
-                          <label className="block text-xs font-bold text-primary uppercase tracking-wider">Product Image Upload <span className="text-secondary normal-case">(or click here & paste image)</span></label>
-                          <div className="relative">
+                            }}
+                          >
+                            <span className="text-sm font-bold text-secondary">Click here and press Ctrl+V to paste image</span>
+                            {prodImageFile && (
+                              <div className="mt-3">
+                                <span className="text-[11px] font-bold text-white bg-green-600 px-3 py-1.5 rounded-full inline-block shadow-sm">
+                                  ✓ {prodImageFile.name || 'Pasted Image'} ready
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                          
+                          {/* File Browser Fallback */}
+                          <div className="flex items-center gap-3">
+                            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">OR BROWSE</span>
                             <input
                               type="file"
                               accept="image/*"
                               onChange={(e) => setProdImageFile(e.target.files?.[0] || null)}
-                              className="w-full border border-outline-variant/40 rounded-xl py-2.5 px-4 text-xs text-primary focus:outline-none focus:border-secondary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-primary file:text-white hover:file:bg-secondary cursor-pointer"
+                              className="flex-1 border border-outline-variant/40 rounded-xl py-2 px-3 text-xs text-primary focus:outline-none focus:border-secondary file:mr-3 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-primary file:text-white hover:file:bg-secondary cursor-pointer"
                             />
-                            {prodImageFile && (
-                              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-white bg-green-600 px-2 py-1 rounded-md shadow-sm pointer-events-none">
-                                ✓ {prodImageFile.name || 'Pasted Image'} ready
-                              </div>
-                            )}
                           </div>
+
                           {editingProduct?.image && !prodImageFile && (
                             <p className="text-[10px] text-gray-500 italic mt-1">Current image will be kept if no new file is uploaded.</p>
                           )}
@@ -3241,9 +3258,16 @@ export default function AdminPortal() {
                         </button>
                         <button
                           type="submit"
-                          className="bg-primary hover:bg-primary-container text-on-primary text-xs font-bold tracking-widest uppercase py-4 px-10 rounded-full shadow transition-colors cursor-pointer"
+                          disabled={isSavingProduct}
+                          className={`flex items-center gap-2 bg-primary hover:bg-primary-container text-on-primary text-xs font-bold tracking-widest uppercase py-4 px-10 rounded-full shadow transition-colors ${isSavingProduct ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}
                         >
-                          {editingProduct ? 'Save Changes' : 'Create Product'}
+                          {isSavingProduct ? (
+                            <>
+                              <RefreshCw className="w-4 h-4 animate-spin" /> Saving...
+                            </>
+                          ) : (
+                            editingProduct ? 'Save Changes' : 'Create Product'
+                          )}
                         </button>
                       </div>
                     </form>

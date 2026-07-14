@@ -63,7 +63,10 @@ export default function CartPage() {
       );
 
       if (validCoupon) {
-        if (subtotal < validCoupon.minOrder) {
+        if (validCoupon.usageLimit > 0 && validCoupon.usedCount >= validCoupon.usageLimit) {
+          alert("This coupon has reached its usage limit and is no longer valid.");
+          setAppliedCoupon(null);
+        } else if (subtotal < validCoupon.minOrder) {
           alert(`This coupon requires a minimum order of ₹${validCoupon.minOrder}`);
           setAppliedCoupon(null);
         } else {
