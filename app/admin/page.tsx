@@ -394,13 +394,23 @@ export default function AdminPortal() {
   };
 
   const deleteCategory = async (cat: string) => {
+    const isCategoryInUse = products.some(p => p.category === cat);
+    if (isCategoryInUse) {
+      alert(`Cannot delete category "${cat}" because it is currently assigned to one or more formulations. Please reassign or delete those formulations first.`);
+      return;
+    }
+
     if (window.confirm(`Are you sure you want to delete category "${cat}"?`)) {
       try {
         await dbDeleteCategory(cat);
         setCategories(categories.filter(c => c !== cat));
-      } catch (err) {
+      } catch (err: any) {
         console.error(err);
-        alert('Failed to delete category');
+        if (err?.code === '23503') {
+          alert('Database Error: Cannot delete this category because it is still linked to existing products.');
+        } else {
+          alert('Failed to delete category');
+        }
       }
     }
   };
