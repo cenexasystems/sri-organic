@@ -7,7 +7,7 @@ import { formatCurrency } from "@/lib/retail";
 import { Minus, Plus, Trash2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { insertOrder } from "@/lib/db";
+import { insertOrder, fetchCoupons, type Coupon } from "@/lib/db";
 import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/lib/useAuth";
@@ -31,7 +31,8 @@ export default function CartPage() {
     address: ""
   });
   const [couponCode, setCouponCode] = useState("");
-  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
 
   const subtotal = items.reduce((total, item) => {
     // Find the specific predefined option to get the correct price
@@ -40,7 +41,7 @@ export default function CartPage() {
     return total + (itemPrice * item.quantity);
   }, 0);
 
-  const discountAmount = appliedCoupon ? subtotal * 0.1 : 0; // Flat 10% discount for valid coupon
+  const discountAmount = appliedCoupon ? (subtotal * appliedCoupon.discount) / 100 : 0;
   const total = subtotal - discountAmount;
 
   const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,12 +51,33 @@ export default function CartPage() {
     }
   };
 
-  const handleApplyCoupon = () => {
-    if (couponCode.trim().toLowerCase() === "organic10") {
-      setAppliedCoupon(couponCode);
-    } else {
-      alert("Invalid Coupon Code (Hint: try ORGANIC10)");
-      setAppliedCoupon(null);
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    
+    setIsApplyingCoupon(true);
+    try {
+      const coupons = await fetchCoupons();
+      const validCoupon = coupons.find(c => 
+        c.code.toUpperCase() === couponCode.trim().toUpperCase() && 
+        c.status === 'ACTIVE'
+      );
+
+      if (validCoupon) {
+        if (subtotal < validCoupon.minOrder) {
+          alert(`This coupon requires a minimum order of ₹${validCoupon.minOrder}`);
+          setAppliedCoupon(null);
+        } else {
+          setAppliedCoupon(validCoupon);
+        }
+      } else {
+        alert("Invalid or Expired Coupon Code");
+        setAppliedCoupon(null);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to validate coupon");
+    } finally {
+      setIsApplyingCoupon(false);
     }
   };
 
@@ -98,7 +120,7 @@ export default function CartPage() {
         subtotal: subtotal,
         totalPrice: total,
         status: 'Pending',
-        couponCode: appliedCoupon || undefined,
+        couponCode: appliedCoupon?.code || undefined,
         couponDiscount: appliedCoupon ? discountAmount : 0,
         manualDiscount: 0,
         deliveryCharge: 0,
@@ -147,7 +169,7 @@ export default function CartPage() {
       message += `*Billing Summary:*\n`;
       message += `${eDollar} *Subtotal:* ₹${subtotal.toLocaleString('en-IN')}\n`;
       if (appliedCoupon) {
-        message += `${eTicket} *Coupon Applied (${appliedCoupon}):* -₹${discountAmount.toLocaleString('en-IN')}\n`;
+        message += `${eTicket} *Coupon Applied (${appliedCoupon.code}):* -₹${discountAmount.toLocaleString('en-IN')}\n`;
       }
       message += `${eMoney} *Total Amount:* ₹${total.toLocaleString('en-IN')}\n\n`;
       
@@ -330,13 +352,14 @@ export default function CartPage() {
                     />
                     <button 
                       onClick={handleApplyCoupon}
-                      className="px-6 py-3 bg-white text-[#111111] text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-[#D4AF37] hover:text-white transition-colors"
+                      disabled={isApplyingCoupon}
+                      className="px-6 py-3 bg-white text-[#111111] text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-[#D4AF37] hover:text-white transition-colors disabled:opacity-50"
                     >
-                      Apply
+                      {isApplyingCoupon ? '...' : 'Apply'}
                     </button>
                   </div>
                   {appliedCoupon && (
-                    <p className="text-emerald-400 text-xs font-bold">✓ Coupon '{appliedCoupon}' applied successfully!</p>
+                    <p className="text-emerald-400 text-xs font-bold">✓ Coupon '{appliedCoupon.code}' applied successfully!</p>
                   )}
                 </div>
 

@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useRouter as useNavigate } from 'next/navigation';
 import { useAuth } from '@/lib/useAuth';
+import { getProductImage, onImgError } from '@/lib/productImages';
 import {
   fetchProducts,
   upsertProduct,
@@ -62,6 +63,7 @@ export default function AdminPortal() {
 
   // Products state
   const [products, setProducts] = useState<Product[]>([]);
+  const [productsSearch, setProductsSearch] = useState('');
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isAddingProduct, setIsAddingProduct] = useState(false);
   const [prodImageFile, setProdImageFile] = useState<File | null>(null);
@@ -1708,14 +1710,14 @@ export default function AdminPortal() {
                         {/* Checkout Send Button */}
                         <button
                           onClick={handleCheckoutPOS}
-                          disabled={billingItems.length === 0 || !billingCustomerName.trim() || billingCustomerPhone.trim().length !== 10}
+                          disabled={billingItems.length === 0}
                           className={`w-full font-bold text-xs py-4 px-6 rounded-xl flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer ${
-                            (billingItems.length === 0 || !billingCustomerName.trim() || billingCustomerPhone.trim().length !== 10)
+                            (billingItems.length === 0)
                               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                               : 'bg-[#2B3E2F] hover:bg-[#1E2B21] text-white'
                           }`}
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`w-4 h-4 ${(billingItems.length === 0 || !billingCustomerName.trim() || billingCustomerPhone.trim().length !== 10) ? 'text-gray-500' : 'text-[#25D366]'}`}>
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`w-4 h-4 ${(billingItems.length === 0) ? 'text-gray-500' : 'text-[#25D366]'}`}>
                             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.888-.788-1.489-1.761-1.663-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
                           </svg>
                           <span>SEND BILL VIA WHATSAPP</span>
@@ -2949,6 +2951,23 @@ export default function AdminPortal() {
                     </div>
 
                     <div className="bg-white border border-outline-variant/20 rounded-3xl overflow-hidden shadow-md">
+                      {/* Search Bar */}
+                      <div className="p-4 border-b border-outline-variant/20 bg-[#FAF9F5]/30 flex justify-between items-center">
+                        <div className="relative w-full max-w-md">
+                          <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+                          <input
+                            type="text"
+                            placeholder="Search products by name..."
+                            value={productsSearch}
+                            onChange={(e) => setProductsSearch(e.target.value)}
+                            className="w-full pl-9 pr-4 py-2 bg-white border border-outline-variant/35 rounded-xl text-sm focus:outline-none focus:border-primary transition-all text-[#1F2937] font-semibold"
+                          />
+                        </div>
+                        <span className="text-xs font-bold text-on-surface-variant bg-white px-3 py-1.5 rounded-lg border border-outline-variant/20 hidden sm:block">
+                          {products.filter(p => p.name.toLowerCase().includes(productsSearch.toLowerCase())).length} formulations
+                        </span>
+                      </div>
+
                       <table className="w-full text-left text-sm min-w-[700px]">
                         <thead>
                           <tr className="bg-surface-container-low text-primary font-bold border-b border-outline-variant/25">
@@ -2959,11 +2978,20 @@ export default function AdminPortal() {
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-outline-variant/10">
-                          {products.map(p => (
+                          {products
+                            .filter(p => p.name.toLowerCase().includes(productsSearch.toLowerCase()))
+                            .map(p => (
                             <tr key={p.id} className="hover:bg-[#FAF9F5]/40 transition-colors">
                               <td className="px-6 py-5 max-w-md">
-                                <div className="text-base font-bold text-primary">{p.name}</div>
-                                <div className="text-xs text-on-surface-variant mt-1.5 leading-relaxed line-clamp-2">{p.description}</div>
+                                <div className="flex items-center gap-4">
+                                  <div className="w-16 h-16 shrink-0 bg-white border border-outline-variant/20 rounded-xl p-1.5 shadow-sm flex items-center justify-center">
+                                    <img src={getProductImage(p.name, p.category, p.image, 'tile')} alt={p.name} onError={onImgError} className="w-full h-full object-contain mix-blend-multiply" />
+                                  </div>
+                                  <div>
+                                    <div className="text-base font-bold text-primary">{p.name}</div>
+                                    <div className="text-xs text-on-surface-variant mt-1.5 leading-relaxed line-clamp-2">{p.description}</div>
+                                  </div>
+                                </div>
                               </td>
                               <td className="px-6 py-5">
                                 <span className="inline-block whitespace-nowrap bg-primary/5 text-primary border border-primary/10 px-3 py-1.5 rounded-full font-semibold text-xs">
@@ -3038,14 +3066,37 @@ export default function AdminPortal() {
                         </div>
 
                         {/* Product Image */}
-                        <div className="space-y-2">
-                          <label className="block text-xs font-bold text-primary uppercase tracking-wider">Product Image Upload</label>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => setProdImageFile(e.target.files?.[0] || null)}
-                            className="w-full border border-outline-variant/40 rounded-xl py-2.5 px-4 text-xs text-primary focus:outline-none focus:border-secondary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-primary file:text-white hover:file:bg-secondary cursor-pointer"
-                          />
+                        <div 
+                          className="space-y-2 focus:outline-none focus:ring-2 focus:ring-secondary/50 rounded-xl p-1 -m-1"
+                          tabIndex={0}
+                          onPaste={(e) => {
+                            const items = e.clipboardData?.items;
+                            if (!items) return;
+                            for (let i = 0; i < items.length; i++) {
+                              if (items[i].type.indexOf('image') !== -1) {
+                                const file = items[i].getAsFile();
+                                if (file) {
+                                  setProdImageFile(file);
+                                }
+                                break;
+                              }
+                            }
+                          }}
+                        >
+                          <label className="block text-xs font-bold text-primary uppercase tracking-wider">Product Image Upload <span className="text-secondary normal-case">(or click here & paste image)</span></label>
+                          <div className="relative">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => setProdImageFile(e.target.files?.[0] || null)}
+                              className="w-full border border-outline-variant/40 rounded-xl py-2.5 px-4 text-xs text-primary focus:outline-none focus:border-secondary file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-primary file:text-white hover:file:bg-secondary cursor-pointer"
+                            />
+                            {prodImageFile && (
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-white bg-green-600 px-2 py-1 rounded-md shadow-sm pointer-events-none">
+                                ✓ {prodImageFile.name || 'Pasted Image'} ready
+                              </div>
+                            )}
+                          </div>
                           {editingProduct?.image && !prodImageFile && (
                             <p className="text-[10px] text-gray-500 italic mt-1">Current image will be kept if no new file is uploaded.</p>
                           )}
