@@ -218,7 +218,7 @@ export default function CartPage() {
             <div className="w-8 h-[1px] bg-[#D4AF37]"></div>
             <span className="text-[#D4AF37] text-[10px] font-bold tracking-[0.2em] uppercase">Checkout</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-[#111111] tracking-tight">Your Cart.</h1>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#111111] tracking-tight">Your Cart.</h1>
         </div>
 
         {items.length === 0 ? (
@@ -230,13 +230,13 @@ export default function CartPage() {
             </Link>
           </div>
         ) : (
-          <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+          <div className="flex flex-col lg:flex-row gap-8">
             
             {/* Left Side: Items & Form */}
-            <div className="w-full lg:w-2/3 flex flex-col gap-12">
+            <div className="w-full lg:w-2/3 flex flex-col gap-6">
               
               {/* Delivery Details Form */}
-              <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-stone-200">
+              <div className="bg-white p-4 md:p-6 rounded-3xl shadow-sm border border-stone-200">
                 <h2 className="text-xl font-bold text-[#111111] mb-8 pb-4 border-b border-stone-100">Delivery Details</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="flex flex-col gap-2">
@@ -246,7 +246,7 @@ export default function CartPage() {
                       value={formData.name}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
                       placeholder="Enter your name" 
-                      className="px-5 py-4 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all font-medium"
+                      className="px-4 py-3 sm:py-3.5 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all font-medium text-sm sm:text-base"
                     />
                   </div>
                   <div className="flex flex-col gap-2">
@@ -256,7 +256,7 @@ export default function CartPage() {
                       value={formData.mobile}
                       onChange={handleMobileChange}
                       placeholder="10-digit number" 
-                      className="px-5 py-4 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all font-medium"
+                      className="px-4 py-3 sm:py-3.5 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all font-medium text-sm sm:text-base"
                     />
                   </div>
                   <div className="flex flex-col gap-2 md:col-span-2">
@@ -266,14 +266,14 @@ export default function CartPage() {
                       onChange={(e) => setFormData({...formData, address: e.target.value})}
                       placeholder="Enter your full address" 
                       rows={3}
-                      className="px-5 py-4 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all resize-none font-medium"
+                      className="px-4 py-3 sm:py-3.5 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all resize-none font-medium text-sm sm:text-base"
                     />
                   </div>
                 </div>
               </div>
               
               {/* Cart Items List */}
-              <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-stone-200">
+              <div className="bg-white p-4 md:p-6 rounded-3xl shadow-sm border border-stone-200">
                 <h2 className="text-xl font-bold text-[#111111] mb-8 pb-4 border-b border-stone-100">Review Items</h2>
                 <div className="flex flex-col gap-6">
                   <AnimatePresence>
@@ -289,43 +289,43 @@ export default function CartPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95 }}
-                            className="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl border border-stone-100 bg-stone-50/50"
+                            className="flex flex-col sm:flex-row gap-3 p-3 rounded-2xl border border-stone-100 bg-stone-50/50"
                           >
                             <div className="flex flex-row items-center gap-4 flex-1">
-                              <div className="w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-white rounded-xl flex items-center justify-center p-2 shadow-sm">
+                              <div className="w-14 h-14 sm:w-20 sm:h-20 shrink-0 bg-white rounded-xl flex items-center justify-center p-2 shadow-sm">
                                 <img src={heroImage} alt={item.product.name} onError={onImgError} className="w-full h-full object-contain mix-blend-multiply" />
                               </div>
                               <div className="flex-1">
                                 <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#D4AF37] mb-1">{item.product.category}</p>
-                                <h4 className="text-base sm:text-lg font-bold text-[#111111] leading-tight">{item.product.name}</h4>
-                                <p className="text-xs text-stone-500 font-medium mt-1">Size: {item.unit}</p>
-                                <div className="mt-2 sm:mt-3 text-base sm:text-lg font-black text-[#111111]">
+                                <h4 className="text-xs sm:text-base font-bold text-[#111111] leading-tight">{item.product.name}</h4>
+                                <p className="text-[10px] sm:text-xs text-stone-500 font-medium mt-1">Size: {item.unit}</p>
+                                <div className="mt-1 sm:mt-2 text-xs sm:text-base font-black text-[#111111]">
                                   {formatCurrency(itemPrice)}
                                 </div>
                               </div>
                             </div>
                             
                             <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto mt-2 sm:mt-0 pt-4 sm:pt-0 border-t sm:border-0 border-stone-200">
-                              <div className="flex items-center gap-3 bg-white rounded-full border border-stone-200 p-1">
+                              <div className="flex items-center gap-2 bg-white rounded-full border border-stone-200 p-1">
                               <button 
                                 onClick={() => updateQuantity(item.product.id, item.unit, Math.max(1, item.quantity - 1))}
-                                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-stone-100 text-stone-500"
+                                className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-full hover:bg-stone-100 text-stone-500"
                               >
-                                <Minus size={14} />
+                                <Minus size={12} />
                               </button>
-                              <span className="w-6 text-center text-sm font-bold">{item.quantity}</span>
+                              <span className="w-6 text-center text-xs sm:text-sm font-bold">{item.quantity}</span>
                               <button 
                                 onClick={() => updateQuantity(item.product.id, item.unit, item.quantity + 1)}
-                                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-stone-100 text-stone-500"
+                                className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-full hover:bg-stone-100 text-stone-500"
                               >
-                                <Plus size={14} />
+                                <Plus size={12} />
                               </button>
                             </div>
                             <button 
                               onClick={() => removeItem(item.product.id, item.unit)}
-                              className="w-10 h-10 flex items-center justify-center rounded-full text-rose-400 hover:bg-rose-50 hover:text-rose-500 transition-colors"
+                              className="w-8 h-8 flex items-center justify-center rounded-full text-rose-400 hover:bg-rose-50 hover:text-rose-500 transition-colors"
                             >
-                              <Trash2 size={18} />
+                              <Trash2 size={16} />
                             </button>
                           </div>
                         </motion.div>
@@ -339,7 +339,7 @@ export default function CartPage() {
 
             {/* Right Side: Order Summary */}
             <div className="w-full lg:w-1/3">
-              <div className="bg-[#111111] p-6 md:p-8 rounded-3xl shadow-2xl text-white sticky top-32">
+              <div className="bg-[#111111] p-5 md:p-6 rounded-3xl shadow-2xl text-white sticky top-32">
                 <h2 className="text-2xl font-bold tracking-tight mb-8">Order Summary</h2>
                 
                 {/* Coupon Code */}
@@ -351,12 +351,12 @@ export default function CartPage() {
                       value={couponCode}
                       onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                       placeholder="Enter code" 
-                      className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-[#D4AF37] text-white uppercase"
+                      className="flex-1 min-w-0 px-3 sm:px-4 py-2 sm:py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-[#D4AF37] text-white uppercase text-sm"
                     />
                     <button 
                       onClick={handleApplyCoupon}
                       disabled={isApplyingCoupon}
-                      className="px-6 py-3 bg-white text-[#111111] text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-[#D4AF37] hover:text-white transition-colors disabled:opacity-50"
+                      className="shrink-0 px-4 sm:px-6 py-2 sm:py-3 bg-white text-[#111111] text-[10px] sm:text-xs font-bold uppercase tracking-wide sm:tracking-widest rounded-xl hover:bg-[#D4AF37] hover:text-white transition-colors disabled:opacity-50"
                     >
                       {isApplyingCoupon ? '...' : 'Apply'}
                     </button>
@@ -388,15 +388,15 @@ export default function CartPage() {
 
                 {/* Total */}
                 <div className="flex justify-between items-end mb-10 pt-6 border-t border-white/10">
-                  <span className="text-sm font-bold uppercase tracking-widest text-[#D4AF37]">Total</span>
-                  <span className="text-4xl font-black">{formatCurrency(total)}</span>
+                  <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[#D4AF37]">Total</span>
+                  <span className="text-2xl sm:text-4xl font-black">{formatCurrency(total)}</span>
                 </div>
 
                 {/* Checkout Button */}
                 <button 
                   onClick={handleCheckout}
                   disabled={isCheckingOut}
-                  className="w-full py-5 rounded-2xl bg-[#25D366] text-white text-sm font-black uppercase tracking-widest hover:bg-[#128C7E] transition-colors shadow-xl flex items-center justify-center gap-3 disabled:opacity-70"
+                  className="w-full py-4 sm:py-5 rounded-2xl bg-[#25D366] text-white text-xs sm:text-sm font-black uppercase tracking-wide sm:tracking-widest hover:bg-[#128C7E] transition-colors shadow-xl flex items-center justify-center gap-2 sm:gap-3 disabled:opacity-70"
                 >
                   {isCheckingOut ? (
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>

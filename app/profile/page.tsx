@@ -125,9 +125,16 @@ export default function Profile() {
 
                   <div className="flex flex-col gap-3">
                     {(order.items || []).map((item, idx) => (
-                      <div key={idx} className="flex justify-between items-center text-sm font-medium">
-                        <div className="flex items-center gap-2 text-[#111111]">
-                          <span className="text-stone-400">{item.quantity}x</span> {item.name} <span className="text-[10px] bg-stone-100 px-2 py-0.5 rounded-full text-stone-500">{item.size}</span>
+                      <div key={idx} className="flex justify-between items-center bg-stone-50 p-3 sm:p-4 rounded-xl border border-stone-100 transition-colors hover:bg-stone-100/50">
+                        <div className="flex items-center gap-3 md:gap-4 text-[#111111]">
+                          <span className="flex items-center justify-center bg-white border border-stone-200 rounded-lg w-8 h-8 sm:w-10 sm:h-10 text-xs sm:text-sm font-black text-stone-600 shadow-sm shrink-0">{item.quantity}x</span>
+                          <div className="flex flex-col">
+                            <span className="font-bold text-sm sm:text-base leading-tight">{item.name}</span>
+                            <span className="text-[10px] sm:text-xs text-stone-400 font-bold uppercase tracking-widest mt-0.5">{item.size}</span>
+                          </div>
+                        </div>
+                        <div className="text-sm sm:text-base font-black text-[#111111] shrink-0 ml-2">
+                          {item.price ? `₹${(item.price * item.quantity).toLocaleString('en-IN')}` : ''}
                         </div>
                       </div>
                     ))}

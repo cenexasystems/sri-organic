@@ -10,7 +10,7 @@ import {
   formatCurrency,
 } from '@/lib/retail';
 import { getProductImage, onImgError } from '@/lib/productImages';
-
+import { toast } from 'react-hot-toast';
 const getCompactPackOptions = (product: Product) => {
   if (product.predefinedOptions.length > 0) return product.predefinedOptions;
   if (product.unitType === 'weight') {
@@ -51,9 +51,9 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
   const { t, lang } = useLangStore();
   const { toggle, isFav } = useFavStore();
   
-  const [selectedPackOption, setSelectedPackOption] = useState<{ quantity: number; unit: string; label: string; price: number } | null>(null);
+  const [selectedPackOption, setSelectedPackOption] = useState<{ quantity: number; unit: string; label: string; price: number; isAvailable?: boolean } | null>(null);
   const [mobileQty, setMobileQty] = useState(0);
-  const [mobilePack, setMobilePack] = useState<{ quantity: number; unit: string; label: string; price: number } | null>(null);
+  const [mobilePack, setMobilePack] = useState<{ quantity: number; unit: string; label: string; price: number; isAvailable?: boolean } | null>(null);
   
   // Fake related products for now (UI demonstration)
   const relatedProducts: Product[] = [];
@@ -99,6 +99,14 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
   const handleAdd = () => {
     addItem(product, 1, selectedPackOption?.label ?? product.unitLabel);
     onClose();
+    toast((t) => (
+      <div className="flex items-center gap-4">
+        <span className="text-sm font-bold">{product.name} added to cart!</span>
+        <a href="/cart" className="text-[#D4AF37] text-xs font-black uppercase tracking-widest hover:underline" onClick={() => toast.dismiss(t.id)}>
+          Go to Cart
+        </a>
+      </div>
+    ), { duration: 4500 });
   };
 
   const handleMobileAdd = () => {
@@ -123,7 +131,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
     setMobileQty(nextQty);
   };
 
-  const handleMobilePackChange = (option: { quantity: number; unit: string; label: string; price: number }) => {
+  const handleMobilePackChange = (option: { quantity: number; unit: string; label: string; price: number; isAvailable?: boolean }) => {
     if (option.label === mobilePack?.label) return;
     const currentQty = mobileQty;
     const currentUnit = mobilePack?.label ?? getCompactPackOptions(product)[0]?.label ?? product.unitLabel;
@@ -139,7 +147,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[110] flex items-start md:items-center justify-center p-0 md:p-6 overflow-y-auto overscroll-contain">
+        <div data-lenis-prevent="true" className="fixed inset-0 z-[110] flex items-start md:items-center justify-center p-0 md:p-6 overflow-y-auto overscroll-contain">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -151,6 +159,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
 
           {/* Modal Container */}
           <motion.div
+            data-lenis-prevent="true"
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -177,7 +186,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row flex-none md:flex-1 md:min-h-0 overflow-y-visible md:overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div data-lenis-prevent="true" className="flex flex-col md:flex-row flex-none md:flex-1 md:min-h-0 overflow-y-visible md:overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {/* Image Section */}
               <div className="w-full md:w-1/2 shrink-0 bg-stone-100 border-r border-stone-200 relative aspect-square md:aspect-auto md:min-h-0">
                 <div className="absolute top-8 left-8 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full border border-stone-200 flex flex-col gap-1 shadow-sm z-10">
