@@ -15,7 +15,7 @@ export default function NavBar() {
   const [mounted, setMounted] = useState(false);
   
   const cartItems = useCartStore((state) => state.items);
-  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const cartCount = cartItems.length;
 
   useEffect(() => {
     setMounted(true);
@@ -138,7 +138,7 @@ export default function NavBar() {
                 <User size={16} /> {isLoggedIn ? 'PROFILE' : 'MEMBER LOGIN'}
               </Link>
               <Link href="/cart" className="text-white text-xs font-bold tracking-[0.2em] uppercase flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
-                <ShoppingCart size={16} /> CART (0)
+                <ShoppingCart size={16} /> CART {mounted ? `(${cartCount})` : '(0)'}
               </Link>
             </div>
           </motion.div>

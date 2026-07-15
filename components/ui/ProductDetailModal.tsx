@@ -166,7 +166,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 250 }}
-            className="relative bg-[#FAF9F5] w-full max-w-4xl min-h-[100dvh] md:min-h-0 h-auto md:h-[90vh] md:rounded-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] overflow-visible md:overflow-hidden z-10 flex flex-col"
+            className="relative bg-[#FAF9F5] w-full max-w-4xl h-[100dvh] md:h-[90vh] md:rounded-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden z-10 flex flex-col"
           >
             {/* Close Button */}
             <button
@@ -188,7 +188,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row flex-1 min-h-0 h-full">
+            <div data-lenis-prevent="true" className="flex flex-col md:flex-row flex-1 min-h-0 overflow-y-auto md:overflow-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {/* Image Section */}
               <div className="w-full md:w-1/2 shrink-0 bg-stone-100 border-r border-stone-200 relative aspect-square md:aspect-auto md:h-full">
                 <div className="absolute top-8 left-8 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full border border-stone-200 flex flex-col gap-1 shadow-sm z-10">
@@ -205,7 +205,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
               </div>
 
               {/* Details Section */}
-              <div data-lenis-prevent="true" className="w-full md:w-1/2 px-8 pt-8 pb-0 md:px-12 md:pt-12 md:pb-0 flex flex-col gap-10 relative bg-white overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <div data-lenis-prevent="true" className="w-full md:w-1/2 px-8 pt-8 pb-0 md:px-12 md:pt-12 md:pb-0 flex flex-col gap-10 relative bg-white md:overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 
                 {/* Header info */}
                 <div className="space-y-4">
@@ -285,8 +285,11 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
                   
                   {/* Selected pack info */}
                   <div className="flex items-center justify-between">
-                     <span className="text-xs font-bold text-stone-500 uppercase tracking-widest">{selectedPackOption?.label ?? product.unitLabel}</span>
-                     <span className="text-lg font-black text-[#111111]">{formatCurrency(currentPrice)}</span>
+                     <span className="text-xs font-bold text-stone-500 uppercase tracking-widest">
+                       {selectedPackOption?.label ?? product.unitLabel} 
+                       {qty > 1 && <span className="normal-case tracking-normal text-[10px] text-stone-400 ml-2">({formatCurrency(currentPrice)} each)</span>}
+                     </span>
+                     <span className="text-lg font-black text-[#111111]">{formatCurrency(currentPrice * qty)}</span>
                   </div>
 
                   <div className="flex items-center gap-3">

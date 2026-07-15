@@ -1849,47 +1849,51 @@ export default function AdminPortal() {
                 </div>
 
                 {/* Period Selector Row */}
-                <div className="flex flex-wrap items-center gap-3 bg-[#FAF9F6]/50 p-3 rounded-2xl border border-outline-variant/15">
-                  <span className="text-[10px] font-bold text-[#4B5563] uppercase tracking-wider pl-2">Period:</span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {(['all', 'today', 'week', 'month', 'year', 'custom'] as const).map(p => (
-                      <button
-                        key={p}
-                        onClick={() => setAnalyticsPeriodFilter(p)}
-                        className={`text-xs font-bold py-1.5 px-4 rounded-xl transition-all cursor-pointer ${
-                          analyticsPeriodFilter === p
-                            ? 'bg-[#2B3E2F] text-white shadow-sm'
-                            : 'bg-white border border-outline-variant/35 text-[#4B5563] hover:bg-[#FAF9F5]'
-                        }`}
-                      >
-                        {p === 'all' ? 'All Time' : p === 'today' ? 'Today' : p === 'week' ? 'This Week' : p === 'month' ? 'This Month' : p === 'year' ? 'This Year' : 'Custom'}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                {analyticsSubTab !== 'today' && (
+                  <>
+                    <div className="flex flex-wrap items-center gap-3 bg-[#FAF9F6]/50 p-3 rounded-2xl border border-outline-variant/15">
+                      <span className="text-[10px] font-bold text-[#4B5563] uppercase tracking-wider pl-2">Period:</span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(['all', 'today', 'week', 'month', 'year', 'custom'] as const).map(p => (
+                          <button
+                            key={p}
+                            onClick={() => setAnalyticsPeriodFilter(p)}
+                            className={`text-xs font-bold py-1.5 px-4 rounded-xl transition-all cursor-pointer ${
+                              analyticsPeriodFilter === p
+                                ? 'bg-[#2B3E2F] text-white shadow-sm'
+                                : 'bg-white border border-outline-variant/35 text-[#4B5563] hover:bg-[#FAF9F5]'
+                            }`}
+                          >
+                            {p === 'all' ? 'All Time' : p === 'today' ? 'Today' : p === 'week' ? 'This Week' : p === 'month' ? 'This Month' : p === 'year' ? 'This Year' : 'Custom'}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
 
-                {/* Custom date pickers if 'custom' is active */}
-                {analyticsPeriodFilter === 'custom' && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#FAF9F6]/40 p-4 rounded-2xl border border-outline-variant/15 max-w-xl">
-                    <div className="space-y-1">
-                      <label className="block text-[9px] font-bold text-[#4B5563] uppercase tracking-wider">Start Date</label>
-                      <input
-                        type="date"
-                        value={analyticsStartDate}
-                        onChange={(e) => setAnalyticsStartDate(e.target.value)}
-                        className="w-full bg-white border border-outline-variant/35 rounded-xl px-3 py-1.5 text-xs text-primary font-semibold focus:outline-none focus:border-primary"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="block text-[9px] font-bold text-[#4B5563] uppercase tracking-wider">End Date</label>
-                      <input
-                        type="date"
-                        value={analyticsEndDate}
-                        onChange={(e) => setAnalyticsEndDate(e.target.value)}
-                        className="w-full bg-white border border-outline-variant/35 rounded-xl px-3 py-1.5 text-xs text-primary font-semibold focus:outline-none focus:border-primary"
-                      />
-                    </div>
-                  </div>
+                    {/* Custom date pickers if 'custom' is active */}
+                    {analyticsPeriodFilter === 'custom' && (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#FAF9F6]/40 p-4 rounded-2xl border border-outline-variant/15 max-w-xl">
+                        <div className="space-y-1">
+                          <label className="block text-[9px] font-bold text-[#4B5563] uppercase tracking-wider">Start Date</label>
+                          <input
+                            type="date"
+                            value={analyticsStartDate}
+                            onChange={(e) => setAnalyticsStartDate(e.target.value)}
+                            className="w-full bg-white border border-outline-variant/35 rounded-xl px-3 py-1.5 text-xs text-primary font-semibold focus:outline-none focus:border-primary"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="block text-[9px] font-bold text-[#4B5563] uppercase tracking-wider">End Date</label>
+                          <input
+                            type="date"
+                            value={analyticsEndDate}
+                            onChange={(e) => setAnalyticsEndDate(e.target.value)}
+                            className="w-full bg-white border border-outline-variant/35 rounded-xl px-3 py-1.5 text-xs text-primary font-semibold focus:outline-none focus:border-primary"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
 
                 {/* Sub-tabs Row */}
@@ -1926,8 +1930,16 @@ export default function AdminPortal() {
                     if (analyticsPeriodFilter === 'today') {
                       list = list.filter(o => new Date(o.createdAt).toDateString() === now.toDateString());
                     } else if (analyticsPeriodFilter === 'week') {
-                      const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                      list = list.filter(o => new Date(o.createdAt) >= oneWeekAgo);
+                      const dayOfWeek = now.getDay() || 7;
+                      const monday = new Date(now);
+                      monday.setDate(monday.getDate() - dayOfWeek + 1);
+                      monday.setHours(0,0,0,0);
+                      const nextMonday = new Date(monday);
+                      nextMonday.setDate(nextMonday.getDate() + 7);
+                      list = list.filter(o => {
+                        const oDate = new Date(o.createdAt);
+                        return oDate >= monday && oDate < nextMonday;
+                      });
                     } else if (analyticsPeriodFilter === 'month') {
                       list = list.filter(o => {
                         const oDate = new Date(o.createdAt);

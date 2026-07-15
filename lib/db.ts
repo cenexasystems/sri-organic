@@ -251,7 +251,11 @@ export const dbDeleteCoupon = async (code: string) => {
 // ORDERS
 // ============================
 export const fetchOrders = async (): Promise<Order[]> => {
-  const { data: ordersData, error: oError } = await supabase.from('orders').select('*, order_items(*)').order('created_at', { ascending: false });
+  const { data: ordersData, error: oError } = await supabase
+    .from('orders')
+    .select('*, order_items(*)')
+    .not('id', 'like', 'ORD-%')
+    .order('created_at', { ascending: false });
   if (oError) throw oError;
 
   return ordersData.map((o: any) => ({
@@ -404,7 +408,7 @@ export const fetchWhatsappRequests = async (): Promise<Order[]> => {
   const { data, error } = await supabase
     .from('orders')
     .select('*, order_items(*)')
-    .eq('source', 'ONLINE')
+    .like('id', 'ORD-%')
     .order('created_at', { ascending: false });
     
   if (error) throw error;
@@ -439,4 +443,50 @@ export const fetchWhatsappRequests = async (): Promise<Order[]> => {
 export const updateWhatsappRequestStatus = async (id: string, status: string) => {
   const { error } = await supabase.from('orders').update({ status }).eq('id', id);
   if (error) throw error;
+};
+
+export const getNextOrderId = async (): Promise<string> => {
+  const { data } = await supabase
+    .from('orders')
+    .select('id')
+    .like('id', 'ORD-%')
+    .order('id', { ascending: false })
+    .limit(1);
+
+  let seqNum = 1;
+  if (data && data.length > 0) {
+    const lastId = data[0].id;
+    const match = lastId.match(/ORD-\d{4}-(\d+)/);
+    if (match) {
+      seqNum = parseInt(match[1], 10) + 1;
+    }
+  }
+  
+  return `ORD-${new Date().getFullYear()}-${String(seqNum).padStart(5, '0')}`;
+};
+
+export const cleanupDuplicateOrders = async () => {
+  const { data: allOrders, error } = await supabase
+    .from('orders')
+    .select('id, customer_name, customer_phone, total_price, created_at')
+    .like('id', 'ORD-%');
+    
+  if (error) throw error;
+  
+  const groups: Record<string, any[]> = {};
+  for (const o of allOrders) {
+    const key = `${o.customer_name}|${o.customer_phone}|${o.total_price}|${o.created_at}`;
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(o);
+  }
+  
+  for (const key in groups) {
+    const group = groups[key];
+    if (group.length > 1) {
+      group.sort((a, b) => a.id.localeCompare(b.id)); // keep the first one
+      for (let i = 1; i < group.length; i++) {
+        await supabase.from('orders').delete().eq('id', group[i].id);
+      }
+    }
+  }
 };
