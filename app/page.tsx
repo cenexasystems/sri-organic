@@ -6,7 +6,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRef, useEffect, useState } from "react";
 import CustomFormula from "@/components/ui/CustomFormula";
-import BotanicalExplorer from "@/components/ui/BotanicalExplorer";
 import { useProductStore, type Product } from "@/store/store";
 import ProductDetailModal from "@/components/ui/ProductDetailModal";
 import ProductCard from "@/components/ui/ProductCard";
@@ -15,6 +14,7 @@ export default function Home() {
   const { products, fetchProducts, loading } = useProductStore();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
 
   useEffect(() => {
     void fetchProducts();
@@ -172,9 +172,6 @@ export default function Home() {
         {/* Interactive Formula Builder */}
         <CustomFormula />
 
-        {/* Botanical Hotspot Explorer */}
-        <BotanicalExplorer />
-
         {/* New Product Showcase */}
         <section id="products" className="py-16 md:py-32 px-6 md:px-16 bg-white relative z-20">
           <div className="max-w-7xl mx-auto">
@@ -218,6 +215,89 @@ export default function Home() {
                 ))}
               </div>
             )}
+          </div>
+        </section>
+
+        {/* Gallery Section */}
+        <section id="gallery" className="py-16 md:py-32 px-6 md:px-16 bg-[#FAF9F5] relative z-20">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col items-center text-center mb-16 md:mb-24">
+              <div className="w-8 h-[1px] bg-[#D4AF37] mb-6"></div>
+              <h2 className="text-3xl md:text-5xl font-bold text-[#111111] tracking-tight mb-4">Gallery.</h2>
+              <p className="text-stone-500 max-w-lg text-sm">Glimpses of our heritage, farms, and authentic processes.</p>
+            </div>
+
+            <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+              {[
+                "WhatsApp Image 2026-07-14 13.40.35.jpeg",
+                "WhatsAp2026-07-14 at 13.40.36.jpeg",
+                "WhatsApp Image 2026-07-14 at 13.40.34.jpeg",
+                "WhatsApp Image 2026-13.40.38.jpeg",
+                "Image 2026-07-14 at 13.40.36.jpeg",
+                "WhatsApp 2026-07-14 at 13.40.34.jpeg",
+                "WhatsApp Image 202607-14 at 13.40.35.jpeg",
+                "WhatsApp Image-07-14 at 13.40.36.jpeg",
+                "age 2026-07-14 at 13.40.35.jpeg"
+              ].map((imgSrc, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.5, delay: (idx % 3) * 0.15 }}
+                  className="break-inside-avoid rounded-3xl overflow-hidden shadow-sm hover:shadow-xl group relative cursor-pointer"
+                  onClick={() => setFullscreenImage(imgSrc)}
+                >
+                  <img 
+                    src={`/gallery/${imgSrc}`} 
+                    alt={`Gallery image ${idx + 1}`} 
+                    loading="lazy"
+                    className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500 flex items-center justify-center">
+                    <span className="opacity-0 group-hover:opacity-100 text-white font-bold tracking-widest uppercase text-xs transition-opacity duration-500">View</span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Our Process Section */}
+        <section id="process" className="py-16 md:py-32 px-6 md:px-16 bg-[#111111] text-white overflow-hidden relative">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col items-center text-center mb-16 md:mb-24">
+              <div className="w-8 h-[1px] bg-[#D4AF37] mb-6"></div>
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">From Soil to Soul.</h2>
+              <p className="text-white/60 max-w-lg text-sm">The journey of our botanicals, preserved at every step to ensure maximum clinical efficacy and purity.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+              {/* Connecting Line */}
+              <div className="hidden md:block absolute top-12 left-[10%] right-[10%] h-[1px] bg-white/10 z-0"></div>
+
+              {[
+                { step: "01", title: "Regenerative Harvest", desc: "Hand-picked by local farmers at the peak of botanical potency." },
+                { step: "02", title: "Sun Curing", desc: "Naturally dried under the sun to preserve vital essential oils." },
+                { step: "03", title: "Cold Extraction", desc: "Traditional wood-pressing methods with zero heat application." },
+                { step: "04", title: "Clinical Bottling", desc: "Sealed in UV-protected glass to maintain absolute freshness." }
+              ].map((item, i) => (
+                <motion.div 
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.6, delay: i * 0.15 }}
+                  className="relative z-10 flex flex-col items-center text-center group"
+                >
+                  <div className="w-24 h-24 rounded-full bg-[#1A1A1A] border border-white/10 flex items-center justify-center mb-8 shadow-2xl group-hover:border-[#D4AF37] transition-colors duration-500">
+                    <span className="text-2xl font-bold text-[#D4AF37]">{item.step}</span>
+                  </div>
+                  <h3 className="text-lg font-bold mb-3">{item.title}</h3>
+                  <p className="text-sm text-white/50 leading-relaxed px-4">{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -339,91 +419,38 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Our Process Section */}
-        <section id="process" className="py-16 md:py-32 px-6 md:px-16 bg-[#111111] text-white overflow-hidden relative">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col items-center text-center mb-16 md:mb-24">
-              <div className="w-8 h-[1px] bg-[#D4AF37] mb-6"></div>
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">From Soil to Soul.</h2>
-              <p className="text-white/60 max-w-lg text-sm">The journey of our botanicals, preserved at every step to ensure maximum clinical efficacy and purity.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
-              {/* Connecting Line */}
-              <div className="hidden md:block absolute top-12 left-[10%] right-[10%] h-[1px] bg-white/10 z-0"></div>
-
-              {[
-                { step: "01", title: "Regenerative Harvest", desc: "Hand-picked by local farmers at the peak of botanical potency." },
-                { step: "02", title: "Sun Curing", desc: "Naturally dried under the sun to preserve vital essential oils." },
-                { step: "03", title: "Cold Extraction", desc: "Traditional wood-pressing methods with zero heat application." },
-                { step: "04", title: "Clinical Bottling", desc: "Sealed in UV-protected glass to maintain absolute freshness." }
-              ].map((item, i) => (
-                <motion.div 
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.6, delay: i * 0.15 }}
-                  className="relative z-10 flex flex-col items-center text-center group"
-                >
-                  <div className="w-24 h-24 rounded-full bg-[#1A1A1A] border border-white/10 flex items-center justify-center mb-8 shadow-2xl group-hover:border-[#D4AF37] transition-colors duration-500">
-                    <span className="text-2xl font-bold text-[#D4AF37]">{item.step}</span>
-                  </div>
-                  <h3 className="text-lg font-bold mb-3">{item.title}</h3>
-                  <p className="text-sm text-white/50 leading-relaxed px-4">{item.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Gallery Section */}
-        <section id="gallery" className="py-16 md:py-32 px-6 md:px-16 bg-[#FAF9F5] relative z-20">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col items-center text-center mb-16 md:mb-24">
-              <div className="w-8 h-[1px] bg-[#D4AF37] mb-6"></div>
-              <h2 className="text-3xl md:text-5xl font-bold text-[#111111] tracking-tight mb-4">Gallery.</h2>
-              <p className="text-stone-500 max-w-lg text-sm">Glimpses of our heritage, farms, and authentic processes.</p>
-            </div>
-
-            <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-              {[
-                "Image 2026-07-14 at 13.40.36.jpeg",
-                "WhatsAp2026-07-14 at 13.40.36.jpeg",
-                "WhatsApp 2026-07-14 at 13.40.34.jpeg",
-                "WhatsApp Image 2026-07-14 13.40.35.jpeg",
-                "WhatsApp Image 2026-07-14 at 13.40.34.jpeg",
-                "WhatsApp Image 2026-13.40.38.jpeg",
-                "WhatsApp Image 202607-14 at 13.40.35.jpeg",
-                "WhatsApp Image-07-14 at 13.40.36.jpeg",
-                "age 2026-07-14 at 13.40.35.jpeg"
-              ].map((imgSrc, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.5, delay: (idx % 3) * 0.15 }}
-                  className="break-inside-avoid rounded-3xl overflow-hidden shadow-sm hover:shadow-xl group relative"
-                >
-                  <img 
-                    src={`/gallery/${imgSrc}`} 
-                    alt={`Gallery image ${idx + 1}`} 
-                    loading="lazy"
-                    className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500"></div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         <ProductDetailModal
           product={selectedProduct}
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
         />
+        <AnimatePresence>
+          {fullscreenImage && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 p-4 cursor-zoom-out"
+              onClick={() => setFullscreenImage(null)}
+            >
+              <button 
+                className="absolute top-6 right-6 text-white bg-black/50 hover:bg-white/20 p-2 rounded-full transition-colors z-10"
+                onClick={() => setFullscreenImage(null)}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+              <motion.img
+                initial={{ scale: 0.9 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.9 }}
+                src={`/gallery/${fullscreenImage}`}
+                alt="Fullscreen gallery"
+                className="max-w-full max-h-full object-contain rounded-xl relative z-0 shadow-2xl cursor-default"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
     </div>
   );

@@ -24,12 +24,7 @@ export default function Footer() {
             <p className="text-white/70 text-sm leading-relaxed mb-4 max-w-sm">
               Cultivating integrity through uncompromising standards. We bring you the purest expression of ancient agriculture, preserving flavors and vital nutrients.
             </p>
-            <div className="flex gap-4 text-white/70">
-              {/* Social icons placeholders */}
-              <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-colors cursor-pointer">In</div>
-              <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-colors cursor-pointer">Fb</div>
-              <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-colors cursor-pointer">Tw</div>
-            </div>
+
           </div>
           
           <div className="lg:col-span-3">

@@ -52,6 +52,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
   const { toggle, isFav } = useFavStore();
   
   const [selectedPackOption, setSelectedPackOption] = useState<{ quantity: number; unit: string; label: string; price: number; isAvailable?: boolean } | null>(null);
+  const [qty, setQty] = useState(1);
   const [mobileQty, setMobileQty] = useState(0);
   const [mobilePack, setMobilePack] = useState<{ quantity: number; unit: string; label: string; price: number; isAvailable?: boolean } | null>(null);
   
@@ -77,6 +78,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
     if (!product) return;
     const packOpts = getCompactPackOptions(product);
     setSelectedPackOption(packOpts[0] ?? null);
+    setQty(1);
     setMobileQty(0);
     setMobilePack(packOpts[0] ?? null);
   }, [product, isOpen]);
@@ -97,11 +99,11 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
 
   const favorite = isFav(product.id);
   const handleAdd = () => {
-    addItem(product, 1, selectedPackOption?.label ?? product.unitLabel);
+    addItem(product, qty, selectedPackOption?.label ?? product.unitLabel);
     onClose();
     toast((t) => (
       <div className="flex items-center gap-4">
-        <span className="text-sm font-bold">{product.name} added to cart!</span>
+        <span className="text-sm font-bold">{qty}x {selectedPackOption?.label ?? product.unitLabel} {product.name} added to cart!</span>
         <a href="/cart" className="text-[#D4AF37] text-xs font-black uppercase tracking-widest hover:underline" onClick={() => toast.dismiss(t.id)}>
           Go to Cart
         </a>
@@ -164,7 +166,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 250 }}
-            className="relative bg-[#FAF9F5] w-full max-w-4xl min-h-[100dvh] md:min-h-0 h-auto md:max-h-[90vh] md:rounded-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] overflow-visible md:overflow-hidden z-10 flex flex-col"
+            className="relative bg-[#FAF9F5] w-full max-w-4xl min-h-[100dvh] md:min-h-0 h-auto md:h-[90vh] md:rounded-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] overflow-visible md:overflow-hidden z-10 flex flex-col"
           >
             {/* Close Button */}
             <button
@@ -186,9 +188,9 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
               </div>
             </div>
 
-            <div data-lenis-prevent="true" className="flex flex-col md:flex-row flex-none md:flex-1 md:min-h-0 overflow-y-visible md:overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="flex flex-col md:flex-row flex-1 min-h-0 h-full">
               {/* Image Section */}
-              <div className="w-full md:w-1/2 shrink-0 bg-stone-100 border-r border-stone-200 relative aspect-square md:aspect-auto md:min-h-0">
+              <div className="w-full md:w-1/2 shrink-0 bg-stone-100 border-r border-stone-200 relative aspect-square md:aspect-auto md:h-full">
                 <div className="absolute top-8 left-8 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full border border-stone-200 flex flex-col gap-1 shadow-sm z-10">
                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#D4AF37]">{product.category}</span>
                 </div>
@@ -198,12 +200,12 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
                   loading="lazy"
                   decoding="async"
                   onError={onImgError}
-                  className="absolute inset-0 h-full w-full object-cover mix-blend-multiply drop-shadow-xl"
+                  className="absolute inset-0 h-full w-full object-contain md:object-cover mix-blend-multiply drop-shadow-xl"
                 />
               </div>
 
               {/* Details Section */}
-              <div className="w-full md:w-1/2 px-8 pt-8 pb-0 md:px-12 md:pt-12 md:pb-0 flex flex-col gap-10 relative bg-white">
+              <div data-lenis-prevent="true" className="w-full md:w-1/2 px-8 pt-8 pb-0 md:px-12 md:pt-12 md:pb-0 flex flex-col gap-10 relative bg-white overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 
                 {/* Header info */}
                 <div className="space-y-4">
@@ -279,19 +281,44 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
                 </div>
 
                 {/* Add to Cart Footer */}
-                <div className="mt-auto sticky bottom-0 z-20 bg-white pt-4 pb-8 -mx-8 px-8 border-t border-stone-100 md:pb-12 md:-mx-12 md:px-12 flex gap-4">
-                  <button
-                    onClick={handleAdd}
-                    disabled={selectedPackOption?.isAvailable === false}
-                    className={`flex-1 rounded-full transition-colors py-4 text-xs tracking-widest uppercase font-bold text-white flex items-center justify-center gap-3 shadow-xl ${
-                      selectedPackOption?.isAvailable === false 
-                        ? 'bg-stone-400 cursor-not-allowed opacity-80 shadow-none' 
-                        : 'bg-[#111111] hover:bg-[#D4AF37] shadow-black/10'
-                    }`}
-                    type="button"
-                  >
-                    <ShoppingCart size={16} /> {selectedPackOption?.isAvailable === false ? 'Out of Stock' : 'Add to Cart'}
-                  </button>
+                <div className="mt-auto sticky bottom-0 z-20 bg-white pt-4 pb-8 -mx-8 px-8 border-t border-stone-100 md:pb-12 md:-mx-12 md:px-12 flex flex-col gap-4 shadow-[0_-10px_20px_rgba(255,255,255,1)]">
+                  
+                  {/* Selected pack info */}
+                  <div className="flex items-center justify-between">
+                     <span className="text-xs font-bold text-stone-500 uppercase tracking-widest">{selectedPackOption?.label ?? product.unitLabel}</span>
+                     <span className="text-lg font-black text-[#111111]">{formatCurrency(currentPrice)}</span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-between border border-stone-200 rounded-full px-3 py-1.5 w-1/3 bg-stone-50">
+                      <button 
+                        onClick={() => setQty(Math.max(1, qty - 1))}
+                        className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white hover:shadow-sm transition-all text-[#111111]"
+                      >
+                        <Minus size={14} strokeWidth={2.5} />
+                      </button>
+                      <span className="font-bold text-sm text-center">{qty}</span>
+                      <button 
+                        onClick={() => setQty(qty + 1)}
+                        className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white hover:shadow-sm transition-all text-[#111111]"
+                      >
+                        <Plus size={14} strokeWidth={2.5} />
+                      </button>
+                    </div>
+
+                    <button
+                      onClick={handleAdd}
+                      disabled={selectedPackOption?.isAvailable === false}
+                      className={`flex-1 rounded-full transition-colors py-3.5 text-xs tracking-widest uppercase font-bold text-white flex items-center justify-center gap-2 shadow-xl ${
+                        selectedPackOption?.isAvailable === false 
+                          ? 'bg-stone-400 cursor-not-allowed opacity-80 shadow-none' 
+                          : 'bg-[#111111] hover:bg-[#D4AF37] shadow-black/10'
+                      }`}
+                      type="button"
+                    >
+                      <ShoppingCart size={14} /> {selectedPackOption?.isAvailable === false ? 'Out of Stock' : 'Add to Cart'}
+                    </button>
+                  </div>
                 </div>
 
               </div>
