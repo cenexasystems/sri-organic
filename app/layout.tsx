@@ -11,6 +11,7 @@ const poppins = Poppins({
 import NavBar from "@/components/ui/NavBar";
 import Footer from "@/components/ui/Footer";
 import SmoothScroll from "@/components/ui/SmoothScroll";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Sri Organic",
@@ -27,12 +28,13 @@ export default function RootLayout({
       lang="en"
       className={`${poppins.variable} antialiased`}
     >
-      <body className="min-h-screen flex flex-col bg-[#FAF9F5]">
+      <body className="min-h-screen flex flex-col bg-[#FAF9F5] overflow-x-hidden">
         <SmoothScroll>
           <NavBar />
           <main className="flex-grow flex flex-col relative w-full h-full">{children}</main>
           <Footer />
         </SmoothScroll>
+        <Toaster position="bottom-right" />
       </body>
     </html>
   );

@@ -377,6 +377,48 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Gallery Section */}
+        <section id="gallery" className="py-16 md:py-32 px-6 md:px-16 bg-[#FAF9F5] relative z-20">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col items-center text-center mb-16 md:mb-24">
+              <div className="w-8 h-[1px] bg-[#D4AF37] mb-6"></div>
+              <h2 className="text-3xl md:text-5xl font-bold text-[#111111] tracking-tight mb-4">Gallery.</h2>
+              <p className="text-stone-500 max-w-lg text-sm">Glimpses of our heritage, farms, and authentic processes.</p>
+            </div>
+
+            <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+              {[
+                "Image 2026-07-14 at 13.40.36.jpeg",
+                "WhatsAp2026-07-14 at 13.40.36.jpeg",
+                "WhatsApp 2026-07-14 at 13.40.34.jpeg",
+                "WhatsApp Image 2026-07-14 13.40.35.jpeg",
+                "WhatsApp Image 2026-07-14 at 13.40.34.jpeg",
+                "WhatsApp Image 2026-13.40.38.jpeg",
+                "WhatsApp Image 202607-14 at 13.40.35.jpeg",
+                "WhatsApp Image-07-14 at 13.40.36.jpeg",
+                "age 2026-07-14 at 13.40.35.jpeg"
+              ].map((imgSrc, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.5, delay: (idx % 3) * 0.15 }}
+                  className="break-inside-avoid rounded-3xl overflow-hidden shadow-sm hover:shadow-xl group relative"
+                >
+                  <img 
+                    src={`/gallery/${imgSrc}`} 
+                    alt={`Gallery image ${idx + 1}`} 
+                    loading="lazy"
+                    className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500"></div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <ProductDetailModal
           product={selectedProduct}
           isOpen={isModalOpen}
