@@ -10,15 +10,42 @@ import { useProductStore, type Product } from "@/store/store";
 import ProductDetailModal from "@/components/ui/ProductDetailModal";
 import ProductCard from "@/components/ui/ProductCard";
 
+const defaultReviews = [
+  { name: "Priya S.", text: "The quality of the black rice is unparalleled. You can literally taste the authenticity and care in every grain.", stars: 5 },
+  { name: "Karthik M.", text: "I've completely switched to their cold-pressed oils. The difference in my family's health and food taste is remarkable.", stars: 5 },
+  { name: "Anita R.", text: "Finally, a brand that stays true to its roots. The organic spices are as pure as what my grandmother used.", stars: 5 },
+  { name: "Rahul D.", text: "The custom wellness blends have transformed my morning routine. Pure botanical magic.", stars: 5 },
+  { name: "Meera T.", text: "Regenerative farming makes such a huge difference. You can feel the vitality in their turmeric.", stars: 5 }
+];
+
 export default function Home() {
   const { products, fetchProducts, loading } = useProductStore();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+  const [localReviews, setLocalReviews] = useState(defaultReviews);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [newReview, setNewReview] = useState({ name: "", text: "", stars: 5 });
 
   useEffect(() => {
     void fetchProducts();
+    const savedReviews = localStorage.getItem("sri_organic_reviews");
+    if (savedReviews) {
+      try {
+        setLocalReviews(JSON.parse(savedReviews));
+      } catch (e) {}
+    }
   }, [fetchProducts]);
+
+  const handleAddReview = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newReview.name || !newReview.text) return;
+    const updatedReviews = [newReview, ...localReviews];
+    setLocalReviews(updatedReviews);
+    localStorage.setItem("sri_organic_reviews", JSON.stringify(updatedReviews));
+    setIsReviewModalOpen(false);
+    setNewReview({ name: "", text: "", stars: 5 });
+  };
 
   const featuredProducts = products.filter(p => p.isActive).slice(0, 4);
   const heroRef = useRef(null);
@@ -301,54 +328,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Reviews Section - Moving Marquee */}
-        <section id="reviews" className="py-16 md:py-32 bg-[#111111] text-white overflow-hidden relative">
-          <div className="max-w-7xl mx-auto px-6 md:px-16">
-            <div className="flex flex-col items-center text-center mb-16 md:mb-24">
-              <div className="w-8 h-[1px] bg-[#D4AF37] mb-6"></div>
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Reviews.</h2>
-            </div>
-          </div>
-            
-          <div className="w-full flex relative pb-8">
-            {/* Left and right gradient masks for smooth fade */}
-            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#111111] to-transparent z-10"></div>
-            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#111111] to-transparent z-10"></div>
-
-            <motion.div 
-              className="flex gap-8 whitespace-nowrap pl-8"
-              animate={{ x: ["0%", "-50%"] }}
-              transition={{ ease: "linear", duration: 30, repeat: Infinity }}
-            >
-              {/* Duplicate the array to create a seamless infinite loop */}
-              {[...Array(2)].map((_, groupIndex) => (
-                <div key={groupIndex} className="flex gap-8 shrink-0">
-                  {[
-                    { name: "Priya S.", text: "The quality of the black rice is unparalleled. You can literally taste the authenticity and care in every grain." },
-                    { name: "Karthik M.", text: "I've completely switched to their cold-pressed oils. The difference in my family's health and food taste is remarkable." },
-                    { name: "Anita R.", text: "Finally, a brand that stays true to its roots. The organic spices are as pure as what my grandmother used." },
-                    { name: "Rahul D.", text: "The custom wellness blends have transformed my morning routine. Pure botanical magic." },
-                    { name: "Meera T.", text: "Regenerative farming makes such a huge difference. You can feel the vitality in their turmeric." }
-                  ].map((review, i) => (
-                    <div 
-                      key={i}
-                      className="w-[280px] md:w-[350px] p-8 md:p-10 border border-white/10 hover:border-white/30 transition-colors bg-[#111111] whitespace-normal"
-                    >
-                      <div className="flex gap-1 text-[#D4AF37] mb-8">
-                        {[1,2,3,4,5].map(star => <span key={star}>★</span>)}
-                      </div>
-                      <p className="text-base leading-relaxed text-white/80 mb-8 font-light italic">
-                        "{review.text}"
-                      </p>
-                      <p className="text-xs font-bold tracking-[0.2em] uppercase text-[#D4AF37]">- {review.name}</p>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </motion.div>
-          </div>
-        </section>
-
         {/* Certifications / Stats Banner */}
         <section className="py-12 md:py-20 px-6 md:px-16 bg-[#111111] border-y border-white/10 text-white relative z-20">
           <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-y-12 md:gap-y-0 gap-x-4 md:gap-x-12 text-center md:divide-x divide-white/10">
@@ -375,6 +354,57 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Reviews Section - Moving Marquee */}
+        <section id="reviews" className="py-16 md:py-32 bg-white text-[#111111] overflow-hidden relative border-t border-stone-200">
+          <div className="max-w-7xl mx-auto px-6 md:px-16">
+            <div className="flex flex-col md:flex-row justify-between items-center mb-16 md:mb-24 gap-6">
+              <div className="flex flex-col items-center md:items-start text-center md:text-left">
+                <div className="w-8 h-[1px] bg-[#D4AF37] mb-6"></div>
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Reviews.</h2>
+                <p className="text-stone-500 mt-4 max-w-lg text-sm">Hear what our community says about their authentic organic experience.</p>
+              </div>
+              <button 
+                onClick={() => setIsReviewModalOpen(true)}
+                className="bg-[#111111] text-white px-8 py-3.5 text-xs font-bold uppercase tracking-widest hover:bg-[#D4AF37] transition-colors shadow-lg"
+              >
+                Add Review
+              </button>
+            </div>
+          </div>
+            
+          <div className="w-full flex relative pb-8">
+            {/* Left and right gradient masks for smooth fade */}
+            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
+            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
+
+            <motion.div 
+              className="flex gap-8 whitespace-nowrap pl-8"
+              animate={{ x: ["0%", "-50%"] }}
+              transition={{ ease: "linear", duration: 30, repeat: Infinity }}
+            >
+              {/* Duplicate the array to create a seamless infinite loop */}
+              {[...Array(2)].map((_, groupIndex) => (
+                <div key={groupIndex} className="flex gap-8 shrink-0">
+                  {localReviews.map((review, i) => (
+                    <div 
+                      key={i}
+                      className="w-[280px] md:w-[350px] p-8 md:p-10 border border-stone-200 hover:border-[#D4AF37] hover:shadow-xl transition-all duration-300 bg-white whitespace-normal rounded-2xl"
+                    >
+                      <div className="flex gap-1 text-[#D4AF37] mb-8">
+                        {[...Array(review.stars || 5)].map((_, star) => <span key={star}>★</span>)}
+                      </div>
+                      <p className="text-base leading-relaxed text-stone-600 mb-8 font-light italic">
+                        "{review.text}"
+                      </p>
+                      <p className="text-xs font-bold tracking-[0.2em] uppercase text-[#D4AF37]">- {review.name}</p>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
         {/* Map / Location Section */}
         <section className="py-16 md:py-32 px-6 md:px-16 bg-[#FAF9F5]">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-16 items-center">
@@ -397,24 +427,27 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="w-full md:w-2/3 aspect-square md:aspect-[21/9] bg-stone-200 relative overflow-hidden group rounded-[40px] shadow-sm hover:shadow-2xl transition-all duration-500">
+            <div className="w-full md:w-2/3 aspect-square md:aspect-[21/9] bg-white relative overflow-hidden rounded-[40px] shadow-xl border border-stone-200 group">
                <iframe 
-                 src="https://maps.google.com/maps?q=47%20Ambal%20Nagar,%20Andarkuppam,%20Ponneri,%20601204&t=&z=15&ie=UTF8&iwloc=&output=embed" 
-                 className="absolute inset-0 w-full h-full border-0 grayscale opacity-80 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000"
+                 src="https://maps.google.com/maps?q=47,Ambal+Nagar,Andarkuppam,Ponneri,Tamil+Nadu,601204&t=m&z=16&ie=UTF8&iwloc=&output=embed" 
+                 className="absolute inset-0 w-full h-full border-0"
                  allowFullScreen
                  loading="lazy"
                  referrerPolicy="no-referrer-when-downgrade"
                ></iframe>
-               <a 
-                 href="https://www.google.com/maps/search/?api=1&query=47+Ambal+Nagar+Ponneri+601204" 
-                 target="_blank" 
-                 rel="noopener noreferrer"
-                 className="absolute inset-0 bg-[#111111]/10 group-hover:bg-transparent transition-colors duration-500 flex items-center justify-center cursor-pointer"
-               >
-                 <div className="bg-white/90 backdrop-blur-md px-8 py-4 rounded-full text-[#111111] font-bold text-sm tracking-widest uppercase flex items-center gap-3 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 shadow-xl">
-                   Open in Google Maps <ArrowUpRight className="w-4 h-4" />
-                 </div>
-               </a>
+               
+               {/* Center Marker / Button */}
+               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                 <a 
+                   href="https://www.google.com/maps/search/?api=1&query=47+Ambal+Nagar+Ponneri+Tamil+Nadu+601204" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   className="pointer-events-auto bg-white px-6 py-3.5 rounded-full text-[#111111] font-bold text-[15px] tracking-wide flex items-center gap-2.5 shadow-[0_4px_20px_rgba(0,0,0,0.15)] transition-all hover:scale-105 active:scale-95 group-hover:-translate-y-1 group-hover:shadow-[0_8px_30px_rgba(0,0,0,0.2)] border border-stone-100"
+                 >
+                   <MapPin className="w-5 h-5 text-red-500" />
+                   Open in Map
+                 </a>
+               </div>
             </div>
           </div>
         </section>
@@ -424,6 +457,85 @@ export default function Home() {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
         />
+
+        {/* Add Review Modal */}
+        <AnimatePresence>
+          {isReviewModalOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+              onClick={() => setIsReviewModalOpen(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                className="bg-white rounded-[32px] p-8 md:p-12 w-full max-w-lg shadow-2xl relative"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button 
+                  type="button"
+                  className="absolute top-6 right-6 text-stone-400 hover:text-black transition-colors"
+                  onClick={() => setIsReviewModalOpen(false)}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+
+                <h3 className="text-3xl font-bold text-[#111111] mb-2 tracking-tight">Add a Review.</h3>
+                <p className="text-stone-500 mb-8 text-sm">Share your experience with our authentic organic products.</p>
+
+                <form onSubmit={handleAddReview} className="space-y-6">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Your Name</label>
+                    <input 
+                      type="text"
+                      required
+                      value={newReview.name}
+                      onChange={e => setNewReview({...newReview, name: e.target.value})}
+                      className="w-full bg-[#FAF9F5] border border-stone-200 rounded-xl px-4 py-3 text-stone-800 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all"
+                      placeholder="e.g. John D."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Rating</label>
+                    <div className="flex gap-2 text-2xl text-stone-300">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button 
+                          key={star} 
+                          type="button"
+                          onClick={() => setNewReview({...newReview, stars: star})}
+                          className={`hover:text-[#D4AF37] transition-colors focus:outline-none ${newReview.stars >= star ? 'text-[#D4AF37]' : ''}`}
+                        >
+                          ★
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Your Experience</label>
+                    <textarea 
+                      required
+                      value={newReview.text}
+                      onChange={e => setNewReview({...newReview, text: e.target.value})}
+                      rows={4}
+                      className="w-full bg-[#FAF9F5] border border-stone-200 rounded-xl px-4 py-3 text-stone-800 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all resize-none"
+                      placeholder="Tell us what you think..."
+                    />
+                  </div>
+                  <button 
+                    type="submit"
+                    className="w-full bg-[#111111] text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-[#D4AF37] transition-colors shadow-lg mt-4"
+                  >
+                    Submit Review
+                  </button>
+                </form>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <AnimatePresence>
           {fullscreenImage && (
             <motion.div

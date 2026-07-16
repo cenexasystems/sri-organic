@@ -521,19 +521,54 @@ export default function AdminPortal() {
 
   // WhatsApp message builder and dynamic formatter matching the screenshot
   const formatWhatsAppMessage = (order: Order) => {
-    const ePkg = decodeURIComponent('%F0%9F%93%A6'); // 📦
-    const eBags = decodeURIComponent('%F0%9F%9B%8D%EF%B8%8F'); // 🛍️
-    const eUser = decodeURIComponent('%F0%9F%91%A4'); // 👤
-    const ePhone = decodeURIComponent('%F0%9F%93%9E'); // 📞
-    const ePin = decodeURIComponent('%F0%9F%93%8D'); // 📍
-    const eMemo = decodeURIComponent('%F0%9F%93%9D'); // 📝
-    const eMoney = decodeURIComponent('%F0%9F%92%B0'); // 💰
+    const eSparkle = String.fromCodePoint(0x2728);
+    const eBell = String.fromCodePoint(0x1F514);
+    const ePerson = String.fromCodePoint(0x1F464);
+    const ePhone = String.fromCodePoint(0x1F4DE);
+    const eMobile = String.fromCodePoint(0x1F4F1);
+    const ePin = String.fromCodePoint(0x1F4CD);
+    const eCart = String.fromCodePoint(0x1F6D2);
+    const ePackage = String.fromCodePoint(0x1F4E6);
+    const eTag = String.fromCodePoint(0x1F516);
+    const eCheck = String.fromCodePoint(0x2705);
+    const eDollar = String.fromCodePoint(0x1F4B5);
+    const eMoney = String.fromCodePoint(0x1F4B0);
+    const eTruck = String.fromCodePoint(0x1F69A);
+    const eTicket = String.fromCodePoint(0x1F3AB);
     
-    const itemsText = order.items.map((it: any) => {
-      const sizeStr = it.size && it.size !== '—' ? ` - ${it.size}` : '';
-      return `${ePkg} ${it.name}${sizeStr} x ${it.quantity} (Rs. ${it.price * it.quantity})`;
-    }).join('\n');
-    return `${eBags} *Order Request - Sri Organic*\n\n${eUser} *Customer:* ${order.customerName}\n${ePhone} *Phone:* ${order.customerPhone}\n${ePin} *Address:* ${order.customerAddress}\n\n${eMemo} *Items:*\n${itemsText}\n\n${eMoney} *Estimated Total: Rs. ${order.totalPrice}*`;
+    let message = `${eSparkle} *New Order Inquiry (${order.id})* ${eBell}\n\n`;
+    
+    message += `${ePerson} *Customer Details:*\n`;
+    message += `• ${ePhone} Name: ${order.customerName}\n`;
+    message += `• ${eMobile} Phone: ${order.customerPhone.split('_')[0]}\n`;
+    message += `• ${ePin} Delivery Address: ${order.customerAddress}\n\n`;
+
+    message += `${eCart} *Items:*\n\n`;
+    
+    order.items.forEach((item: any, index: number) => {
+      const prod = products.find(p => p.id === item.productId);
+      const category = prod ? prod.category : 'General';
+      const subPrice = item.price * item.quantity;
+      
+      message += `${ePackage} *${index + 1}. ${item.name}*\n`;
+      message += `• ${eTag} Category: ${category}\n`;
+      message += `• 📏 Size: ${item.size || '—'}\n`;
+      message += `• Qty: ${item.quantity}\n`;
+      message += `• ${eDollar} *Subtotal:* ₹${subPrice.toLocaleString('en-IN')}\n\n`;
+    });
+
+    message += `*Billing Summary:*\n`;
+    message += `${eDollar} *Subtotal:* ₹${(order.subtotal || order.totalPrice).toLocaleString('en-IN')}\n`;
+    if (order.couponCode) {
+      message += `${eTicket} *Coupon Applied (${order.couponCode}):* -₹${(order.couponDiscount || 0).toLocaleString('en-IN')}\n`;
+    }
+    message += `${eMoney} *Total Amount:* ₹${order.totalPrice.toLocaleString('en-IN')}\n\n`;
+    
+    message += `${eTruck} *Delivery Details:* Delivery charges may apply based on location.\n`;
+    message += `${ePhone} *GPay Number:* 7904199050\n\n`;
+    message += `Please let me know the delivery details and next steps! ${eSparkle}`;
+    
+    return message;
   };
 
 
