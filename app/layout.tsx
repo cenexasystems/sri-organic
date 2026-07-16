@@ -28,10 +28,10 @@ export default function RootLayout({
       lang="en"
       className={`${poppins.variable} antialiased`}
     >
-      <body className="min-h-screen flex flex-col bg-[#FAF9F5] overflow-x-hidden">
+      <body className="min-h-screen flex flex-col bg-[#FAF9F5]">
         <SmoothScroll>
           <NavBar />
-          <main className="flex-grow flex flex-col relative w-full h-full">{children}</main>
+          <main className="flex-grow flex flex-col relative w-full h-full overflow-x-hidden">{children}</main>
           <Footer />
         </SmoothScroll>
         <Toaster position="bottom-right" />
