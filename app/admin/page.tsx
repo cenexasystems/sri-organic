@@ -132,15 +132,9 @@ export default function AdminPortal() {
 
     const [whatsappRequests, setWhatsappRequests] = useState<any[]>([]);
   
-  // Helper to generate Invoice ID for WhatsApp requests
+  // Helper to get Invoice ID for WhatsApp requests (DB is now sequential)
   const getWhatsAppInvoice = (orderId: string) => {
-    const index = whatsappRequests.findIndex(r => r.id === orderId);
-    if (index === -1) return "ORD-2026-0000";
-    const seq = whatsappRequests.length - index;
-    const seqStr = String(seq).padStart(4, '0');
-    const request = whatsappRequests[index];
-    const year = request.createdAt ? new Date(request.createdAt).getFullYear() : 2026;
-    return `ORD-${year}-${seqStr}`;
+    return orderId;
   };
 
   
@@ -1217,12 +1211,12 @@ export default function AdminPortal() {
                     {/* Styled Search Bar matching theme */}
                     <div className="relative w-full md:w-64">
                       <Search className="w-4 h-4 text-[#2B3E2F] absolute left-4 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="text"
-                        placeholder="Search requests..."
-                        value={whatsappSearch}
-                        onChange={(e) => setWhatsappSearch(e.target.value)}
-                        className="pl-11 pr-4 py-2.5 bg-[#F5F2EB] border border-[#2B3E2F]/30 hover:border-[#2B3E2F]/60 focus:border-[#2B3E2F] rounded-full text-xs font-semibold focus:outline-none w-full text-primary shadow-sm"
+                        <input
+                          type="text"
+                          placeholder="Search requests..."
+                          value={whatsappSearch}
+                          onChange={(e) => setWhatsappSearch(e.target.value)}
+                          className="pl-11 pr-4 py-2.5 bg-[#F5F2EB] border border-[#2B3E2F]/30 hover:border-[#2B3E2F]/60 focus:border-[#2B3E2F] rounded-full text-xs font-semibold focus:outline-none w-full text-primary shadow-sm"
                       />
                     </div>
                   </div>
@@ -1345,10 +1339,22 @@ export default function AdminPortal() {
                                         </table>
                                       </div>
 
-                                      {/* Grand Total */}
-                                      <div className="flex justify-between items-center bg-[#FAF9F6]/50 p-4 rounded-xl border border-outline-variant/15">
-                                        <span className="text-xs font-bold text-primary uppercase tracking-wider">Grand Total</span>
-                                        <span className="text-xl font-bold text-primary">₹{o.totalPrice}</span>
+                                      {/* Totals Breakdown */}
+                                      <div className="flex flex-col gap-2 bg-[#FAF9F6]/50 p-4 rounded-xl border border-outline-variant/15">
+                                        <div className="flex justify-between items-center">
+                                          <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Subtotal</span>
+                                          <span className="text-sm font-bold text-primary">₹{o.subtotal || o.totalPrice}</span>
+                                        </div>
+                                        {o.couponCode && (
+                                          <div className="flex justify-between items-center text-[#16A34A]">
+                                            <span className="text-xs font-bold uppercase tracking-wider">Discount ({o.couponCode})</span>
+                                            <span className="text-sm font-bold">-₹{o.couponDiscount || 0}</span>
+                                          </div>
+                                        )}
+                                        <div className="flex justify-between items-center pt-2 border-t border-outline-variant/15 mt-1">
+                                          <span className="text-xs font-bold text-primary uppercase tracking-wider">Grand Total</span>
+                                          <span className="text-xl font-bold text-primary">₹{o.totalPrice}</span>
+                                        </div>
                                       </div>
 
                                       {/* WhatsApp message block */}

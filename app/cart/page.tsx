@@ -7,7 +7,7 @@ import { formatCurrency } from "@/lib/retail";
 import { Minus, Plus, Trash2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { insertOrder, fetchCoupons, type Coupon } from "@/lib/db";
+import { insertOrder, fetchCoupons, getNextOrderId, type Coupon } from "@/lib/db";
 import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/lib/useAuth";
@@ -98,8 +98,8 @@ export default function CartPage() {
 
     setIsCheckingOut(true);
 
-    // Generate Order ID
-    const orderId = `ORD-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    // Generate Order ID sequentially
+    const orderId = await getNextOrderId();
 
     try {
       // 1. Save to Database
