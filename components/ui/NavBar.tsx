@@ -38,14 +38,14 @@ export default function NavBar() {
 
   const navLinksEn = [
     { name: "ABOUT US", href: "/#about" },
-    { name: "THE HARVEST", href: "/#products" },
-    { name: "OUR PROCESS", href: "/#process" },
+    { name: "PROCESS", href: "/#process" },
+    { name: "PRODUCT", href: "/products" },
   ];
 
   const navLinksTa = [
     { name: "எங்களை பற்றி", href: "/#about" },
-    { name: "அறுவடை", href: "/#products" },
-    { name: "நமது செயல்முறை", href: "/#process" },
+    { name: "செயல்முறை", href: "/#process" },
+    { name: "தயாரிப்பு", href: "/products" },
   ];
 
   const navLinks = language === 'ta' ? navLinksTa : navLinksEn;
@@ -92,9 +92,6 @@ export default function NavBar() {
 
         {/* Right Icons */}
         <div className="hidden lg:flex items-center justify-end space-x-10 flex-1">
-          <Link href="/products" className="hover:opacity-70 transition-opacity flex items-center">
-            <span className="text-[10px] font-bold tracking-[0.15em] whitespace-nowrap">{language === 'ta' ? 'தயாரிப்புகள்' : 'PRODUCTS'}</span>
-          </Link>
           <Link href="/cart" className="relative hover:opacity-70 transition-opacity flex items-center gap-2">
             <div className="relative">
               <ShoppingCart size={18} strokeWidth={2} />

@@ -54,6 +54,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
   const [qty, setQty] = useState(1);
   const [mobileQty, setMobileQty] = useState(0);
   const [mobilePack, setMobilePack] = useState<{ quantity: number; unit: string; label: string; price: number; isAvailable?: boolean } | null>(null);
+  const [isAdded, setIsAdded] = useState(false);
   
   // Fake related products for now (UI demonstration)
   const relatedProducts: Product[] = [];
@@ -62,6 +63,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
     if (isOpen) {
       document.body.style.overflow = 'hidden';
       document.documentElement.style.overflow = 'hidden';
+      setIsAdded(false);
     } else {
       document.body.style.overflow = '';
       document.documentElement.style.overflow = '';
@@ -99,15 +101,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
   const favorite = isFav(product.id);
   const handleAdd = () => {
     addItem(product, qty, selectedPackOption?.label ?? product.unitLabel);
-    onClose();
-    toast((t) => (
-      <div className="flex items-center gap-4">
-        <span className="text-sm font-bold">{qty}x {selectedPackOption?.label ?? product.unitLabel} {product.name} added to cart!</span>
-        <a href="/cart" className="text-[#D4AF37] text-xs font-black uppercase tracking-widest hover:underline" onClick={() => toast.dismiss(t.id)}>
-          Go to Cart
-        </a>
-      </div>
-    ), { duration: 4500 });
+    setIsAdded(true);
   };
 
   const handleMobileAdd = () => {
@@ -318,6 +312,49 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
 
               </div>
             </div>
+            {/* Success Modal Overlay */}
+            <AnimatePresence>
+              {isAdded && (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0 z-50 flex items-center justify-center bg-[#111111]/60 backdrop-blur-sm p-4"
+                >
+                  <motion.div 
+                    initial={{ scale: 0.9, y: 20 }}
+                    animate={{ scale: 1, y: 0 }}
+                    exit={{ scale: 0.9, y: 20 }}
+                    className="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl flex flex-col items-center"
+                  >
+                    <div className="w-16 h-16 bg-[#F3FCEF] text-[#22C55E] rounded-full flex items-center justify-center mb-6">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-bold text-[#111111] mb-2">{language === 'ta' ? 'கார்ட்டில் சேர்க்கப்பட்டது!' : 'Added to Cart!'}</h3>
+                    <p className="text-stone-500 text-sm mb-8 font-medium">
+                      {qty}x {selectedPackOption?.label ?? product.unitLabel} {displayName}
+                    </p>
+                    
+                    <div className="flex flex-col gap-3 w-full">
+                      <a
+                        href="/cart"
+                        className="w-full rounded-full bg-[#D4AF37] hover:bg-[#b0902c] transition-colors py-4 text-xs tracking-widest uppercase font-bold text-white flex items-center justify-center shadow-lg"
+                      >
+                        {language === 'ta' ? 'கார்ட்டைக் காண்க' : 'View Cart & Checkout'}
+                      </a>
+                      <button
+                        onClick={onClose}
+                        className="w-full rounded-full border border-stone-200 hover:border-[#111111] hover:bg-stone-50 py-4 text-xs tracking-widest uppercase font-bold text-[#111111] transition-colors"
+                      >
+                        {language === 'ta' ? 'தொடர்ந்து வாங்க' : 'Continue Shopping'}
+                      </button>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         </div>
       )}

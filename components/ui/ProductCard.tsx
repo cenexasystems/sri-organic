@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Star } from 'lucide-react';
-import { Product } from '@/store/store';
+import { Product, useLanguageStore } from '@/store/store';
 import { formatCurrency } from '@/lib/retail';
 import { getProductImage, onImgError } from '@/lib/productImages';
 
@@ -10,9 +10,13 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, onClick }: ProductCardProps) {
+  const { language } = useLanguageStore();
   const lowestPrice = product.predefinedOptions.length > 0 
     ? Math.min(...product.predefinedOptions.map(o => o.quantity * product.price))
     : product.price;
+  
+  const displayName = language === 'ta' && product.nameTa ? product.nameTa : product.name;
+  const secondaryName = language === 'ta' ? product.name : product.nameTa;
 
   return (
     <div
@@ -40,10 +44,10 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
       <div className="p-4 sm:p-5 flex flex-col flex-grow space-y-3 bg-white">
         <div className="space-y-1">
           <h3 className="font-black text-base text-[#111111] group-hover:text-[#D4AF37] transition-colors leading-tight line-clamp-2">
-            {product.name}
+            {displayName}
           </h3>
-          {product.nameTa && (
-            <p className="text-xs font-bold text-[#78716c] opacity-80">{product.nameTa}</p>
+          {secondaryName && (
+            <p className="text-xs font-bold text-[#78716c] opacity-80">{secondaryName}</p>
           )}
         </div>
 
@@ -51,7 +55,7 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
         <div className="flex items-center justify-between pt-2 mt-auto border-t border-[#e5e7eb]/30">
           <div className="min-w-0">
             <span className="text-[9px] font-bold text-[#95A28F] uppercase tracking-wider block">
-              Starting at
+              {language === 'ta' ? 'ஆரம்ப விலை' : 'Starting at'}
             </span>
             <span className="text-lg font-black text-[#111111] block">
               {formatCurrency(lowestPrice)}
