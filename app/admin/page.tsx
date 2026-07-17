@@ -1202,23 +1202,28 @@ export default function AdminPortal() {
                       exit={{ opacity: 0, height: 0, marginTop: 0 }}
                       className="flex flex-wrap items-center gap-4 bg-[#FAF9F5] p-4 rounded-2xl border border-outline-variant/20 shadow-sm overflow-hidden"
                     >
-                      <div className="flex items-center gap-3">
-                        <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">From:</span>
-                        <input
-                          type="date"
-                          value={whatsappCustomStart}
-                          onChange={(e) => setWhatsappCustomStart(e.target.value)}
-                          className="text-sm font-medium bg-white border border-outline-variant/30 rounded-lg px-3 py-2 focus:outline-none focus:border-secondary"
-                        />
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">To:</span>
-                        <input
-                          type="date"
-                          value={whatsappCustomEnd}
-                          onChange={(e) => setWhatsappCustomEnd(e.target.value)}
-                          className="text-sm font-medium bg-white border border-outline-variant/30 rounded-lg px-3 py-2 focus:outline-none focus:border-secondary"
-                        />
+                      <div className="flex flex-col gap-2">
+                        <div className="flex flex-wrap items-center gap-4">
+                          <div className="flex items-center gap-3">
+                            <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">From:</span>
+                            <input
+                              type="date"
+                              value={whatsappCustomStart}
+                              onChange={(e) => setWhatsappCustomStart(e.target.value)}
+                              className="text-sm font-medium bg-white border border-outline-variant/30 rounded-lg px-3 py-2 focus:outline-none focus:border-secondary"
+                            />
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">To:</span>
+                            <input
+                              type="date"
+                              value={whatsappCustomEnd}
+                              onChange={(e) => setWhatsappCustomEnd(e.target.value)}
+                              className="text-sm font-medium bg-white border border-outline-variant/30 rounded-lg px-3 py-2 focus:outline-none focus:border-secondary"
+                            />
+                          </div>
+                        </div>
+                        <p className="text-[10px] text-gray-500 font-medium italic">*Leave 'To' blank to include all records up to today.</p>
                       </div>
                     </motion.div>
                   )}
@@ -1933,7 +1938,7 @@ export default function AdminPortal() {
                             className="w-full bg-white border border-outline-variant/35 rounded-xl px-3 py-1.5 text-xs text-primary font-semibold focus:outline-none focus:border-primary"
                           />
                         </div>
-                        <div className="space-y-1">
+                        <div className="space-y-1 flex flex-col justify-start">
                           <label className="block text-[9px] font-bold text-[#4B5563] uppercase tracking-wider">End Date</label>
                           <input
                             type="date"
@@ -1941,6 +1946,7 @@ export default function AdminPortal() {
                             onChange={(e) => setAnalyticsEndDate(e.target.value)}
                             className="w-full bg-white border border-outline-variant/35 rounded-xl px-3 py-1.5 text-xs text-primary font-semibold focus:outline-none focus:border-primary"
                           />
+                          <p className="text-[9px] text-gray-500 font-medium italic mt-1 pl-1 leading-tight">*Leave blank to include everything up to today.</p>
                         </div>
                       </div>
                     )}
