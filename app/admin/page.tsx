@@ -205,9 +205,11 @@ export default function AdminPortal() {
   };
 
   const removeSizeField = (index: number) => {
-    const newSizes = [...prodSizes];
-    newSizes.splice(index, 1);
-    setProdSizes(newSizes);
+    if (window.confirm("Are you sure you want to delete this size option?")) {
+      const newSizes = [...prodSizes];
+      newSizes.splice(index, 1);
+      setProdSizes(newSizes);
+    }
   };
 
   const handleSizeChangeInForm = (index: number, field: 'size' | 'price' | 'isAvailable', value: any) => {
@@ -472,12 +474,14 @@ export default function AdminPortal() {
   };
 
   const deleteCoupon = async (code: string) => {
-    try {
-      await dbDeleteCoupon(code);
-      setCoupons(coupons.filter(c => c.code !== code));
-    } catch (err) {
-      console.error(err);
-      alert('Failed to delete coupon');
+    if (window.confirm(`Are you sure you want to delete coupon "${code}"?`)) {
+      try {
+        await dbDeleteCoupon(code);
+        setCoupons(coupons.filter(c => c.code !== code));
+      } catch (err) {
+        console.error(err);
+        alert('Failed to delete coupon');
+      }
     }
   };
 
@@ -1573,28 +1577,21 @@ export default function AdminPortal() {
                                   placeholder="0"
                                   value={it.price || ''}
                                   onChange={(e) => updateBillingItem(it.id, 'price', Number(e.target.value))}
-                                  className="w-full bg-white border border-outline-variant/35 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-primary transition-all text-[#1F2937] font-semibold"
+                                  onWheel={(e) => (e.target as HTMLElement).blur()}
+                                  className="w-full bg-white border border-outline-variant/35 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-primary transition-all text-[#1F2937] font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                 />
                               </div>
 
-                              {/* Qty Counter */}
                               <div className="md:col-span-2 space-y-1.5">
                                 <label className="block text-[10px] font-bold text-[#4B5563] uppercase tracking-wider">Qty</label>
-                                <div className="flex items-center border border-outline-variant/35 rounded-xl bg-white overflow-hidden">
-                                  <button
-                                    onClick={() => updateBillingItem(it.id, 'quantity', Math.max(1, it.quantity - 1))}
-                                    className="px-3 py-2.5 hover:bg-[#FAF9F6] font-bold text-xs text-[#4B5563] cursor-pointer"
-                                  >
-                                    -
-                                  </button>
-                                  <span className="flex-grow text-center font-bold text-xs text-primary">{it.quantity}</span>
-                                  <button
-                                    onClick={() => updateBillingItem(it.id, 'quantity', it.quantity + 1)}
-                                    className="px-3 py-2.5 hover:bg-[#FAF9F6] font-bold text-xs text-[#4B5563] cursor-pointer"
-                                  >
-                                    +
-                                  </button>
-                                </div>
+                                <input
+                                  type="number"
+                                  min="1"
+                                  value={it.quantity || 1}
+                                  onChange={(e) => updateBillingItem(it.id, 'quantity', Math.max(1, Number(e.target.value)))}
+                                  onWheel={(e) => (e.target as HTMLElement).blur()}
+                                  className="w-full bg-white border border-outline-variant/35 rounded-xl px-3.5 py-2.5 text-xs text-center focus:outline-none focus:border-primary transition-all text-[#1F2937] font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                />
                               </div>
 
                               {/* Delete Action */}
@@ -1698,7 +1695,8 @@ export default function AdminPortal() {
                               placeholder="0"
                               value={billingDiscountValue || ''}
                               onChange={(e) => setBillingDiscountValue(Number(e.target.value))}
-                              className="flex-grow px-3 py-2 text-xs focus:outline-none text-[#1F2937] font-semibold"
+                              onWheel={(e) => (e.target as HTMLElement).blur()}
+                              className="flex-grow px-3 py-2 text-xs focus:outline-none text-[#1F2937] font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                             />
                           </div>
                         </div>
@@ -1712,7 +1710,8 @@ export default function AdminPortal() {
                               placeholder="0"
                               value={billingDeliveryFee || ''}
                               onChange={(e) => setBillingDeliveryFee(Number(e.target.value))}
-                              className="w-full bg-white border border-outline-variant/35 rounded-xl px-3 py-1.5 text-xs text-right focus:outline-none text-[#1F2937] font-semibold"
+                              onWheel={(e) => (e.target as HTMLElement).blur()}
+                              className="w-full bg-white border border-outline-variant/35 rounded-xl px-3 py-1.5 text-xs text-right focus:outline-none text-[#1F2937] font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                             />
                           </div>
                         </div>
@@ -1753,7 +1752,8 @@ export default function AdminPortal() {
                               placeholder="0.00"
                               value={billingAmountReceived || ''}
                               onChange={(e) => setBillingAmountReceived(Number(e.target.value))}
-                              className="w-full bg-white border border-outline-variant/35 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-primary transition-all text-[#1F2937] font-semibold"
+                              onWheel={(e) => (e.target as HTMLElement).blur()}
+                              className="w-full bg-white border border-outline-variant/35 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-primary transition-all text-[#1F2937] font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                             />
                           </div>
                           {billingAmountReceived > 0 && billingAmountReceived >= getGrandTotal() && (
@@ -2636,8 +2636,18 @@ export default function AdminPortal() {
 
                         {/* Right column: Promo Campaign Performance */}
                         <div className="lg:col-span-8 bg-white border border-[#E5E7EB] rounded-3xl p-6 shadow-sm space-y-4">
-                          <div className="pb-3 border-b border-[#E5E7EB]">
+                          <div className="pb-3 border-b border-[#E5E7EB] flex justify-between items-center">
                             <h3 className="text-sm font-bold text-primary font-poppins uppercase tracking-wider font-poppins">Promo Campaign Performance</h3>
+                            <div className="relative w-full max-w-xs">
+                              <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+                              <input
+                                type="text"
+                                placeholder="Search by ID or customer..."
+                                value={analyticsCouponSearch}
+                                onChange={(e) => setAnalyticsCouponSearch(e.target.value)}
+                                className="w-full pl-9 pr-4 py-1.5 bg-[#FAF9F6] border border-outline-variant/35 rounded-xl text-xs focus:outline-none focus:border-primary transition-all text-[#1F2937] font-semibold"
+                              />
+                            </div>
                           </div>
                           
                           <div className="overflow-x-auto">
@@ -2651,7 +2661,9 @@ export default function AdminPortal() {
                                 </tr>
                               </thead>
                               <tbody>
-                                {promoCampaignOrders.map((o, idx) => {
+                                {promoCampaignOrders
+                                  .filter(o => !analyticsCouponSearch || (o.customerName && o.customerName.toLowerCase().includes(analyticsCouponSearch.toLowerCase())) || (o.id.toLowerCase().includes(analyticsCouponSearch.toLowerCase())))
+                                  .map((o, idx) => {
                                   const discAmt = (o.couponDiscount || 0) + (o.manualDiscount || 0);
                                   return (
                                     <tr key={idx} className="border-b border-[#F3F4F6] hover:bg-[#FAF9F6]/30 font-semibold text-primary">
@@ -2821,8 +2833,8 @@ export default function AdminPortal() {
                         No billing records found matching the active filters.
                       </div>
                     ) : (
-                      <div className="overflow-x-auto w-full">
-                        <table className="w-full text-left text-sm min-w-[800px]">
+                      <div className="overflow-x-auto w-full" style={{ transform: 'rotateX(180deg)' }}>
+                        <table className="w-full text-left text-sm min-w-[800px]" style={{ transform: 'rotateX(180deg)' }}>
                           <thead>
                           <tr className="bg-surface-container-low text-primary font-bold border-b border-outline-variant/25">
                             <th className="px-6 py-4">Bill ID</th>
@@ -3576,7 +3588,13 @@ export default function AdminPortal() {
                                   {cp.discount}% off <span className="text-on-surface-variant/70 font-medium">· min ₹{cp.minOrder}</span>
                                 </div>
                                 <div className="text-[11px] text-on-surface-variant flex flex-wrap items-center gap-1.5 font-medium">
-                                  <span>Used {cp.usedCount} times</span>
+                                  <span>Used {cp.usedCount} times {cp.usageLimit > 0 ? `/ ${cp.usageLimit} max` : ''}</span>
+                                  {cp.usageLimit > 0 && (
+                                    <>
+                                      <span>•</span>
+                                      <span className="text-primary font-bold">{Math.max(0, cp.usageLimit - cp.usedCount)} uses left</span>
+                                    </>
+                                  )}
                                   {cp.expiryDate && (
                                     <>
                                       <span>•</span>

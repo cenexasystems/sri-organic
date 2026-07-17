@@ -44,9 +44,9 @@ export default function Footer() {
                 <MapPin className="w-4 h-4 shrink-0 mt-0.5 text-[#F3D78E]" />
                 <span>47, Ambal Nagar, Andarkuppam,<br/>Nedumbarappakkam Road,<br/>Velammal School 9th gate opposite,<br/>Ponneri - 601 204.</span>
               </li>
-              <li className="flex items-center gap-3">
-                <Phone className="w-4 h-4 shrink-0 text-[#F3D78E]" />
-                <span>9894609057, 7094501036</span>
+              <li className="flex items-start gap-3">
+                <Phone className="w-4 h-4 shrink-0 mt-0.5 text-[#F3D78E]" />
+                <span>9894609057<br/>7094501036</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 shrink-0 text-[#F3D78E]" />

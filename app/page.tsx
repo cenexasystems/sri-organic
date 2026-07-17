@@ -440,14 +440,14 @@ export default function Home() {
                   <MapPin className="w-4 h-4 text-[#D4AF37] shrink-0 mt-1"/> 
                   <span>47, Ambal Nagar, Andarkuppam, Nedumbarappakkam Road,<br/> Velammal School 9th gate opposite,<br/> Ponneri - 601 204.</span>
                 </p>
-                <p className="flex items-center gap-3"><span className="w-4 text-center text-[#D4AF37]">📞</span> 9894609057, 7094501036</p>
-                <p className="text-[#D4AF37] pt-4 border-t border-stone-200 mt-4 inline-block">{language === 'ta' ? 'திறந்திருக்கும் நேரம் திங்கள்-சனி: காலை 9 - இரவு 7' : 'Open Mon-Sat: 9am - 7pm'}</p>
+                <p className="flex items-start gap-3"><span className="w-4 text-center text-[#D4AF37] mt-0.5">📞</span> <span>9894609057<br/>7094501036</span></p>
+                <p className="text-[#D4AF37] pt-4 border-t border-stone-200 mt-4 block">{language === 'ta' ? 'திறந்திருக்கும் நேரம் திங்கள்-சனி: காலை 9 - இரவு 7' : 'Open Mon-Sat: 9am - 7pm'}</p>
               </div>
             </div>
             
             <div className="w-full md:w-2/3 aspect-square md:aspect-[21/9] bg-white relative overflow-hidden rounded-[40px] shadow-xl border border-stone-200 group">
                <iframe 
-                 src="https://maps.google.com/maps?q=47,Ambal+Nagar,Andarkuppam,Ponneri,Tamil+Nadu,601204&t=m&z=16&ie=UTF8&iwloc=&output=embed" 
+                 src="https://maps.google.com/maps?q=Andarkuppam,Ponneri,Tamil+Nadu,601204&t=m&z=16&ie=UTF8&iwloc=&output=embed" 
                  className="absolute inset-0 w-full h-full border-0"
                  allowFullScreen
                  loading="lazy"
@@ -457,7 +457,7 @@ export default function Home() {
                {/* Center Marker / Button */}
                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                  <a 
-                   href="https://www.google.com/maps/search/?api=1&query=47+Ambal+Nagar+Ponneri+Tamil+Nadu+601204" 
+                   href="https://www.google.com/maps/search/?api=1&query=Andarkuppam+Ponneri+Tamil+Nadu+601204" 
                    target="_blank" 
                    rel="noopener noreferrer"
                    className="pointer-events-auto bg-white px-6 py-3.5 rounded-full text-[#111111] font-bold text-[15px] tracking-wide flex items-center gap-2.5 shadow-[0_4px_20px_rgba(0,0,0,0.15)] transition-all hover:scale-105 active:scale-95 group-hover:-translate-y-1 group-hover:shadow-[0_8px_30px_rgba(0,0,0,0.2)] border border-stone-100"
