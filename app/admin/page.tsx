@@ -109,6 +109,8 @@ export default function AdminPortal() {
   const [analyticsEndDate, setAnalyticsEndDate] = useState('');
   const [analyticsSubTab, setAnalyticsSubTab] = useState<'revenue' | 'today' | 'products' | 'coupons'>('revenue');
   const [analyticsTodaySearchPhone, setAnalyticsTodaySearchPhone] = useState('');
+  const [analyticsCouponSearch, setAnalyticsCouponSearch] = useState('');
+  const [analyticsProductSearch, setAnalyticsProductSearch] = useState('');
 
   // Category and Coupon list state
   const [categories, setCategories] = useState<string[]>(['Hair Care', 'Skin Care', 'Nutrition', 'Pooja Items']);
@@ -1225,7 +1227,7 @@ export default function AdminPortal() {
                     <span className="block text-4xl font-extrabold text-[#D97706] text-center">{pendingOrdersCount}</span>
                   </div>
                   <div className="bg-[#EFF6FF] border border-outline-variant/20 rounded-2xl p-6 shadow-sm space-y-3 flex flex-col justify-between">
-                    <span className="block text-[11px] font-bold text-[#2563EB] uppercase tracking-widest text-center">Contacted</span>
+                    <span className="block text-[11px] font-bold text-[#2563EB] uppercase tracking-widest text-center">Processing</span>
                     <span className="block text-4xl font-extrabold text-[#2563EB] text-center">{contactedOrdersCount}</span>
                   </div>
                   <div className="bg-[#F0FDF4] border border-outline-variant/20 rounded-2xl p-6 shadow-sm space-y-3 flex flex-col justify-between">
@@ -1319,7 +1321,7 @@ export default function AdminPortal() {
                                     }`}
                                   >
                                     <option value="Pending">Pending</option>
-                                    <option value="Processing">Contacted</option>
+                                    <option value="Processing">Processing</option>
                                     <option value="Completed">Completed</option>
                                     <option value="Cancelled">Cancelled</option>
                                   </select>
@@ -2536,8 +2538,18 @@ export default function AdminPortal() {
                     const totalRevPeriod = topItemsList.reduce((sum, it) => sum + it.revenue, 0) || 1;
                     return (
                       <div className="bg-white border border-outline-variant/20 rounded-3xl p-6 shadow-sm space-y-4">
-                        <div className="pb-3 border-b border-outline-variant/10">
+                        <div className="pb-3 border-b border-outline-variant/10 flex justify-between items-center">
                           <h3 className="text-sm font-bold text-primary font-poppins uppercase tracking-wider font-poppins">Product Sales Leaderboard</h3>
+                          <div className="relative w-full max-w-xs">
+                            <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+                            <input
+                              type="text"
+                              placeholder="Search products..."
+                              value={analyticsProductSearch}
+                              onChange={(e) => setAnalyticsProductSearch(e.target.value)}
+                              className="w-full pl-9 pr-4 py-1.5 bg-[#FAF9F6] border border-outline-variant/35 rounded-xl text-xs focus:outline-none focus:border-primary transition-all text-[#1F2937] font-semibold"
+                            />
+                          </div>
                         </div>
 
                         {/* Leaderboard Table */}
@@ -2553,7 +2565,9 @@ export default function AdminPortal() {
                               </tr>
                             </thead>
                             <tbody>
-                              {topItemsList.map((item, idx) => {
+                              {topItemsList
+                                .filter(item => item.name.toLowerCase().includes(analyticsProductSearch.toLowerCase()))
+                                .map((item, idx) => {
                                 const pct = (item.revenue / totalRevPeriod) * 100;
                                 return (
                                   <tr key={idx} className="border-b border-[#F3F4F6] hover:bg-[#FAF9F6]/30 font-semibold text-primary">
@@ -3425,7 +3439,7 @@ export default function AdminPortal() {
                         <div className="flex gap-2">
                           <input
                             type="text"
-                            placeholder="e.g. PILLOW"
+                            placeholder="e.g. Rice"
                             value={newCouponCode}
                             onChange={(e) => setNewCouponCode(e.target.value.toUpperCase())}
                             className="flex-grow border border-outline-variant/35 rounded-xl py-3 px-4 text-xs text-primary focus:outline-none focus:border-primary uppercase font-bold"

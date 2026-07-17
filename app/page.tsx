@@ -152,7 +152,7 @@ export default function Home() {
                 <div className="w-8 h-[1px] bg-[#D4AF37]"></div>
                 <span className="text-[#D4AF37] text-[10px] font-bold tracking-[0.2em] uppercase">{language === 'ta' ? 'எங்கள் பாரம்பரியம்' : 'Our Heritage'}</span>
               </div>
-              <h2 className="text-4xl md:text-6xl font-bold text-[#111111] tracking-tight mb-8">{language === 'ta' ? 'எங்களை பற்றி.' : 'About Us.'}</h2>
+              <h2 className="text-3xl md:text-6xl font-bold text-[#111111] tracking-tight mb-8 break-words max-w-full">{language === 'ta' ? 'எங்களை பற்றி.' : 'About Us.'}</h2>
               <p className="text-stone-600 text-lg leading-relaxed mb-6">
                 {language === 'ta' 
                   ? 'ஸ்ரீ ஆர்கானிக் பாரம்பரிய விவசாய நடைமுறைகள் மீதான ஆழ்ந்த மரியாதையிலிருந்து பிறந்தது. மூன்று தசாப்தங்களுக்கும் மேலாக, பாரம்பரிய அரிசி, மரச்செக்கு எண்ணெய்கள் மற்றும் மசாலாப் பொருட்களை பயிரிட உள்ளூர் விவசாயிகளுடன் நாங்கள் கூட்டு சேர்ந்துள்ளோம்.'
@@ -221,7 +221,7 @@ export default function Home() {
                   <div className="w-8 h-[1px] bg-[#D4AF37]"></div>
                   <span className="text-[#D4AF37] text-[10px] font-bold tracking-[0.2em] uppercase">{language === 'ta' ? 'தொகுப்பு' : 'The Collection'}</span>
                 </div>
-                <h2 className="text-4xl md:text-6xl font-bold text-[#111111] tracking-tight">{language === 'ta' ? 'தயாரிப்புகள்.' : 'Products.'}</h2>
+                <h2 className="text-3xl md:text-6xl font-bold text-[#111111] tracking-tight break-words max-w-full">{language === 'ta' ? 'தயாரிப்புகள்.' : 'Products.'}</h2>
               </div>
               <Link href="/products" className="group flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-[#111111] hover:text-[#D4AF37] transition-colors pb-2 border-b border-[#111111] hover:border-[#D4AF37]">
                 {language === 'ta' ? 'முழு அறுவடையைக் காண்க' : 'View Full Harvest'}

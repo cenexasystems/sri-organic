@@ -113,7 +113,7 @@ export default function CustomFormula() {
               <div className="w-8 h-[1px] bg-[#D4AF37]"></div>
               <span className="text-[#D4AF37] text-[10px] font-bold tracking-[0.2em] uppercase">{language === 'ta' ? 'எங்கள் சலுகைகள்' : 'Our Offerings'}</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-[#111111] tracking-tight mb-12">
+            <h2 className="text-3xl md:text-5xl font-bold text-[#111111] tracking-tight mb-12 break-words max-w-full">
               {language === 'ta' ? 'உங்களுக்காக தொகுக்கப்பட்டது.' : 'Curated for You.'}
             </h2>
             
