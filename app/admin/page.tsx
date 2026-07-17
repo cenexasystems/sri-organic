@@ -1979,9 +1979,9 @@ export default function AdminPortal() {
                     return 'ONLINE';
                   };
 
-                  // Filter POS bills based on period selection
+                    // Filter POS bills based on period selection
                   const getFilteredAnalyticsBills = () => {
-                    let list = orders.filter(o => o.id.startsWith('POS-') || o.id.startsWith('INV-'));
+                    let list = orders.filter(o => (o.id.startsWith('POS-') || o.id.startsWith('INV-')) && o.status !== 'Cancelled');
                     const now = new Date();
                     
                     if (analyticsPeriodFilter === 'today') {
@@ -2377,6 +2377,7 @@ export default function AdminPortal() {
                     const todayDateStr = new Date().toDateString();
                     const todayOrdersAll = orders.filter(o => 
                       (o.id.startsWith('POS-') || o.id.startsWith('INV-')) && 
+                      o.status !== 'Cancelled' &&
                       new Date(o.createdAt).toDateString() === todayDateStr
                     );
                     
@@ -2953,10 +2954,33 @@ export default function AdminPortal() {
                       >
                         <div className="flex justify-between items-center border-b border-outline-variant/20 pb-4">
                           <div>
-                            <h4 className="text-lg font-bold text-primary">{selectedOrder.id}</h4>
+                            <h4 className="text-lg font-bold text-primary flex items-center gap-2">
+                              {selectedOrder.id}
+                              {selectedOrder.status === 'Cancelled' && (
+                                <span className="bg-red-100 text-red-700 text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider">Cancelled</span>
+                              )}
+                            </h4>
                             <span className="text-xs text-on-surface-variant">
                               Placed: {new Date(selectedOrder.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' })}
                             </span>
+                          </div>
+                          <div>
+                            <select
+                              value={selectedOrder.status}
+                              onChange={(e) => updateOrderStatus(selectedOrder.id, e.target.value as Order['status'])}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-bold border focus:outline-none transition-all cursor-pointer ${
+                                selectedOrder.status === 'Completed'
+                                  ? 'text-[#16A34A] border-[#16A34A]/30 bg-[#F0FDF4]'
+                                  : selectedOrder.status === 'Processing'
+                                  ? 'text-[#2563EB] border-[#2563EB]/30 bg-[#EFF6FF]'
+                                  : selectedOrder.status === 'Cancelled'
+                                  ? 'text-[#DC2626] border-[#DC2626]/30 bg-[#FEF2F2]'
+                                  : 'text-[#D97706] border-[#D97706]/30 bg-[#FFFBEB]'
+                              }`}
+                            >
+                              <option value="Completed">Completed</option>
+                              <option value="Cancelled">Cancelled</option>
+                            </select>
                           </div>
                         </div>
 

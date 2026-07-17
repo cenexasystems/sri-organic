@@ -106,8 +106,7 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
               />
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-primary font-poppins uppercase">Sri Organic</h1>
-              <p className="text-xs text-on-surface-variant tracking-wider font-semibold">Clinical Botanical Solutions</p>
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-primary font-poppins uppercase mt-2">Sri Organic</h1>
             </div>
           </div>
           <div className="text-left sm:text-right">
@@ -129,9 +128,10 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
           <div className="sm:text-right">
             <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Issued By</h3>
             <p className="text-sm font-bold text-primary mb-1">Sri Organic</p>
-            <p className="text-xs text-on-surface-variant mb-1">Coimbatore, Tamil Nadu</p>
-            <p className="text-xs text-on-surface-variant mb-1">sriorganic@example.com</p>
-            <p className="text-xs text-on-surface-variant">+91 79041 99050</p>
+            <p className="text-xs text-on-surface-variant mb-0.5">47, Ambal Nagar, Andarkuppam,</p>
+            <p className="text-xs text-on-surface-variant mb-0.5">Nedumbarappakkam Road, Velammal School 9th gate opp,</p>
+            <p className="text-xs text-on-surface-variant mb-1">Ponneri - 601 204.</p>
+            <p className="text-xs text-on-surface-variant mt-2 font-medium">+91 98946 09057 | +91 70945 01036</p>
           </div>
         </div>
 
