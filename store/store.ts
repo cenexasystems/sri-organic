@@ -2,6 +2,25 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { fetchProducts as dbFetchProducts } from '@/lib/db';
 
+export interface LanguageStore {
+  language: 'en' | 'ta';
+  setLanguage: (lang: 'en' | 'ta') => void;
+  toggleLanguage: () => void;
+}
+
+export const useLanguageStore = create<LanguageStore>()(
+  persist(
+    (set) => ({
+      language: 'en',
+      setLanguage: (language) => set({ language }),
+      toggleLanguage: () => set((state) => ({ language: state.language === 'en' ? 'ta' : 'en' })),
+    }),
+    {
+      name: 'language-storage',
+    }
+  )
+);
+
 export interface Product {
   id: string;
   name: string;

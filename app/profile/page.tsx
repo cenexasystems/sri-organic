@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/useAuth';
+import { useLanguageStore } from '@/store/store';
 import { fetchOrdersByEmail } from '@/lib/db';
 import type { Order } from '@/lib/db';
 import { LogOut, Package, User, ChevronRight, Clock, CheckCircle2 } from 'lucide-react';
@@ -12,6 +12,7 @@ import Link from 'next/link';
 export default function Profile() {
   const router = useRouter();
   const { user, signOut, loading } = useAuth();
+  const { language } = useLanguageStore();
   
   const [orders, setOrders] = useState<Order[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
@@ -56,14 +57,14 @@ export default function Profile() {
               <div className="w-20 h-20 rounded-full bg-stone-100 border-4 border-white shadow-md flex items-center justify-center mb-4">
                 <User size={32} className="text-stone-400" />
               </div>
-              <h2 className="text-2xl font-bold text-[#111111] tracking-tight">{user.user_metadata?.full_name || "Valued Customer"}</h2>
+              <h2 className="text-2xl font-bold text-[#111111] tracking-tight">{user.user_metadata?.full_name || (language === 'ta' ? 'மதிப்பிற்குரிய வாடிக்கையாளர்' : 'Valued Customer')}</h2>
               <p className="text-sm font-medium text-stone-500 mt-1">{user.email}</p>
             </div>
             
             <div className="flex flex-col gap-2">
               <button className="flex items-center justify-between w-full p-4 rounded-2xl bg-stone-50 text-[#111111] font-bold text-sm tracking-wider">
                 <div className="flex items-center gap-3">
-                  <Package size={18} className="text-[#D4AF37]" /> Order History
+                  <Package size={18} className="text-[#D4AF37]" /> {language === 'ta' ? 'ஆர்டர் வரலாறு' : 'Order History'}
                 </div>
                 <ChevronRight size={16} className="text-stone-400" />
               </button>
@@ -72,7 +73,7 @@ export default function Profile() {
                 className="flex items-center justify-between w-full p-4 rounded-2xl hover:bg-rose-50 text-rose-500 font-bold text-sm tracking-wider transition-colors group mt-4"
               >
                 <div className="flex items-center gap-3">
-                  <LogOut size={18} className="text-rose-400 group-hover:text-rose-500" /> Sign Out
+                  <LogOut size={18} className="text-rose-400 group-hover:text-rose-500" /> {language === 'ta' ? 'வெளியேறு' : 'Sign Out'}
                 </div>
               </button>
             </div>
@@ -82,8 +83,8 @@ export default function Profile() {
         {/* Right Content - Order History */}
         <div className="w-full lg:w-2/3 flex flex-col gap-8">
           <div>
-            <h1 className="text-3xl font-bold text-[#111111] tracking-tight mb-2">Order History</h1>
-            <p className="text-stone-500">Track your past purchases and current shipments.</p>
+            <h1 className="text-3xl font-bold text-[#111111] tracking-tight mb-2">{language === 'ta' ? 'ஆர்டர் வரலாறு' : 'Order History'}</h1>
+            <p className="text-stone-500">{language === 'ta' ? 'உங்கள் கடந்த கால வாங்குதல்கள் மற்றும் தற்போதைய ஏற்றுமதிகளைக் கண்காணிக்கவும்.' : 'Track your past purchases and current shipments.'}</p>
           </div>
 
           <div className="flex flex-col gap-6">
@@ -93,14 +94,13 @@ export default function Profile() {
               </div>
             ) : orders.length === 0 ? (
               <div className="text-center py-12 bg-white rounded-3xl shadow-sm border border-stone-200">
-                <p className="text-stone-500 font-medium">No orders found.</p>
+                <p className="text-stone-500 font-medium">{language === 'ta' ? 'ஆர்டர்கள் எதுவும் கிடைக்கவில்லை.' : 'No orders found.'}</p>
               </div>
             ) : (
               orders.map((order) => (
-                <motion.div 
+                <div 
                   key={order.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  style={{ opacity: 1, transform: 'translateY(0)' }}
                   className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-stone-200"
                 >
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-6 border-b border-stone-100">
@@ -113,11 +113,19 @@ export default function Profile() {
                     <div className="flex items-center gap-2">
                       {order.status === 'Completed' ? (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest">
-                          <CheckCircle2 size={12} /> {order.status}
+                          <CheckCircle2 size={12} /> {language === 'ta' ? 'முடிந்தது' : 'Completed'}
+                        </span>
+                      ) : order.status === 'Cancelled' ? (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-widest">
+                          <Clock size={12} /> {language === 'ta' ? 'ரத்து செய்யப்பட்டது' : 'Cancelled'}
+                        </span>
+                      ) : order.status === 'Processing' ? (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-[10px] font-black uppercase tracking-widest">
+                          <Clock size={12} /> {language === 'ta' ? 'செயலாக்கத்தில்' : 'Processing'}
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-600 text-[10px] font-black uppercase tracking-widest">
-                          <Clock size={12} /> {order.status}
+                          <Clock size={12} /> {order.status === 'Pending' && language === 'ta' ? 'நிலுவையில்' : order.status}
                         </span>
                       )}
                     </div>
@@ -141,17 +149,17 @@ export default function Profile() {
                   </div>
 
                   <div className="flex justify-between items-center mt-6 pt-6 border-t border-stone-100">
-                    <span className="text-sm font-bold text-stone-500 uppercase tracking-widest">Total Amount</span>
+                    <span className="text-sm font-bold text-stone-500 uppercase tracking-widest">{language === 'ta' ? 'மொத்த தொகை' : 'Total Amount'}</span>
                     <span className="text-xl font-black text-[#111111]">₹{(order.totalPrice || 0).toLocaleString('en-IN')}</span>
                   </div>
-                </motion.div>
+                </div>
               ))
             )}
           </div>
           
           <div className="text-center pt-8">
             <Link href="/products" className="inline-flex items-center text-sm font-bold text-[#D4AF37] hover:text-[#111111] transition-colors">
-              Continue Shopping <ChevronRight size={16} className="ml-1" />
+              {language === 'ta' ? 'தொடர்ந்து வாங்க' : 'Continue Shopping'} <ChevronRight size={16} className="ml-1" />
             </Link>
           </div>
         </div>

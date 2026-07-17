@@ -33,6 +33,7 @@ export default function CartPage() {
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  const [couponError, setCouponError] = useState("");
 
   const subtotal = items.reduce((total, item) => {
     // Find the specific predefined option to get the correct price
@@ -55,6 +56,7 @@ export default function CartPage() {
     if (!couponCode.trim()) return;
     
     setIsApplyingCoupon(true);
+    setCouponError("");
     try {
       const coupons = await fetchCoupons();
       const validCoupon = coupons.find(c => 
@@ -64,21 +66,21 @@ export default function CartPage() {
 
       if (validCoupon) {
         if (validCoupon.usageLimit > 0 && validCoupon.usedCount >= validCoupon.usageLimit) {
-          alert("This coupon has reached its usage limit and is no longer valid.");
+          setCouponError("This coupon has reached its usage limit and is no longer valid.");
           setAppliedCoupon(null);
         } else if (subtotal < validCoupon.minOrder) {
-          alert(`This coupon requires a minimum order of ₹${validCoupon.minOrder}`);
+          setCouponError(`This coupon requires a minimum order of ₹${validCoupon.minOrder}`);
           setAppliedCoupon(null);
         } else {
           setAppliedCoupon(validCoupon);
         }
       } else {
-        alert("Invalid or Expired Coupon Code");
+        setCouponError("Invalid or Expired Coupon Code");
         setAppliedCoupon(null);
       }
     } catch (err) {
       console.error(err);
-      alert("Failed to validate coupon");
+      setCouponError("Failed to validate coupon");
     } finally {
       setIsApplyingCoupon(false);
     }
@@ -349,7 +351,10 @@ export default function CartPage() {
                     <input 
                       type="text" 
                       value={couponCode}
-                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                      onChange={(e) => {
+                        setCouponCode(e.target.value.toUpperCase());
+                        setCouponError("");
+                      }}
                       placeholder="Enter code" 
                       className="flex-1 min-w-0 px-3 sm:px-4 py-2 sm:py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-[#D4AF37] text-white uppercase text-sm"
                     />
@@ -363,6 +368,9 @@ export default function CartPage() {
                   </div>
                   {appliedCoupon && (
                     <p className="text-emerald-400 text-xs font-bold">✓ Coupon '{appliedCoupon.code}' applied successfully!</p>
+                  )}
+                  {couponError && (
+                    <p className="text-rose-400 text-xs font-bold mt-1">✗ {couponError}</p>
                   )}
                 </div>
 
