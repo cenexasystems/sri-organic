@@ -3,8 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, Heart, Minus, Plus, ShoppingCart, Star, X } from 'lucide-react';
-import { useCartStore, useFavStore, Product } from '@/store/store';
-import { useLangStore } from '@/store/langStore';
+import { useCartStore, useFavStore, Product, useLanguageStore } from '@/store/store';
 import {
   calculateLineTotal,
   formatCurrency,
@@ -48,7 +47,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
   const addItem = useCartStore((state) => state.addItem);
   const removeItem = useCartStore((state) => state.removeItem);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
-  const { t, lang } = useLangStore();
+  const { language } = useLanguageStore();
   const { toggle, isFav } = useFavStore();
   
   const [selectedPackOption, setSelectedPackOption] = useState<{ quantity: number; unit: string; label: string; price: number; isAvailable?: boolean } | null>(null);
@@ -85,9 +84,9 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
 
   if (!product) return null;
 
-  const displayName = lang === 'ta' && product?.nameTa ? product.nameTa : product?.name ?? '';
-  const displayDesc = lang === 'ta' && product?.descriptionTa ? product.descriptionTa : product?.description ?? '';
-  const displayBen = lang === 'ta' && product?.benefitsTa ? product.benefitsTa : product?.benefits ?? '';
+  const displayName = language === 'ta' && product?.nameTa ? product.nameTa : product?.name ?? '';
+  const displayDesc = language === 'ta' && product?.descriptionTa ? product.descriptionTa : product?.description ?? '';
+  const displayBen = language === 'ta' && product?.benefitsTa ? product.benefitsTa : product?.benefits ?? '';
 
   const basePrice = product.offerPrice && product.offerPrice < product.price ? product.offerPrice : product.price;
   const currentPrice = selectedPackOption?.price ?? basePrice;
@@ -183,7 +182,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
                   onClick={onClose}
                   className="inline-flex items-center gap-2 rounded-full border border-[#e5e7eb]/60 bg-white px-3 py-2 text-[11px] font-black text-[#111111] shadow-sm"
                 >
-                  <X size={14} /> Close
+                  <X size={14} /> {language === 'ta' ? 'மூடு' : 'Close'}
                 </button>
               </div>
             </div>
@@ -205,32 +204,25 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
               </div>
 
               {/* Details Section */}
-              <div data-lenis-prevent="true" className="w-full md:w-1/2 px-8 pt-8 pb-0 md:px-12 md:pt-12 md:pb-0 flex flex-col gap-10 relative bg-white md:overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <div data-lenis-prevent="true" className="w-full md:w-1/2 px-5 pt-5 pb-0 md:px-12 md:pt-12 md:pb-0 flex flex-col gap-6 md:gap-10 relative bg-white md:overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 
                 {/* Header info */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#D4AF37]">{t('cat.' + product.category)}</p>
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-stone-50 px-2 py-1 text-[10px] font-black text-[#111111]">
-                      <Star size={10} className="fill-amber-400 text-amber-400" />
-                      {(product.rating || 4.7).toFixed(1)}
-                    </span>
-                  </div>
+                <div className="space-y-2 md:space-y-4">
                   <div>
-                    <h1 className="text-4xl md:text-5xl leading-[1.1] font-bold text-[#111111] tracking-tight">{displayName}</h1>
-                    {product.nameTa && <p className="text-lg font-medium text-stone-400 ta-text mt-2">{product.nameTa}</p>}
+                    <h1 className="text-2xl md:text-4xl leading-[1.1] font-bold text-[#111111] tracking-tight">{displayName}</h1>
+                    {product.nameTa && <p className="text-sm md:text-lg font-medium text-stone-400 ta-text mt-1">{product.nameTa}</p>}
                   </div>
 
-                  <div className="flex flex-wrap items-end gap-3 pt-4">
-                    <span className="text-3xl font-bold text-[#111111] leading-none">{formatCurrency(currentPrice)}</span>
-                    {hasDiscount && <span className="text-stone-400 line-through text-lg pb-1">{formatCurrency(product.price)}</span>}
+                  <div className="flex flex-wrap items-end gap-3 pt-2 md:pt-4">
+                    <span className="text-2xl md:text-3xl font-bold text-[#111111] leading-none">{formatCurrency(currentPrice)}</span>
+                    {hasDiscount && <span className="text-stone-400 line-through text-base md:text-lg pb-1">{formatCurrency(product.price)}</span>}
                     {discount > 0 && <span className="ml-2 rounded-full bg-[#D4AF37] px-3 py-1 text-[10px] font-black text-white uppercase tracking-widest pb-1">{discount}% OFF</span>}
                   </div>
                 </div>
 
                 {/* Pack Selection Desktop */}
-                <div className="border-t border-stone-100 pt-8">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-stone-400 mb-4">Select Quantity</p>
+                <div className="border-t border-stone-100 pt-4 md:pt-8">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-stone-400 mb-3 md:mb-4">{language === 'ta' ? 'அளவைத் தேர்ந்தெடுக்கவும்' : 'Select Quantity'}</p>
                   {getCompactPackOptions(product).length > 0 && (
                     <div className="flex flex-wrap gap-3">
                       {getCompactPackOptions(product).map((option) => {
@@ -262,26 +254,26 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
                 <div className="border-t border-stone-100 pt-4 grid">
                   <details className="group border-b border-stone-100 py-5" open>
                     <summary className="flex cursor-pointer list-none items-center justify-between text-xs tracking-widest uppercase font-bold text-[#111111]">
-                      <span>Description</span>
+                      <span>{language === 'ta' ? 'விளக்கம்' : 'Description'}</span>
                       <ChevronDown size={14} className="text-[#D4AF37] transition-transform group-open:rotate-180" />
                     </summary>
-                    <p className="mt-4 text-sm leading-relaxed text-stone-500 font-medium">{displayDesc || 'Carefully selected botanical product made for daily wellness.'}</p>
+                    <p className="mt-4 text-sm leading-relaxed text-stone-500 font-medium">{displayDesc || (language === 'ta' ? 'தினசரி ஆரோக்கியத்திற்காக கவனமாக தேர்ந்தெடுக்கப்பட்ட தாவரவியல் தயாரிப்பு.' : 'Carefully selected botanical product made for daily wellness.')}</p>
                   </details>
 
                   <details className="group border-b border-stone-100 py-5">
                     <summary className="flex cursor-pointer list-none items-center justify-between text-xs tracking-widest uppercase font-bold text-[#111111]">
-                      <span>Benefits & Care</span>
+                      <span>{language === 'ta' ? 'நன்மைகள் & கவனிப்பு' : 'Benefits & Care'}</span>
                       <ChevronDown size={14} className="text-[#D4AF37] transition-transform group-open:rotate-180" />
                     </summary>
                     <div className="mt-4 space-y-3 text-sm leading-relaxed text-stone-500 font-medium">
-                      <p className="whitespace-pre-line">{displayBen || 'Traditional Siddha preparation for daily household use.'}</p>
+                      <p className="whitespace-pre-line">{displayBen || (language === 'ta' ? 'தினசரி வீட்டு உபயோகத்திற்கான பாரம்பரிய சித்த தயாரிப்பு.' : 'Traditional Siddha preparation for daily household use.')}</p>
                       <p>{buildUsageNote(product)}</p>
                     </div>
                   </details>
                 </div>
 
                 {/* Add to Cart Footer */}
-                <div className="mt-auto sticky bottom-0 z-20 bg-white pt-4 pb-8 -mx-8 px-8 border-t border-stone-100 md:pb-12 md:-mx-12 md:px-12 flex flex-col gap-4 shadow-[0_-10px_20px_rgba(255,255,255,1)]">
+                <div className="mt-auto sticky bottom-0 z-20 bg-white pt-4 pb-8 -mx-5 px-5 border-t border-stone-100 md:pb-12 md:-mx-12 md:px-12 flex flex-col gap-4 shadow-[0_-10px_20px_rgba(255,255,255,1)]">
                   
                   {/* Selected pack info */}
                   <div className="flex items-center justify-between">
@@ -319,7 +311,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
                       }`}
                       type="button"
                     >
-                      <ShoppingCart size={14} /> {selectedPackOption?.isAvailable === false ? 'Out of Stock' : 'Add to Cart'}
+                      <ShoppingCart size={14} /> {selectedPackOption?.isAvailable === false ? (language === 'ta' ? 'கையிருப்பில் இல்லை' : 'Out of Stock') : (language === 'ta' ? 'கார்ட்டில் சேர்' : 'Add to Cart')}
                     </button>
                   </div>
                 </div>

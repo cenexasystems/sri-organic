@@ -6,7 +6,7 @@ import { Search, User, ShoppingCart, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from '@/lib/useAuth';
-import { useCartStore } from '@/store/store';
+import { useCartStore, useLanguageStore } from '@/store/store';
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -16,6 +16,7 @@ export default function NavBar() {
   
   const cartItems = useCartStore((state) => state.items);
   const cartCount = cartItems.length;
+  const { language, toggleLanguage } = useLanguageStore();
 
   useEffect(() => {
     setMounted(true);
@@ -35,11 +36,19 @@ export default function NavBar() {
     return null;
   }
 
-  const navLinks = [
+  const navLinksEn = [
     { name: "ABOUT US", href: "/#about" },
     { name: "THE HARVEST", href: "/#products" },
     { name: "OUR PROCESS", href: "/#process" },
   ];
+
+  const navLinksTa = [
+    { name: "எங்களை பற்றி", href: "/#about" },
+    { name: "அறுவடை", href: "/#products" },
+    { name: "நமது செயல்முறை", href: "/#process" },
+  ];
+
+  const navLinks = language === 'ta' ? navLinksTa : navLinksEn;
 
   const isHome = pathname === "/";
   const navClasses = 
@@ -51,7 +60,7 @@ export default function NavBar() {
     <nav 
       className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${navClasses}`}
     >
-      <div className="max-w-7xl mx-auto px-6 md:px-16 flex justify-between items-center min-h-[60px] md:min-h-[80px] relative">
+      <div className="max-w-7xl mx-auto px-6 md:px-16 flex justify-between items-center min-h-[60px] md:min-h-[80px] relative w-full">
         
         {/* Left Links */}
         <div className="hidden lg:flex items-center space-x-10 flex-1">
@@ -84,7 +93,7 @@ export default function NavBar() {
         {/* Right Icons */}
         <div className="hidden lg:flex items-center justify-end space-x-10 flex-1">
           <Link href="/products" className="hover:opacity-70 transition-opacity flex items-center">
-            <span className="text-[10px] font-bold tracking-[0.15em] whitespace-nowrap">PRODUCTS</span>
+            <span className="text-[10px] font-bold tracking-[0.15em] whitespace-nowrap">{language === 'ta' ? 'தயாரிப்புகள்' : 'PRODUCTS'}</span>
           </Link>
           <Link href="/cart" className="relative hover:opacity-70 transition-opacity flex items-center gap-2">
             <div className="relative">
@@ -95,17 +104,20 @@ export default function NavBar() {
                 </span>
               )}
             </div>
-            <span className="text-[10px] font-bold tracking-widest hidden lg:block">CART</span>
+            <span className="text-[10px] font-bold tracking-widest hidden lg:block">{language === 'ta' ? 'கார்ட்' : 'CART'}</span>
           </Link>
           <Link href={isLoggedIn ? "/profile" : "/login"} className="hover:opacity-70 transition-opacity flex items-center gap-2">
             <User size={18} strokeWidth={2} />
-            <span className="text-[10px] font-bold tracking-widest hidden lg:block">{isLoggedIn ? 'PROFILE' : 'LOGIN'}</span>
+            <span className="text-[10px] font-bold tracking-widest hidden lg:block">{isLoggedIn ? (language === 'ta' ? 'சுயவிவரம்' : 'PROFILE') : (language === 'ta' ? 'உள்நுழை' : 'LOGIN')}</span>
           </Link>
+          <button onClick={toggleLanguage} className="hover:opacity-70 transition-opacity flex items-center font-bold text-[10px] tracking-widest border border-current px-2 py-1 rounded ml-2">
+            {language === 'en' ? 'தமிழ்' : 'EN'}
+          </button>
         </div>
 
         {/* Mobile menu button */}
-        <div className="lg:hidden flex flex-1 justify-end">
-          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="hover:opacity-70 transition-opacity">
+        <div className="lg:hidden flex flex-1 justify-end relative z-50">
+          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="hover:opacity-70 transition-opacity p-2 -mr-2">
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
@@ -118,7 +130,7 @@ export default function NavBar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-[#111111]/95 backdrop-blur-xl absolute top-full left-0 right-0 border-t border-white/10 overflow-hidden"
+            className="lg:hidden bg-[#111111]/95 backdrop-blur-xl absolute top-full left-0 right-0 border-t border-white/10 overflow-hidden shadow-2xl origin-top z-50"
           >
             <div className="px-8 py-8 flex flex-col space-y-6">
               {navLinks.map((link) => (
@@ -134,12 +146,15 @@ export default function NavBar() {
               
               <div className="h-px w-full bg-white/10 my-2"></div>
               
-              <Link href="/login" className="text-white text-xs font-bold tracking-[0.2em] uppercase flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
-                <User size={16} /> {isLoggedIn ? 'PROFILE' : 'MEMBER LOGIN'}
+              <Link href={isLoggedIn ? "/profile" : "/login"} className="text-white text-xs font-bold tracking-[0.2em] uppercase flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
+                <User size={16} /> {isLoggedIn ? (language === 'ta' ? 'சுயவிவரம்' : 'PROFILE') : (language === 'ta' ? 'உள்நுழை' : 'MEMBER LOGIN')}
               </Link>
               <Link href="/cart" className="text-white text-xs font-bold tracking-[0.2em] uppercase flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
-                <ShoppingCart size={16} /> CART {mounted ? `(${cartCount})` : '(0)'}
+                <ShoppingCart size={16} /> {language === 'ta' ? 'கார்ட்' : 'CART'} {mounted ? `(${cartCount})` : '(0)'}
               </Link>
+              <button onClick={() => { toggleLanguage(); setIsMobileMenuOpen(false); }} className="text-white text-xs font-bold tracking-[0.2em] uppercase flex items-center gap-3 w-max px-3 py-1.5 border border-white/20 rounded mt-2">
+                {language === 'en' ? 'SWITCH TO தமிழ்' : 'SWITCH TO ENGLISH'}
+              </button>
             </div>
           </motion.div>
         )}

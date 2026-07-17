@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRef, useEffect, useState } from "react";
 import CustomFormula from "@/components/ui/CustomFormula";
-import { useProductStore, type Product } from "@/store/store";
+import { useProductStore, type Product, useLanguageStore } from "@/store/store";
 import ProductDetailModal from "@/components/ui/ProductDetailModal";
 import ProductCard from "@/components/ui/ProductCard";
 
@@ -20,6 +20,7 @@ const defaultReviews = [
 
 export default function Home() {
   const { products, fetchProducts, loading } = useProductStore();
+  const { language } = useLanguageStore();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
@@ -91,24 +92,29 @@ export default function Home() {
             <div className="flex-1 max-w-2xl">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-8 h-[1px] bg-[#F3D78E]"></div>
-                <span className="text-[#F3D78E] text-[10px] font-bold tracking-[0.2em] uppercase">Cultivating Integrity</span>
+                <span className="text-[#F3D78E] text-[10px] font-bold tracking-[0.2em] uppercase">{language === 'ta' ? 'நேர்மையை வளர்ப்பது' : 'Cultivating Integrity'}</span>
               </div>
               <h1 className="text-[12vw] sm:text-5xl md:text-8xl lg:text-[7rem] font-bold text-white leading-[1.05] tracking-tight">
-                Sri Organic <br />
-                Reimagined.
+                {language === 'ta' ? (
+                  <>ஸ்ரீ ஆர்கானிக் <br />புதிய பரிணாமம்.</>
+                ) : (
+                  <>Sri Organic <br />Reimagined.</>
+                )}
               </h1>
             </div>
 
             {/* Right side: Description and Button */}
             <div className="flex-1 max-w-md text-left xl:text-right flex flex-col items-start xl:items-end gap-8 pb-4">
               <p className="text-white/90 text-sm md:text-base font-medium leading-relaxed">
-                Discover the purest expression of agriculture. Our heirloom grains are grown with uncompromising standards, preserving ancient flavors and vital nutrients.
+                {language === 'ta' 
+                  ? 'விவசாயத்தின் தூய்மையான வடிவத்தை கண்டறியுங்கள். நமது பாரம்பரிய தானியங்கள் சமரசம் இல்லாத தரத்துடன் வளர்க்கப்படுகின்றன, பழமையான சுவைகளையும் அத்தியாவசிய ஊட்டச்சத்துக்களையும் பாதுகாக்கிறது.'
+                  : 'Discover the purest expression of agriculture. Our heirloom grains are grown with uncompromising standards, preserving ancient flavors and vital nutrients.'}
               </p>
               <Link 
                 href="/products" 
                 className="bg-white text-black px-8 py-3.5 text-xs font-bold uppercase tracking-widest hover:bg-[#FAF9F5] transition-colors shadow-lg self-start xl:self-end"
               >
-                Explore The Harvest
+                {language === 'ta' ? 'அறுவடையை ஆராயுங்கள்' : 'Explore The Harvest'}
               </Link>
             </div>
           </motion.div>
@@ -123,7 +129,10 @@ export default function Home() {
           >
             {[...Array(2)].map((_, i) => (
               <div key={i} className="flex shrink-0">
-                {["USDA ORGANIC", "WOOD PRESSED", "ZERO CHEMICALS", "HAND HARVESTED", "REGENERATIVE FARMING", "CLINICAL BOTANICALS"].map((text, idx) => (
+                {(language === 'ta' ? 
+                  ["யு.எஸ்.டி.ஏ ஆர்கானிக்", "மரச் செக்கு", "இரசாயனம் இல்லாதவை", "கைகளால் அறுவடை", "மீளுருவாக்க விவசாயம்", "மருத்துவ மூலிகைகள்"] 
+                  : ["USDA ORGANIC", "WOOD PRESSED", "ZERO CHEMICALS", "HAND HARVESTED", "REGENERATIVE FARMING", "CLINICAL BOTANICALS"]
+                ).map((text, idx) => (
                   <div key={idx} className="flex items-center">
                     <span className="text-[#D4AF37] text-[10px] font-bold tracking-[0.2em] px-8">{text}</span>
                     <span className="text-white/20 text-xs">✦</span>
@@ -141,23 +150,27 @@ export default function Home() {
             <div className="w-full md:w-1/2 flex flex-col justify-center">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-8 h-[1px] bg-[#D4AF37]"></div>
-                <span className="text-[#D4AF37] text-[10px] font-bold tracking-[0.2em] uppercase">Our Heritage</span>
+                <span className="text-[#D4AF37] text-[10px] font-bold tracking-[0.2em] uppercase">{language === 'ta' ? 'எங்கள் பாரம்பரியம்' : 'Our Heritage'}</span>
               </div>
-              <h2 className="text-4xl md:text-6xl font-bold text-[#111111] tracking-tight mb-8">About Us.</h2>
+              <h2 className="text-4xl md:text-6xl font-bold text-[#111111] tracking-tight mb-8">{language === 'ta' ? 'எங்களை பற்றி.' : 'About Us.'}</h2>
               <p className="text-stone-600 text-lg leading-relaxed mb-6">
-                Sri Organic was born from a deep respect for traditional agricultural practices. For over three decades, we have partnered with local farmers to cultivate heirloom varieties of rice, cold-pressed oils, and spices.
+                {language === 'ta' 
+                  ? 'ஸ்ரீ ஆர்கானிக் பாரம்பரிய விவசாய நடைமுறைகள் மீதான ஆழ்ந்த மரியாதையிலிருந்து பிறந்தது. மூன்று தசாப்தங்களுக்கும் மேலாக, பாரம்பரிய அரிசி, மரச்செக்கு எண்ணெய்கள் மற்றும் மசாலாப் பொருட்களை பயிரிட உள்ளூர் விவசாயிகளுடன் நாங்கள் கூட்டு சேர்ந்துள்ளோம்.'
+                  : 'Sri Organic was born from a deep respect for traditional agricultural practices. For over three decades, we have partnered with local farmers to cultivate heirloom varieties of rice, cold-pressed oils, and spices.'}
               </p>
               <p className="text-stone-600 text-lg leading-relaxed mb-12">
-                Our commitment is to regenerative farming—nourishing the soil rather than depleting it. Every product is a testament to purity, crafted without synthetic chemicals or modern shortcuts.
+                {language === 'ta'
+                  ? 'மண்ணை சிதைப்பதை விட, அதை வளர்ப்பதே மீளுருவாக்க விவசாயத்திற்கான எங்கள் அர்ப்பணிப்பு. ஒவ்வொரு தயாரிப்பும் தூய்மைக்கான சான்றாகும், செயற்கை இரசாயனங்கள் அல்லது நவீன குறுக்குவழிகள் இல்லாமல் வடிவமைக்கப்பட்டுள்ளது.'
+                  : 'Our commitment is to regenerative farming—nourishing the soil rather than depleting it. Every product is a testament to purity, crafted without synthetic chemicals or modern shortcuts.'}
               </p>
               <div className="flex gap-12 border-t border-stone-200 pt-10">
                 <div>
                   <h4 className="text-4xl font-bold text-[#111111] mb-2">30+</h4>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Years of Legacy</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-stone-500">{language === 'ta' ? 'வருட பாரம்பரியம்' : 'Years of Legacy'}</p>
                 </div>
                 <div>
                   <h4 className="text-4xl font-bold text-[#111111] mb-2">100%</h4>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Organic Certified</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-stone-500">{language === 'ta' ? 'ஆர்கானிக் சான்றிதழ்' : 'Organic Certified'}</p>
                 </div>
               </div>
             </div>
@@ -206,12 +219,12 @@ export default function Home() {
               <div>
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-8 h-[1px] bg-[#D4AF37]"></div>
-                  <span className="text-[#D4AF37] text-[10px] font-bold tracking-[0.2em] uppercase">The Collection</span>
+                  <span className="text-[#D4AF37] text-[10px] font-bold tracking-[0.2em] uppercase">{language === 'ta' ? 'தொகுப்பு' : 'The Collection'}</span>
                 </div>
-                <h2 className="text-4xl md:text-6xl font-bold text-[#111111] tracking-tight">Products.</h2>
+                <h2 className="text-4xl md:text-6xl font-bold text-[#111111] tracking-tight">{language === 'ta' ? 'தயாரிப்புகள்.' : 'Products.'}</h2>
               </div>
               <Link href="/products" className="group flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-[#111111] hover:text-[#D4AF37] transition-colors pb-2 border-b border-[#111111] hover:border-[#D4AF37]">
-                View Full Harvest
+                {language === 'ta' ? 'முழு அறுவடையைக் காண்க' : 'View Full Harvest'}
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
@@ -250,8 +263,8 @@ export default function Home() {
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col items-center text-center mb-16 md:mb-24">
               <div className="w-8 h-[1px] bg-[#D4AF37] mb-6"></div>
-              <h2 className="text-3xl md:text-5xl font-bold text-[#111111] tracking-tight mb-4">Gallery.</h2>
-              <p className="text-stone-500 max-w-lg text-sm">Glimpses of our heritage, farms, and authentic processes.</p>
+              <h2 className="text-3xl md:text-5xl font-bold text-[#111111] tracking-tight mb-4">{language === 'ta' ? 'புகைப்படத்தொகுப்பு.' : 'Gallery.'}</h2>
+              <p className="text-stone-500 max-w-lg text-sm">{language === 'ta' ? 'எங்கள் பாரம்பரியம், பண்ணைகள் மற்றும் உண்மையான செயல்முறைகளின் பார்வைகள்.' : 'Glimpses of our heritage, farms, and authentic processes.'}</p>
             </div>
 
             <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
@@ -295,20 +308,25 @@ export default function Home() {
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col items-center text-center mb-16 md:mb-24">
               <div className="w-8 h-[1px] bg-[#D4AF37] mb-6"></div>
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">From Soil to Soul.</h2>
-              <p className="text-white/60 max-w-lg text-sm">The journey of our botanicals, preserved at every step to ensure maximum clinical efficacy and purity.</p>
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">{language === 'ta' ? 'மண்ணிலிருந்து ஆத்மாவுக்கு.' : 'From Soil to Soul.'}</h2>
+              <p className="text-white/60 max-w-lg text-sm">{language === 'ta' ? 'எங்கள் தாவரவியல்களின் பயணம், அதிகபட்ச மருத்துவ செயல்திறன் மற்றும் தூய்மையை உறுதி செய்ய ஒவ்வொரு படியிலும் பாதுகாக்கப்படுகிறது.' : 'The journey of our botanicals, preserved at every step to ensure maximum clinical efficacy and purity.'}</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
               {/* Connecting Line */}
               <div className="hidden md:block absolute top-12 left-[10%] right-[10%] h-[1px] bg-white/10 z-0"></div>
 
-              {[
+              {(language === 'ta' ? [
+                { step: "01", title: "மீளுருவாக்க அறுவடை", desc: "தாவரவியல் வீரியத்தின் உச்சத்தில் உள்ளூர் விவசாயிகளால் கைப்படத் தேர்ந்தெடுக்கப்பட்டது." },
+                { step: "02", title: "சூரிய உலர்த்துதல்", desc: "அத்தியாவசிய எண்ணெய்களைப் பாதுகாக்க இயற்கையாக வெயிலில் உலர்த்தப்படுகிறது." },
+                { step: "03", title: "குளிர் பிரித்தெடுத்தல்", desc: "வெப்பப் பயன்பாடு இல்லாத பாரம்பரிய மரச்செக்கு முறைகள்." },
+                { step: "04", title: "மருத்துவ பாட்டிலில் அடைத்தல்", desc: "முழுமையான புத்துணர்ச்சியைப் பராமரிக்க புற ஊதா பாதுகாக்கப்பட்ட கண்ணாடியில் சீல் வைக்கப்பட்டுள்ளது." }
+              ] : [
                 { step: "01", title: "Regenerative Harvest", desc: "Hand-picked by local farmers at the peak of botanical potency." },
                 { step: "02", title: "Sun Curing", desc: "Naturally dried under the sun to preserve vital essential oils." },
                 { step: "03", title: "Cold Extraction", desc: "Traditional wood-pressing methods with zero heat application." },
                 { step: "04", title: "Clinical Bottling", desc: "Sealed in UV-protected glass to maintain absolute freshness." }
-              ].map((item, i) => (
+              ]).map((item, i) => (
                 <motion.div 
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
@@ -334,22 +352,22 @@ export default function Home() {
             <div className="flex flex-col items-center justify-center space-y-4 px-4">
               <ShieldCheck className="w-8 h-8 text-[#D4AF37]" />
               <h4 className="text-3xl font-black">100%</h4>
-              <p className="text-xs tracking-widest text-white/50 uppercase font-bold">Organic Certified</p>
+              <p className="text-xs tracking-widest text-white/50 uppercase font-bold">{language === 'ta' ? 'ஆர்கானிக் சான்றிதழ்' : 'Organic Certified'}</p>
             </div>
             <div className="flex flex-col items-center justify-center space-y-4 px-4">
               <Leaf className="w-8 h-8 text-[#D4AF37]" />
               <h4 className="text-3xl font-black">Zero</h4>
-              <p className="text-xs tracking-widest text-white/50 uppercase font-bold">Chemical Additives</p>
+              <p className="text-xs tracking-widest text-white/50 uppercase font-bold">{language === 'ta' ? 'இரசாயன சேர்க்கைகள்' : 'Chemical Additives'}</p>
             </div>
             <div className="flex flex-col items-center justify-center space-y-4 px-4">
               <Sprout className="w-8 h-8 text-[#D4AF37]" />
               <h4 className="text-3xl font-black">50+</h4>
-              <p className="text-xs tracking-widest text-white/50 uppercase font-bold">Partner Farms</p>
+              <p className="text-xs tracking-widest text-white/50 uppercase font-bold">{language === 'ta' ? 'கூட்டாளர் பண்ணைகள்' : 'Partner Farms'}</p>
             </div>
             <div className="flex flex-col items-center justify-center space-y-4 px-4">
               <Droplets className="w-8 h-8 text-[#D4AF37]" />
               <h4 className="text-3xl font-black">Pure</h4>
-              <p className="text-xs tracking-widest text-white/50 uppercase font-bold">Wood Extraction</p>
+              <p className="text-xs tracking-widest text-white/50 uppercase font-bold">{language === 'ta' ? 'மரச்செக்கு பிரித்தெடுத்தல்' : 'Wood Extraction'}</p>
             </div>
           </div>
         </section>
@@ -360,14 +378,14 @@ export default function Home() {
             <div className="flex flex-col md:flex-row justify-between items-center mb-16 md:mb-24 gap-6">
               <div className="flex flex-col items-center md:items-start text-center md:text-left">
                 <div className="w-8 h-[1px] bg-[#D4AF37] mb-6"></div>
-                <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Reviews.</h2>
-                <p className="text-stone-500 mt-4 max-w-lg text-sm">Hear what our community says about their authentic organic experience.</p>
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tight">{language === 'ta' ? 'விமர்சனங்கள்.' : 'Reviews.'}</h2>
+                <p className="text-stone-500 mt-4 max-w-lg text-sm">{language === 'ta' ? 'தங்கள் உண்மையான ஆர்கானிக் அனுபவத்தைப் பற்றி எங்கள் சமூகம் என்ன சொல்கிறது என்பதைக் கேளுங்கள்.' : 'Hear what our community says about their authentic organic experience.'}</p>
               </div>
               <button 
                 onClick={() => setIsReviewModalOpen(true)}
                 className="bg-[#111111] text-white px-8 py-3.5 text-xs font-bold uppercase tracking-widest hover:bg-[#D4AF37] transition-colors shadow-lg"
               >
-                Add Review
+                {language === 'ta' ? 'விமர்சனம் சேர்' : 'Add Review'}
               </button>
             </div>
           </div>
@@ -411,11 +429,11 @@ export default function Home() {
             <div className="w-full md:w-1/3">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-8 h-[1px] bg-[#D4AF37]"></div>
-                <span className="text-[#D4AF37] text-[10px] font-bold tracking-[0.2em] uppercase">Visit Us</span>
+                <span className="text-[#D4AF37] text-[10px] font-bold tracking-[0.2em] uppercase">{language === 'ta' ? 'எங்களை அணுகவும்' : 'Visit Us'}</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-[#111111] tracking-tight mb-8">Map.</h2>
+              <h2 className="text-4xl md:text-5xl font-bold text-[#111111] tracking-tight mb-8">{language === 'ta' ? 'வரைபடம்.' : 'Map.'}</h2>
               <p className="text-stone-500 text-lg leading-relaxed mb-10">
-                Our flagship store and main harvesting distribution center is located in the heart of Tamil Nadu. Come visit us to experience the purity firsthand.
+                {language === 'ta' ? 'எங்கள் முதன்மை கடை மற்றும் முக்கிய அறுவடை விநியோக மையம் தமிழ்நாட்டின் மையப்பகுதியில் அமைந்துள்ளது. தூய்மையை நேரில் அனுபவிக்க எங்களை சந்திக்கவும்.' : 'Our flagship store and main harvesting distribution center is located in the heart of Tamil Nadu. Come visit us to experience the purity firsthand.'}
               </p>
               <div className="space-y-4 text-sm font-bold text-[#111111] leading-relaxed">
                 <p className="flex items-start gap-3">
@@ -423,7 +441,7 @@ export default function Home() {
                   <span>47, Ambal Nagar, Andarkuppam, Nedumbarappakkam Road,<br/> Velammal School 9th gate opposite,<br/> Ponneri - 601 204.</span>
                 </p>
                 <p className="flex items-center gap-3"><span className="w-4 text-center text-[#D4AF37]">📞</span> 9894609057, 7094501036</p>
-                <p className="text-[#D4AF37] pt-4 border-t border-stone-200 mt-4 inline-block">Open Mon-Sat: 9am - 7pm</p>
+                <p className="text-[#D4AF37] pt-4 border-t border-stone-200 mt-4 inline-block">{language === 'ta' ? 'திறந்திருக்கும் நேரம் திங்கள்-சனி: காலை 9 - இரவு 7' : 'Open Mon-Sat: 9am - 7pm'}</p>
               </div>
             </div>
             
@@ -445,7 +463,7 @@ export default function Home() {
                    className="pointer-events-auto bg-white px-6 py-3.5 rounded-full text-[#111111] font-bold text-[15px] tracking-wide flex items-center gap-2.5 shadow-[0_4px_20px_rgba(0,0,0,0.15)] transition-all hover:scale-105 active:scale-95 group-hover:-translate-y-1 group-hover:shadow-[0_8px_30px_rgba(0,0,0,0.2)] border border-stone-100"
                  >
                    <MapPin className="w-5 h-5 text-red-500" />
-                   Open in Map
+                   {language === 'ta' ? 'வரைபடத்தில் திற' : 'Open in Map'}
                  </a>
                </div>
             </div>
@@ -483,23 +501,23 @@ export default function Home() {
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
 
-                <h3 className="text-3xl font-bold text-[#111111] mb-2 tracking-tight">Add a Review.</h3>
-                <p className="text-stone-500 mb-8 text-sm">Share your experience with our authentic organic products.</p>
+                <h3 className="text-3xl font-bold text-[#111111] mb-2 tracking-tight">{language === 'ta' ? 'விமர்சனம் சேர்.' : 'Add a Review.'}</h3>
+                <p className="text-stone-500 mb-8 text-sm">{language === 'ta' ? 'எங்கள் உண்மையான ஆர்கானிக் தயாரிப்புகளுடன் உங்கள் அனுபவத்தைப் பகிர்ந்து கொள்ளுங்கள்.' : 'Share your experience with our authentic organic products.'}</p>
 
                 <form onSubmit={handleAddReview} className="space-y-6">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Your Name</label>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">{language === 'ta' ? 'உங்கள் பெயர்' : 'Your Name'}</label>
                     <input 
                       type="text"
                       required
                       value={newReview.name}
                       onChange={e => setNewReview({...newReview, name: e.target.value})}
                       className="w-full bg-[#FAF9F5] border border-stone-200 rounded-xl px-4 py-3 text-stone-800 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all"
-                      placeholder="e.g. John D."
+                      placeholder={language === 'ta' ? "உ.ம். ஜான் டி." : "e.g. John D."}
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Rating</label>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">{language === 'ta' ? 'மதிப்பீடு' : 'Rating'}</label>
                     <div className="flex gap-2 text-2xl text-stone-300">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button 
@@ -514,21 +532,21 @@ export default function Home() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Your Experience</label>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">{language === 'ta' ? 'உங்கள் அனுபவம்' : 'Your Experience'}</label>
                     <textarea 
                       required
                       value={newReview.text}
                       onChange={e => setNewReview({...newReview, text: e.target.value})}
                       rows={4}
                       className="w-full bg-[#FAF9F5] border border-stone-200 rounded-xl px-4 py-3 text-stone-800 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all resize-none"
-                      placeholder="Tell us what you think..."
+                      placeholder={language === 'ta' ? "நீங்கள் என்ன நினைக்கிறீர்கள் என்று சொல்லுங்கள்..." : "Tell us what you think..."}
                     />
                   </div>
                   <button 
                     type="submit"
                     className="w-full bg-[#111111] text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-[#D4AF37] transition-colors shadow-lg mt-4"
                   >
-                    Submit Review
+                    {language === 'ta' ? 'விமர்சனத்தை சமர்ப்பிக்கவும்' : 'Submit Review'}
                   </button>
                 </form>
               </motion.div>

@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { useLanguageStore } from "@/store/store";
 
 type ConcernKey = "rice" | "oils" | "spices" | "wellness";
 
-const CONCERNS = {
+const CONCERNS_EN = {
   rice: {
     title: "Heirloom Rice Varieties",
     desc: "Ancient grains cultivated for maximum nutrition and authentic taste.",
@@ -49,9 +50,54 @@ const CONCERNS = {
   }
 };
 
+const CONCERNS_TA = {
+  rice: {
+    title: "பாரம்பரிய நெல் வகைகள்",
+    desc: "அதிகபட்ச ஊட்டச்சத்து மற்றும் உண்மையான சுவைக்காக வளர்க்கப்படும் பழங்கால தானியங்கள்.",
+    ingredients: [
+      { name: "கருப்பு கவுனி", percent: "40", desc: "ஆக்ஸிஜனேற்றிகள்", color: "#451a03" }, 
+      { name: "மாப்பிள்ளை சம்பா", percent: "30", desc: "வலிமை", color: "#9a3412" }, 
+      { name: "தூயமல்லி", percent: "20", desc: "நோய் எதிர்ப்பு சக்தி", color: "#d97706" }, 
+      { name: "குள்ளக்கார்", percent: "10", desc: "ஆற்றல்", color: "#b45309" } 
+    ]
+  },
+  oils: {
+    title: "மரச்செக்கு எண்ணெய்கள்",
+    desc: "பாரம்பரிய மரச்செக்கு முறைகளைப் பயன்படுத்தி மெதுவாகப் பிரித்தெடுக்கப்பட்டது.",
+    ingredients: [
+      { name: "கடலை எண்ணெய்", percent: "45", desc: "சமையல்", color: "#d97706" },
+      { name: "நல்லெண்ணெய்", percent: "30", desc: "இதய ஆரோக்கியம்", color: "#111111" },
+      { name: "தேங்காய் எண்ணெய்", percent: "15", desc: "சருமம் & முடி", color: "#fcd34d" },
+      { name: "விளக்கெண்ணெய்", percent: "10", desc: "சிகிச்சை", color: "#78350f" }
+    ]
+  },
+  spices: {
+    title: "ஆர்கானிக் மசாலாக்கள்",
+    desc: "தீவிர நறுமணம் மற்றும் மருத்துவ தூய்மைக்காக வெயிலில் உலர்த்தப்பட்டு கையால் இடிக்கப்பட்டது.",
+    ingredients: [
+      { name: "மஞ்சள்", percent: "40", desc: "குர்குமின்", color: "#f59e0b" },
+      { name: "மிளகு", percent: "30", desc: "உயிர் மேம்படுத்தி", color: "#1e293b" },
+      { name: "ஏலக்காய்", percent: "20", desc: "நறுமணம்", color: "#10b981" },
+      { name: "கிராம்பு", percent: "10", desc: "ஆண்டிமைக்ரோபியல்", color: "#92400e" }
+    ]
+  },
+  wellness: {
+    title: "தினசரி ஆரோக்கியம்",
+    desc: "இயற்கையான பாதுகாப்புகளை பலப்படுத்த மற்றும் ஆற்றலைத் தக்கவைக்க தாவரவியல் கலவைகள்.",
+    ingredients: [
+      { name: "அஸ்வகந்தா", percent: "40", desc: "அடாப்டோஜென்", color: "#b45309" },
+      { name: "முருங்கை", percent: "30", desc: "சூப்பர்ஃபுட்", color: "#15803d" },
+      { name: "நெல்லிக்காய்", percent: "20", desc: "வைட்டமின் சி", color: "#65a30d" },
+      { name: "துளசி", percent: "10", desc: "மீளுருவாக்கம்", color: "#059669" }
+    ]
+  }
+};
+
 export default function CustomFormula() {
+  const { language } = useLanguageStore();
   const [active, setActive] = useState<ConcernKey>("rice");
-  const current = CONCERNS[active];
+  const concerns = language === 'ta' ? CONCERNS_TA : CONCERNS_EN;
+  const current = concerns[active];
 
   return (
     <section className="py-16 md:py-32 px-6 md:px-16 bg-white border-y border-stone-100 relative overflow-hidden">
@@ -65,14 +111,14 @@ export default function CustomFormula() {
           <div className="w-full lg:w-1/3 flex flex-col justify-center">
             <div className="flex items-center gap-4 mb-6">
               <div className="w-8 h-[1px] bg-[#D4AF37]"></div>
-              <span className="text-[#D4AF37] text-[10px] font-bold tracking-[0.2em] uppercase">Our Offerings</span>
+              <span className="text-[#D4AF37] text-[10px] font-bold tracking-[0.2em] uppercase">{language === 'ta' ? 'எங்கள் சலுகைகள்' : 'Our Offerings'}</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-[#111111] tracking-tight mb-12">
-              Curated for You.
+              {language === 'ta' ? 'உங்களுக்காக தொகுக்கப்பட்டது.' : 'Curated for You.'}
             </h2>
             
             <div className="flex flex-col gap-2">
-              {(Object.entries(CONCERNS) as [ConcernKey, typeof current][]).map(([key, data]) => {
+              {(Object.entries(concerns) as [ConcernKey, typeof current][]).map(([key, data]) => {
                 const isActive = active === key;
                 return (
                   <button 
@@ -141,7 +187,7 @@ export default function CustomFormula() {
                     >
                       <Sparkles className="w-4 h-4 text-[#D4AF37] mb-1" />
                       <span className="text-[8px] font-bold tracking-[0.2em] text-white">100%</span>
-                      <span className="text-[7px] font-bold tracking-widest text-[#D4AF37] uppercase">Pure</span>
+                      <span className="text-[7px] font-bold tracking-widest text-[#D4AF37] uppercase">{language === 'ta' ? 'சுத்தமானது' : 'Pure'}</span>
                     </motion.div>
                   </div>
                 </div>
