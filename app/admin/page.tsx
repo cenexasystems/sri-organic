@@ -773,9 +773,17 @@ export default function AdminPortal() {
         return oDate.getFullYear() === now.getFullYear();
       }
       if (periodFilter === 'custom') {
-        const oDateStr = o.createdAt.split('T')[0];
-        if (whatsappCustomStart && oDateStr < whatsappCustomStart) return false;
-        if (whatsappCustomEnd && oDateStr > whatsappCustomEnd) return false;
+        const oDateObj = new Date(o.createdAt);
+        if (whatsappCustomStart) {
+          const start = new Date(whatsappCustomStart);
+          start.setHours(0,0,0,0);
+          if (oDateObj < start) return false;
+        }
+        if (whatsappCustomEnd) {
+          const end = new Date(whatsappCustomEnd);
+          end.setHours(23,59,59,999);
+          if (oDateObj > end) return false;
+        }
       }
       return true; // all
     });
@@ -1991,11 +1999,24 @@ export default function AdminPortal() {
                     } else if (analyticsPeriodFilter === 'year') {
                       list = list.filter(o => new Date(o.createdAt).getFullYear() === now.getFullYear());
                     } else if (analyticsPeriodFilter === 'custom') {
+                      const getStartOfDay = (dateString: string) => {
+                        const d = new Date(dateString);
+                        d.setHours(0, 0, 0, 0);
+                        return d;
+                      };
+                      const getEndOfDay = (dateString: string) => {
+                        const d = new Date(dateString);
+                        d.setHours(23, 59, 59, 999);
+                        return d;
+                      };
+
                       if (analyticsStartDate) {
-                        list = list.filter(o => o.createdAt.split('T')[0] >= analyticsStartDate);
+                        const start = getStartOfDay(analyticsStartDate);
+                        list = list.filter(o => new Date(o.createdAt) >= start);
                       }
                       if (analyticsEndDate) {
-                        list = list.filter(o => o.createdAt.split('T')[0] <= analyticsEndDate);
+                        const end = getEndOfDay(analyticsEndDate);
+                        list = list.filter(o => new Date(o.createdAt) <= end);
                       }
                     }
                     return list;

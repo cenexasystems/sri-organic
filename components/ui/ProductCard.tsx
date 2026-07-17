@@ -12,7 +12,7 @@ interface ProductCardProps {
 export default function ProductCard({ product, onClick }: ProductCardProps) {
   const { language } = useLanguageStore();
   const lowestPrice = product.predefinedOptions.length > 0 
-    ? Math.min(...product.predefinedOptions.map(o => o.quantity * product.price))
+    ? Math.min(...product.predefinedOptions.map(o => o.price))
     : product.price;
   
   const displayName = language === 'ta' && product.nameTa ? product.nameTa : product.name;
