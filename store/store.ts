@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { fetchProducts as dbFetchProducts } from '@/lib/db';
 
+import { useLangStore } from './langStore';
+
 export interface LanguageStore {
   language: 'en' | 'ta';
   setLanguage: (lang: 'en' | 'ta') => void;
@@ -12,8 +14,15 @@ export const useLanguageStore = create<LanguageStore>()(
   persist(
     (set) => ({
       language: 'en',
-      setLanguage: (language) => set({ language }),
-      toggleLanguage: () => set((state) => ({ language: state.language === 'en' ? 'ta' : 'en' })),
+      setLanguage: (language) => {
+        set({ language });
+        useLangStore.getState().setLang(language);
+      },
+      toggleLanguage: () => set((state) => {
+        const newLang = state.language === 'en' ? 'ta' : 'en';
+        useLangStore.getState().setLang(newLang);
+        return { language: newLang };
+      }),
     }),
     {
       name: 'language-storage',

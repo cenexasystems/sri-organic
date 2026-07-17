@@ -66,18 +66,30 @@ export default function NavBar() {
         <div className="hidden lg:flex items-center space-x-10 flex-1">
           {navLinks.map((link) => {
             const isActive = pathname === link.href || (pathname === '/' && link.name === 'SHOP ALL'); 
-            return (
-              <Link
-                key={link.name}
-                href={link.href}
-                className="group relative text-[10px] whitespace-nowrap font-bold tracking-[0.15em] transition-opacity hover:opacity-100"
-                style={{ opacity: isActive ? 1 : 0.8 }}
-              >
+            const isHashLink = link.href.startsWith('/#') || link.href.startsWith('#');
+            
+            const commonProps = {
+              className: "group relative text-[10px] whitespace-nowrap font-bold tracking-[0.15em] transition-opacity hover:opacity-100",
+              style: { opacity: isActive ? 1 : 0.8 }
+            };
+            
+            const innerContent = (
+              <>
                 {link.name}
                 {isActive && (
                   <span className={`absolute -bottom-2 left-0 right-0 h-[2px] rounded-full shadow-sm ${isHome && !isScrolled ? 'bg-white' : 'bg-[#111111]'}`}></span>
                 )}
                 <span className={`absolute -bottom-2 left-0 right-0 h-[2px] rounded-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300 ${isHome && !isScrolled ? 'bg-white' : 'bg-[#111111]'} ${isActive ? 'hidden' : ''}`}></span>
+              </>
+            );
+
+            return isHashLink ? (
+              <a key={link.name} href={link.href} {...commonProps}>
+                {innerContent}
+              </a>
+            ) : (
+              <Link key={link.name} href={link.href} {...commonProps}>
+                {innerContent}
               </Link>
             );
           })}
@@ -130,16 +142,28 @@ export default function NavBar() {
             className="lg:hidden bg-[#111111]/95 backdrop-blur-xl absolute top-full left-0 right-0 border-t border-white/10 overflow-hidden shadow-2xl origin-top z-50"
           >
             <div className="px-8 py-8 flex flex-col space-y-6">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className="text-white text-xs font-bold tracking-[0.2em] uppercase"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {link.name}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                const isHashLink = link.href.startsWith('/#') || link.href.startsWith('#');
+                return isHashLink ? (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    className="text-white text-xs font-bold tracking-[0.2em] uppercase"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.name}
+                  </a>
+                ) : (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    className="text-white text-xs font-bold tracking-[0.2em] uppercase"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
               
               <div className="h-px w-full bg-white/10 my-2"></div>
               

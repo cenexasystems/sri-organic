@@ -59,7 +59,7 @@ function ProductsContent() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { t } = useLangStore();
+  const { t, lang } = useLangStore();
   const { products, fetchProducts, loading, error } = useProductStore();
   const variantsMap = useVariantStore(state => state.variantsMap);
 
@@ -141,6 +141,12 @@ function ProductsContent() {
             className="text-2xl sm:text-4xl font-black font-headline text-[#111111] mb-2">{t('products.title')}</motion.h1>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}
             className="text-sm sm:text-base text-[#78716c] font-medium">{t('products.sub')}</motion.p>
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
+            className="text-[11px] sm:text-xs font-bold text-red-500 mt-3 max-w-2xl mx-auto">
+            * {lang === 'ta' 
+                ? 'காட்டப்படும் தயாரிப்பு படங்கள் விளக்கத்திற்காக AI ஆல் உருவாக்கப்பட்டவை; உண்மையான தயாரிப்பு தோற்றத்தில் சற்று மாறுபடலாம்.' 
+                : 'The product images displayed are AI-generated for illustrative purposes; actual products may vary in appearance.'}
+          </motion.p>
         </div>
       </div>
 
