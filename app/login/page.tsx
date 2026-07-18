@@ -44,7 +44,7 @@ export default function Login() {
         </button>
 
         <div className="mb-6 flex justify-center w-full">
-          <img src="/logo.png" alt="Sri Organic" className="h-16 w-auto object-contain mix-blend-multiply" />
+          <img src="/logo.svg" alt="Sri Organic" className="h-16 w-auto object-contain mix-blend-multiply" />
         </div>
         
         <h1 className="font-display text-4xl font-bold tracking-tight text-[#1B3022] mb-3">

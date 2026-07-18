@@ -37,12 +37,12 @@ export default function NavBar() {
   }
 
   const navLinksEn = [
-    { name: "ABOUT US", href: "/#about" },
+    { name: "HOME", href: "/" },
     { name: "PRODUCT", href: "/products" },
   ];
 
   const navLinksTa = [
-    { name: "எங்களை பற்றி", href: "/#about" },
+    { name: "முகப்பு", href: "/" },
     { name: "தயாரிப்பு", href: "/products" },
   ];
 
@@ -105,7 +105,7 @@ export default function NavBar() {
         {/* Center Logo */}
         <div className="absolute left-6 lg:left-1/2 lg:-translate-x-1/2 py-1 z-10">
           <Link href="/" className="flex items-center">
-            <img src="/logo.png" alt="Sri Dasarathi" className="h-12 md:h-14 w-auto object-contain mix-blend-multiply drop-shadow-sm" />
+            <img src="/logo.svg" alt="Sri Dasarathi" className="h-12 md:h-14 w-auto object-contain mix-blend-multiply drop-shadow-sm" />
           </Link>
         </div>
 

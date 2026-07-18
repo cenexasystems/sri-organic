@@ -64,15 +64,15 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
     <div className="min-h-screen bg-[#FAF9F5] py-8 sm:py-12 px-4 sm:px-6 lg:px-8 font-body print:bg-white print:py-0 print:px-0">
       
       {/* Non-printable Action Bar */}
-      <div className="max-w-3xl mx-auto mb-6 flex justify-between items-center print:hidden">
+      <div className="max-w-3xl mx-auto mb-6 flex flex-col sm:flex-row justify-between items-center gap-4 print:hidden">
         <button 
           onClick={() => router.push('/')}
-          className="flex items-center gap-2 text-sm font-bold text-on-surface-variant hover:text-primary transition-colors"
+          className="flex items-center gap-2 text-sm font-bold text-on-surface-variant hover:text-primary transition-colors w-full sm:w-auto justify-center sm:justify-start"
         >
           <ArrowLeft className="w-4 h-4" />
           Return to Store
         </button>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap justify-center sm:justify-end gap-3 w-full sm:w-auto">
           <button 
             onClick={() => window.print()}
             className="flex items-center gap-2 bg-white border border-outline-variant/50 hover:bg-gray-50 text-primary px-4 py-2 rounded-xl text-xs font-bold shadow-sm transition-all"
@@ -99,7 +99,7 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
           <div className="flex items-center gap-4">
             <div className="relative w-16 h-16 sm:w-20 sm:h-20">
               <Image 
-                src="/logo.png" 
+                src="/logo.svg" 
                 alt="Sri Organic" 
                 fill 
                 className="object-contain"
@@ -136,8 +136,8 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
         </div>
 
         {/* Items Table */}
-        <div className="overflow-hidden border border-outline-variant/20 rounded-2xl mb-8">
-          <table className="w-full text-left text-xs">
+        <div className="overflow-x-auto border border-outline-variant/20 rounded-2xl mb-8">
+          <table className="w-full text-left text-xs min-w-[500px]">
             <thead>
               <tr className="bg-[#FAF9F5] text-primary font-bold border-b border-outline-variant/20">
                 <th className="px-5 py-3">Item Description</th>
@@ -196,8 +196,8 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
 
         {/* Footer Notes */}
         <div className="text-center text-xs text-on-surface-variant/70 font-medium">
-          <p className="mb-1 font-bold text-primary">Thank you for your business!</p>
-          <p>For questions concerning this invoice, please contact our support team.</p>
+          <p className="mb-2 font-bold text-primary">Thank you for your business!</p>
+          <p className="text-[9px] uppercase tracking-widest font-bold">Powered by Cenexa System</p>
         </div>
 
       </div>
