@@ -8,7 +8,7 @@ export default function Footer() {
   const pathname = usePathname();
   const isMinimalFooter = pathname === "/cart" || pathname === "/profile";
 
-  if (pathname.startsWith("/admin") || pathname.startsWith("/invoice") || pathname.startsWith("/login")) {
+  if (pathname.startsWith("/secure/admin") || pathname.startsWith("/invoice") || pathname.startsWith("/login")) {
     return null;
   }
 

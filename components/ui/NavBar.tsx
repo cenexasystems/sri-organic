@@ -32,7 +32,7 @@ export default function NavBar() {
   const { user } = useAuth();
   const isLoggedIn = !!user;
 
-  if (pathname.startsWith('/admin') || pathname.startsWith('/invoice') || pathname.startsWith('/login')) {
+  if (pathname.startsWith('/secure/admin') || pathname.startsWith('/invoice') || pathname.startsWith('/login')) {
     return null;
   }
 
@@ -95,7 +95,11 @@ export default function NavBar() {
           
           <button 
             onClick={toggleLanguage} 
-            className="flex items-center justify-center px-4 py-1.5 rounded-full transition-colors duration-300 shadow-sm bg-[#D4AF37] hover:bg-[#b5952f] text-white border border-transparent ml-2"
+            className={`flex items-center justify-center px-4 py-1.5 rounded-full transition-colors duration-300 shadow-sm border ml-2 ${
+              isHome && !isScrolled 
+                ? 'bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20' 
+                : 'bg-[#111111]/5 border-[#111111]/10 text-[#111111] hover:bg-[#111111]/10'
+            }`}
           >
             <span className="text-[10px] font-extrabold tracking-[0.2em] uppercase">
               {language === 'en' ? 'தமிழ்' : 'English'}
@@ -104,9 +108,20 @@ export default function NavBar() {
         </div>
 
         {/* Center Logo */}
-        <div className="absolute left-6 lg:left-1/2 lg:-translate-x-1/2 py-1 z-10">
-          <a href="/" className="flex items-center">
-            <img src="/logo.svg" alt="Sri Dasarathi" className="h-12 md:h-14 w-auto object-contain mix-blend-multiply drop-shadow-sm" />
+        <div className="flex-1 lg:flex-none lg:absolute lg:left-1/2 lg:-translate-x-1/2 py-1 z-10 min-w-0 pr-2">
+          <a href="/" className="flex flex-col items-start lg:items-center justify-center w-full min-w-0 group">
+            <span 
+              className="text-[11px] sm:text-[13px] md:text-lg lg:text-xl font-extrabold tracking-[0.05em] md:tracking-widest uppercase w-full lg:text-center leading-tight transition-opacity group-hover:opacity-80 whitespace-normal break-words"
+              style={{ textShadow: isHome && !isScrolled ? '0 2px 8px rgba(0,0,0,0.4)' : 'none' }}
+            >
+              {language === 'ta' ? 'தாஸரதி க்ருபா டிரேடர்ஸ்' : 'Dasarathi Krubha Traders'}
+            </span>
+            <span 
+              className={`text-[10px] sm:text-[11px] md:text-[13px] lg:text-sm font-serif italic tracking-[0.1em] md:tracking-[0.2em] w-full lg:text-center mt-0.5 md:mt-1 drop-shadow-sm ${isHome && !isScrolled ? 'text-[#F3D78E]' : 'text-[#9A7B4F]'}`}
+              style={{ textShadow: isHome && !isScrolled ? '0 2px 8px rgba(0,0,0,0.6)' : 'none' }}
+            >
+              {language === 'ta' ? 'ஸ்ரீ ஆர்கானிக்' : 'Sri Organic'}
+            </span>
           </a>
         </div>
 
@@ -130,10 +145,14 @@ export default function NavBar() {
         </div>
 
         {/* Mobile menu button */}
-        <div className="lg:hidden flex flex-1 justify-end items-center gap-4 relative z-50">
+        <div className="lg:hidden flex shrink-0 justify-end items-center gap-3 relative z-50">
           <button 
             onClick={toggleLanguage} 
-            className="flex items-center justify-center px-3 py-1.5 rounded-full transition-colors duration-300 shadow-sm bg-[#D4AF37] hover:bg-[#b5952f] text-white"
+            className={`flex items-center justify-center px-3 py-1.5 rounded-full transition-colors duration-300 shadow-sm border ${
+              isHome && !isScrolled 
+                ? 'bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20' 
+                : 'bg-[#111111]/5 border-[#111111]/10 text-[#111111] hover:bg-[#111111]/10'
+            }`}
           >
             <span className="text-[9px] font-extrabold tracking-widest uppercase">
               {language === 'en' ? 'தமிழ்' : 'EN'}
@@ -182,7 +201,7 @@ export default function NavBar() {
               <div className="h-px w-full bg-white/10 my-2"></div>
               
               <Link href={isLoggedIn ? "/profile" : "/login"} className="text-white text-xs font-bold tracking-[0.2em] uppercase flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
-                <User size={16} /> {isLoggedIn ? (language === 'ta' ? 'சுயவிவரம்' : 'PROFILE') : (language === 'ta' ? 'உள்நுழை' : 'MEMBER LOGIN')}
+                <User size={16} /> {isLoggedIn ? (language === 'ta' ? 'சுயவிவரம்' : 'PROFILE') : (language === 'ta' ? 'உள்நுழை' : 'LOGIN')}
               </Link>
               <Link href="/cart" className="text-white text-xs font-bold tracking-[0.2em] uppercase flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
                 <ShoppingCart size={16} /> {language === 'ta' ? 'கார்ட்' : 'CART'} {mounted ? `(${cartCount})` : '(0)'}

@@ -19,15 +19,15 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  { name: "Whatsapp", href: "/admin/whatsapp", icon: MessageCircle, badge: "17" },
-  { name: "POS BILLING", href: "/admin/billing", icon: ReceiptText },
-  { name: "POS ANALYTICS", href: "/admin/analytics", icon: BarChart2 },
-  { name: "ORDERS", href: "/admin/orders", icon: ShoppingCart },
-  { name: "GIFTS RECEIVED", href: "/admin/gifts", icon: Gift },
-  { name: "INVENTORY", href: "/admin/inventory", icon: Package },
-  { name: "CATEGORIES", href: "/admin/categories", icon: Tags },
-  { name: "COUPONS", href: "/admin/coupons", icon: Ticket },
-  { name: "USERS", href: "/admin/users", icon: Users },
+  { name: "Whatsapp", href: "/secure/admin/whatsapp", icon: MessageCircle, badge: "17" },
+  { name: "POS BILLING", href: "/secure/admin/billing", icon: ReceiptText },
+  { name: "POS ANALYTICS", href: "/secure/admin/analytics", icon: BarChart2 },
+  { name: "ORDERS", href: "/secure/admin/orders", icon: ShoppingCart },
+  { name: "GIFTS RECEIVED", href: "/secure/admin/gifts", icon: Gift },
+  { name: "INVENTORY", href: "/secure/admin/inventory", icon: Package },
+  { name: "CATEGORIES", href: "/secure/admin/categories", icon: Tags },
+  { name: "COUPONS", href: "/secure/admin/coupons", icon: Ticket },
+  { name: "USERS", href: "/secure/admin/users", icon: Users },
 ];
 
 export function Sidebar() {
@@ -65,7 +65,7 @@ export function Sidebar() {
       <nav className="flex-1 px-4 space-y-1">
         {navItems.map((item) => {
           const isActive = pathname?.startsWith(item.href) || 
-                           (pathname === "/admin" && item.href === "/admin/analytics");
+                           (pathname === "/secure/admin" && item.href === "/secure/admin/analytics");
           return (
             <Link
               key={item.name}

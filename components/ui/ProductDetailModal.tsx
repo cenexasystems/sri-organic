@@ -171,7 +171,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
 
             <div data-lenis-prevent="true" className="flex flex-col md:flex-row flex-1 min-h-0 overflow-y-auto md:overflow-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {/* Image Section */}
-              <div className="w-full h-[35vh] md:w-1/2 shrink-0 bg-stone-100 border-r border-stone-200 relative md:aspect-auto md:h-full overflow-hidden flex items-center justify-center">
+              <div className="w-full aspect-square max-h-[42vh] md:w-1/2 shrink-0 bg-stone-100 border-r border-stone-200 relative md:aspect-auto md:max-h-none md:h-full overflow-hidden flex items-center justify-center">
                 <div className="absolute top-4 left-4 md:top-6 md:left-6 bg-white/95 backdrop-blur-md px-3 py-1.5 md:px-4 md:py-2 rounded-full border border-stone-200 flex flex-col gap-1 shadow-sm z-10">
                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#D4AF37]">{product.category}</span>
                 </div>
@@ -181,7 +181,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
                   loading="lazy"
                   decoding="async"
                   onError={onImgError}
-                  className="absolute inset-0 h-full w-full object-contain md:object-cover mix-blend-multiply drop-shadow-lg"
+                  className="absolute inset-0 h-full w-full object-contain md:object-cover mix-blend-multiply drop-shadow-lg scale-105 md:scale-100"
                 />
               </div>
 
