@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
 import { ArrowRight, Leaf, ShieldCheck, Sprout, Droplets, ArrowUpRight, MapPin } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useRef, useEffect, useState } from "react";
 import CustomFormula from "@/components/ui/CustomFormula";
 import { useProductStore, type Product, useLanguageStore } from "@/store/store";
@@ -19,6 +20,7 @@ const defaultReviews = [
 ];
 
 export default function Home() {
+  const router = useRouter();
   const { products, fetchProducts, loading } = useProductStore();
   const { language } = useLanguageStore();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -246,9 +248,8 @@ export default function Home() {
                   >
                      <ProductCard 
                        product={p} 
-                       onClick={(p) => {
-                         setSelectedProduct(p);
-                         setIsModalOpen(true);
+                       onClick={() => {
+                         router.push('/products');
                        }} 
                      />
                   </motion.div>

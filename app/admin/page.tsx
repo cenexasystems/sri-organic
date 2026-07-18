@@ -4,10 +4,11 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   X, Lock, Plus, Trash2, Edit3, Settings, Eye, Search, Shield, BarChart3, ShoppingCart, Receipt, 
   Package, FolderTree, Ticket, Users, RefreshCw, Award, CheckCircle2, TrendingUp,
-  Globe, ShoppingBag, Gift, ChevronLeft, ChevronRight, Download
+  Globe, ShoppingBag, Gift, ChevronLeft, ChevronRight, Download, FileText, MessageCircle
 } from 'lucide-react';
 import { useRouter as useNavigate } from 'next/navigation';
 import { useAuth } from '@/lib/useAuth';
+import { useLanguageStore } from '@/store/store';
 import { getProductImage, onImgError } from '@/lib/productImages';
 import {
   fetchProducts,
@@ -36,6 +37,7 @@ import {
 export default function AdminPortal() {
   const router = useNavigate(); const navigate = (path: string) => router.push(path);
   const { user } = useAuth();
+  const { language, toggleLanguage } = useLanguageStore();
   
   // Authentication states
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -744,6 +746,39 @@ export default function AdminPortal() {
     setBillingDiscountValue(0);
     setBillingDeliveryFee(0);
     setBillingAmountReceived(0);
+    setBillingAmountReceived(0);
+  };
+
+  const handleResendWhatsApp = (order: Order) => {
+    const invoiceUrl = `${window.location.origin}/invoice/${order.id}`;
+    const eHerb = String.fromCodePoint(0x1F33F);
+    const eParty = String.fromCodePoint(0x1F389);
+    const eInvoice = String.fromCodePoint(0x1F4C4);
+    const eLink = String.fromCodePoint(0x1F517);
+    const eSparkles = String.fromCodePoint(0x2728);
+
+    const invoiceMessage = [
+      `${eHerb} *Sri Organic - Purchase Successful!* ${eParty}`,
+      ``,
+      `Hi ${order.customerName || 'Customer'},`,
+      `Thank you for shopping with us! ${eSparkles}`,
+      ``,
+      `${eInvoice} View, download or print your digital invoice here:`,
+      `${eLink} ${invoiceUrl}`,
+      ``,
+      `Have a great day!`
+    ].join('\n');
+
+    const targetPhone = order.customerPhone ? order.customerPhone.replace(/\D/g, '') : '7904199050';
+    const formattedPhone = targetPhone.length === 10 ? `91${targetPhone}` : targetPhone;
+    const waUrl = `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(invoiceMessage)}`;
+    const waLink = document.createElement('a');
+    waLink.href = waUrl;
+    waLink.target = '_blank';
+    waLink.rel = 'noopener noreferrer';
+    document.body.appendChild(waLink);
+    waLink.click();
+    document.body.removeChild(waLink);
   };
 
   // Filter storefront orders (WhatsApp requests) by time period
@@ -1004,6 +1039,16 @@ export default function AdminPortal() {
                 </div>
                 {/* Top Actions */}
                 <div className={`flex gap-2.5 w-full ${!isSidebarOpen && 'flex-col items-center'}`}>
+                  {(activeTab === 'pos_billing' || activeTab === 'products') && (
+                    <button
+                      onClick={toggleLanguage}
+                      className={`flex-1 h-10 flex items-center justify-center gap-2 rounded-xl bg-[#D4AF37] text-white hover:bg-[#b5952f] transition-all cursor-pointer border border-[#D4AF37] text-xs font-bold ${!isSidebarOpen && 'w-10 flex-none'}`}
+                      title="Toggle Language"
+                    >
+                      <Globe className="w-3.5 h-3.5 shrink-0" />
+                      {isSidebarOpen && <span>{language === 'en' ? 'தமிழ்' : 'English'}</span>}
+                    </button>
+                  )}
                   <button
                     onClick={() => navigate('/')}
                     className={`flex-1 h-10 flex items-center justify-center gap-2 rounded-xl bg-[#FAF9F5] text-primary hover:bg-outline-variant/20 transition-all cursor-pointer border border-outline-variant/20 text-xs font-bold ${!isSidebarOpen && 'w-10 flex-none'}`}
@@ -1454,9 +1499,11 @@ export default function AdminPortal() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-4 border-b border-outline-variant/15">
                   <div className="flex items-center gap-3">
                     <div className="border-l-4 border-[#2B3E2F] pl-3">
-                      <h1 className="text-3xl font-extrabold tracking-tight text-primary font-poppins">POS Billing Panel</h1>
+                      <h1 className="text-3xl font-extrabold tracking-tight text-primary font-poppins">
+                        {language === 'en' ? 'POS Billing Panel' : 'POS பில்லிங் பேனல்'}
+                      </h1>
                       <p className="text-xs text-on-surface-variant font-medium mt-1">
-                        Quick invoice generator & database synced checkout
+                        {language === 'en' ? 'Quick invoice generator & database synced checkout' : 'விரைவான விலைப்பட்டியல் மற்றும் டேட்டாபேஸ் சிங்க் செய்யப்பட்ட செக்அவுட்'}
                       </p>
                     </div>
                   </div>
@@ -1472,7 +1519,7 @@ export default function AdminPortal() {
                       }`}
                     >
                       <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-                      OFFLINE (POS)
+                      {language === 'en' ? 'OFFLINE (POS)' : 'ஆஃப்லைன் (POS)'}
                     </button>
                     <button
                       onClick={() => setBillingSource('ONLINE')}
@@ -1483,7 +1530,7 @@ export default function AdminPortal() {
                       }`}
                     >
                       <span className="w-2.5 h-2.5 rounded-full bg-green-500"></span>
-                      ONLINE ORDER
+                      {language === 'en' ? 'ONLINE ORDER' : 'ஆன்லைன் ஆர்டர்'}
                     </button>
                   </div>
                 </div>
@@ -1496,12 +1543,14 @@ export default function AdminPortal() {
                     <div className="bg-white border border-outline-variant/20 rounded-2xl p-5 shadow-sm space-y-4">
                       <div className="flex items-center gap-2 text-primary font-bold text-sm uppercase tracking-wider">
                         <Users className="w-4.5 h-4.5 text-[#2B3E2F]" />
-                        <span>Customer Details</span>
+                        <span>{language === 'en' ? 'Customer Details' : 'வாடிக்கையாளர் விவரங்கள்'}</span>
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-1.5">
-                          <label className="block text-[11px] font-bold text-[#4B5563] uppercase tracking-wider">Customer Name</label>
+                          <label className="block text-[11px] font-bold text-[#4B5563] uppercase tracking-wider">
+                            {language === 'en' ? 'Customer Name' : 'வாடிக்கையாளர் பெயர்'}
+                          </label>
                           <input
                             type="text"
                             placeholder="Enter name"
@@ -1511,7 +1560,9 @@ export default function AdminPortal() {
                           />
                         </div>
                         <div className="space-y-1.5">
-                          <label className="block text-[11px] font-bold text-[#4B5563] uppercase tracking-wider">Mobile Number (WhatsApp)</label>
+                          <label className="block text-[11px] font-bold text-[#4B5563] uppercase tracking-wider">
+                            {language === 'en' ? 'Mobile Number (WhatsApp)' : 'மொபைல் எண் (WhatsApp)'}
+                          </label>
                           <input
                             type="tel"
                             placeholder="Enter 10-digit number"
@@ -1533,20 +1584,20 @@ export default function AdminPortal() {
                       <div className="flex items-center justify-between pb-3 border-b border-outline-variant/10">
                         <div className="flex items-center gap-2 text-primary font-bold text-sm uppercase tracking-wider">
                           <Receipt className="w-4.5 h-4.5 text-[#2B3E2F]" />
-                          <span>Order Items</span>
+                          <span>{language === 'en' ? 'Order Items' : 'ஆர்டர் பொருட்கள்'}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => setBillingItems([])}
                             className="bg-[#F3F4F6] hover:bg-[#E5E7EB] text-[#4B5563] font-bold text-xs px-4 py-2 rounded-xl transition-all cursor-pointer"
                           >
-                            Clear Order
+                            {language === 'en' ? 'Clear Order' : 'ஆர்டரை அழி'}
                           </button>
                           <button
                             onClick={addCustomItem}
                             className="bg-white hover:bg-[#2B3E2F] hover:text-white text-[#2B3E2F] border border-[#2B3E2F]/20 font-bold text-xs px-4 py-2 rounded-xl transition-all cursor-pointer"
                           >
-                            + Add Custom Item
+                            {language === 'en' ? '+ Add Custom Item' : '+ புதிய பொருள் சேர்'}
                           </button>
                         </div>
                       </div>
@@ -1562,7 +1613,9 @@ export default function AdminPortal() {
                             <div key={it.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end bg-[#FAF9F6]/40 p-4 rounded-xl border border-outline-variant/15">
                               {/* Item Description */}
                               <div className="md:col-span-6 space-y-1.5">
-                                <label className="block text-[10px] font-bold text-[#4B5563] uppercase tracking-wider">Item Name / Description</label>
+                                <label className="block text-[10px] font-bold text-[#4B5563] uppercase tracking-wider">
+                                  {language === 'en' ? 'Item Name / Description' : 'பொருள் பெயர் / விளக்கம்'}
+                                </label>
                                 <div className="flex gap-2">
                                   <input
                                     type="text"
@@ -1586,7 +1639,9 @@ export default function AdminPortal() {
 
                               {/* Price */}
                               <div className="md:col-span-3 space-y-1.5">
-                                <label className="block text-[10px] font-bold text-[#4B5563] uppercase tracking-wider">Price (₹)</label>
+                                <label className="block text-[10px] font-bold text-[#4B5563] uppercase tracking-wider">
+                                  {language === 'en' ? 'Price (₹)' : 'விலை (₹)'}
+                                </label>
                                 <input
                                   type="number"
                                   placeholder="0"
@@ -1598,7 +1653,9 @@ export default function AdminPortal() {
                               </div>
 
                               <div className="md:col-span-2 space-y-1.5">
-                                <label className="block text-[10px] font-bold text-[#4B5563] uppercase tracking-wider">Qty</label>
+                                <label className="block text-[10px] font-bold text-[#4B5563] uppercase tracking-wider">
+                                  {language === 'en' ? 'Qty' : 'அளவு'}
+                                </label>
                                 <input
                                   type="number"
                                   min="1"
@@ -1632,7 +1689,7 @@ export default function AdminPortal() {
                       {/* Receipt Header details block */}
                       <div className="border border-outline-variant/30 rounded-xl p-4 bg-[#FAF9F6]/40 space-y-3">
                         <div className="flex justify-between items-center text-[10px] font-extrabold uppercase tracking-widest text-[#4B5563]">
-                          <span>Source</span>
+                          <span>{language === 'en' ? 'Source' : 'மூலம்'}</span>
                           <span className={`px-2.5 py-0.5 rounded-md font-bold text-[9px] ${
                             billingSource === 'OFFLINE' 
                               ? 'bg-[#FAF9F5] text-[#2B3E2F] border border-[#2B3E2F]/20' 
@@ -1642,11 +1699,11 @@ export default function AdminPortal() {
                           </span>
                         </div>
                         <div className="flex justify-between items-center text-xs font-semibold text-primary">
-                          <span className="text-[#4B5563]">Customer</span>
+                          <span className="text-[#4B5563]">{language === 'en' ? 'Customer' : 'வாடிக்கையாளர்'}</span>
                           <span>{billingCustomerName || '-'}</span>
                         </div>
                         <div className="flex justify-between items-center text-xs font-semibold text-primary">
-                          <span className="text-[#4B5563]">Phone</span>
+                          <span className="text-[#4B5563]">{language === 'en' ? 'Phone' : 'தொலைபேசி'}</span>
                           <span>{billingCustomerPhone || '-'}</span>
                         </div>
                       </div>
@@ -1678,7 +1735,9 @@ export default function AdminPortal() {
                         
                         {/* Coupon Selection */}
                         <div className="space-y-1.5">
-                          <label className="block text-[10px] font-bold text-[#4B5563] uppercase tracking-wider">Apply Coupon</label>
+                          <label className="block text-[10px] font-bold text-[#4B5563] uppercase tracking-wider">
+                            {language === 'en' ? 'Apply Coupon' : 'கூப்பன்'}
+                          </label>
                           <select
                             value={billingCoupon}
                             onChange={(e) => setBillingCoupon(e.target.value)}
@@ -1695,7 +1754,9 @@ export default function AdminPortal() {
 
                         {/* Manual Discount */}
                         <div className="space-y-1.5">
-                          <label className="block text-[10px] font-bold text-[#4B5563] uppercase tracking-wider">Manual Discount</label>
+                          <label className="block text-[10px] font-bold text-[#4B5563] uppercase tracking-wider">
+                            {language === 'en' ? 'Manual Discount' : 'தள்ளுபடி'}
+                          </label>
                           <div className="flex rounded-xl border border-outline-variant/35 bg-white overflow-hidden">
                             <select
                               value={billingDiscountType}
@@ -1718,7 +1779,7 @@ export default function AdminPortal() {
 
                         {/* Delivery */}
                         <div className="flex justify-between items-center">
-                          <span className="text-xs font-semibold text-[#4B5563]">Delivery</span>
+                          <span className="text-xs font-semibold text-[#4B5563]">{language === 'en' ? 'Delivery' : 'டெலிவரி'}</span>
                           <div className="w-24">
                             <input
                               type="number"
@@ -1734,7 +1795,7 @@ export default function AdminPortal() {
                         {/* Calculation Summary Row */}
                         <div className="space-y-1.5 border-t border-outline-variant/10 pt-3">
                           <div className="flex justify-between text-xs font-medium text-[#4B5563]">
-                            <span>Subtotal ({billingItems.reduce((sum, it) => sum + it.quantity, 0)} items)</span>
+                            <span>{language === 'en' ? 'Subtotal' : 'மொத்தம்'} ({billingItems.reduce((sum, it) => sum + it.quantity, 0)} {language === 'en' ? 'items' : 'பொருட்கள்'})</span>
                             <span>₹{getSubtotal()}</span>
                           </div>
                           {billingCoupon && (
@@ -1753,15 +1814,17 @@ export default function AdminPortal() {
 
                         {/* Grand Total */}
                         <div className="flex justify-between items-center border-t border-outline-variant/20 pt-4">
-                          <span className="text-sm font-extrabold text-primary uppercase tracking-wider">Grand Total</span>
+                          <span className="text-sm font-extrabold text-primary uppercase tracking-wider">{language === 'en' ? 'Grand Total' : 'முழு மொத்தம்'}</span>
                           <span className="text-2xl font-extrabold text-primary">₹{getGrandTotal().toFixed(2)}</span>
                         </div>
 
                         {/* Cash Amount Received & Change Balance */}
                         <div className="border border-outline-variant/30 rounded-xl p-4 bg-[#FAF9F6]/40 space-y-3 mt-3">
-                          <span className="block text-[10px] font-extrabold uppercase tracking-widest text-[#4B5563]">Cash Payment</span>
+                          <span className="block text-[10px] font-extrabold uppercase tracking-widest text-[#4B5563]">{language === 'en' ? 'Cash Payment' : 'பணப் பட்டுவாடா'}</span>
                           <div className="space-y-1.5">
-                            <label className="block text-[10px] font-bold text-[#4B5563] uppercase tracking-wider">Amount Received (₹)</label>
+                            <label className="block text-[10px] font-bold text-[#4B5563] uppercase tracking-wider">
+                              {language === 'en' ? 'Amount Received (₹)' : 'பெறப்பட்ட தொகை (₹)'}
+                            </label>
                             <input
                               type="number"
                               placeholder="0.00"
@@ -1773,7 +1836,7 @@ export default function AdminPortal() {
                           </div>
                           {billingAmountReceived > 0 && billingAmountReceived >= getGrandTotal() && (
                             <div className="flex justify-between items-center text-xs font-semibold text-green-700 bg-green-50 p-2 rounded-lg border border-green-200">
-                              <span>Change Return</span>
+                              <span>{language === 'en' ? 'Change Return' : 'மீதி தொகை'}</span>
                               <span>₹{(billingAmountReceived - getGrandTotal()).toFixed(2)}</span>
                             </div>
                           )}
@@ -1792,7 +1855,7 @@ export default function AdminPortal() {
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`w-4 h-4 ${(billingItems.length === 0) ? 'text-gray-500' : 'text-[#25D366]'}`}>
                             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.888-.788-1.489-1.761-1.663-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
                           </svg>
-                          <span>SEND BILL VIA WHATSAPP</span>
+                          <span>{language === 'en' ? 'SEND BILL VIA WHATSAPP' : 'பில்லை வாட்ஸ்அப்பில் அனுப்பு'}</span>
                         </button>
                       </div>
                     </div>
@@ -1836,7 +1899,12 @@ export default function AdminPortal() {
                             <div key={prod.id} className="border border-outline-variant/20 rounded-xl p-4 space-y-3 bg-[#FAF9F6]/20">
                               <div className="flex justify-between items-start">
                                 <div>
-                                  <h4 className="font-bold text-primary text-sm">{prod.name}</h4>
+                                  <h4 className="font-bold text-primary text-sm">
+                                    {prod.name}
+                                    {language === 'ta' && prod.tamilName && (
+                                      <span className="text-[#4B5563] font-normal ml-2">({prod.tamilName})</span>
+                                    )}
+                                  </h4>
                                   <span className="text-[10px] font-bold text-on-surface-variant uppercase bg-slate-100 px-2 py-0.5 rounded-md">
                                     {prod.category}
                                   </span>
@@ -3064,6 +3132,22 @@ export default function AdminPortal() {
                               );
                             })()}
                           </div>
+                          
+                          {/* Invoice & WhatsApp Actions */}
+                          <div className="flex gap-3 pt-5 border-t border-outline-variant/20">
+                            <button
+                              onClick={() => window.open(`/invoice/${selectedOrder.id}`, '_blank')}
+                              className="flex-1 flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-xl font-bold text-xs hover:bg-primary/90 transition-all cursor-pointer shadow-sm"
+                            >
+                              <FileText className="w-4 h-4" /> Invoice
+                            </button>
+                            <button
+                              onClick={() => handleResendWhatsApp(selectedOrder)}
+                              className="flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white py-3 rounded-xl font-bold text-xs hover:bg-[#20b958] transition-all cursor-pointer shadow-sm"
+                            >
+                              <MessageCircle className="w-4 h-4" /> WhatsApp
+                            </button>
+                          </div>
                         </div>
                       </motion.div>
                     ) : (
@@ -3085,14 +3169,18 @@ export default function AdminPortal() {
                   <div className="space-y-6">
                     <div className="flex justify-between items-center">
                       <div>
-                        <h1 className="text-3xl font-bold tracking-tight text-primary">Inventory Manager</h1>
-                        <p className="text-sm text-on-surface-variant mt-1">Maintain formulation names, botanical ingredients, size configurations, and price lists.</p>
+                        <h1 className="text-3xl font-bold tracking-tight text-primary">
+                          {language === 'en' ? 'Inventory Manager' : 'இருப்பு மேலாளர்'}
+                        </h1>
+                        <p className="text-sm text-on-surface-variant mt-1">
+                          {language === 'en' ? 'Maintain formulation names, botanical ingredients, size configurations, and price lists.' : 'தயாரிப்பு பெயர்கள், மூலிகைகள், அளவு உள்ளமைவுகள் மற்றும் விலைப்பட்டியல்களை நிர்வகிக்கவும்.'}
+                        </p>
                       </div>
                       <button
                         onClick={startAddProduct}
                         className="bg-secondary hover:bg-secondary-container text-white font-body text-xs font-bold tracking-widest uppercase py-3.5 px-6 rounded-full flex items-center gap-1.5 shadow transition-colors cursor-pointer"
                       >
-                        <Plus className="w-3.5 h-3.5" /> Add Product
+                        <Plus className="w-3.5 h-3.5" /> {language === 'en' ? 'Add Product' : 'பொருள் சேர்'}
                       </button>
                     </div>
 
@@ -3103,24 +3191,24 @@ export default function AdminPortal() {
                           <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
                           <input
                             type="text"
-                            placeholder="Search products by name..."
+                            placeholder={language === 'en' ? 'Search products by name...' : 'பொருட்களை பெயரால் தேடவும்...'}
                             value={productsSearch}
                             onChange={(e) => setProductsSearch(e.target.value)}
                             className="w-full pl-9 pr-4 py-2 bg-white border border-outline-variant/35 rounded-xl text-sm focus:outline-none focus:border-primary transition-all text-[#1F2937] font-semibold"
                           />
                         </div>
                         <span className="text-xs font-bold text-on-surface-variant bg-white px-3 py-1.5 rounded-lg border border-outline-variant/20 hidden sm:block">
-                          {products.filter(p => p.name.toLowerCase().includes(productsSearch.toLowerCase())).length} formulations
+                          {products.filter(p => p.name.toLowerCase().includes(productsSearch.toLowerCase())).length} {language === 'en' ? 'formulations' : 'தயாரிப்புகள்'}
                         </span>
                       </div>
 
                       <table className="w-full text-left text-sm min-w-[700px]">
                         <thead>
                           <tr className="bg-surface-container-low text-primary font-bold border-b border-outline-variant/25">
-                            <th className="px-6 py-5">Product Details</th>
-                            <th className="px-6 py-5">Category</th>
-                            <th className="px-6 py-5">Size Packs & Prices</th>
-                            <th className="px-6 py-5 text-right">Actions</th>
+                            <th className="px-6 py-5">{language === 'en' ? 'Product Details' : 'பொருள் விவரங்கள்'}</th>
+                            <th className="px-6 py-5">{language === 'en' ? 'Category' : 'வகை'}</th>
+                            <th className="px-6 py-5">{language === 'en' ? 'Size Packs & Prices' : 'அளவு மற்றும் விலைகள்'}</th>
+                            <th className="px-6 py-5 text-right">{language === 'en' ? 'Actions' : 'செயல்கள்'}</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-outline-variant/10">
@@ -3134,7 +3222,12 @@ export default function AdminPortal() {
                                     <img src={getProductImage(p.name, p.category, p.image, 'tile')} alt={p.name} onError={onImgError} className="w-full h-full object-contain mix-blend-multiply" />
                                   </div>
                                   <div>
-                                    <div className="text-base font-bold text-primary">{p.name}</div>
+                                    <div className="text-base font-bold text-primary">
+                                      {p.name}
+                                      {language === 'ta' && p.tamilName && (
+                                        <span className="text-sm font-normal text-[#4B5563] ml-2">({p.tamilName})</span>
+                                      )}
+                                    </div>
                                     <div className="text-xs text-on-surface-variant mt-1.5 leading-relaxed line-clamp-2">{p.description}</div>
                                   </div>
                                 </div>
@@ -3198,17 +3291,31 @@ export default function AdminPortal() {
 
                     <form onSubmit={saveProductSubmit} className="space-y-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Product Name */}
-                        <div className="space-y-2">
-                          <label className="block text-xs font-bold text-primary uppercase tracking-wider">Product Name</label>
-                          <input
-                            type="text"
-                            value={prodName}
-                            onChange={(e) => setProdName(e.target.value)}
-                            className="w-full border border-outline-variant/40 rounded-xl py-3.5 px-4 text-xs text-primary focus:outline-none focus:border-secondary"
-                            placeholder="e.g. Herbal Shikakai Powder"
-                            required
-                          />
+                        <div className="space-y-6">
+                          {/* Product Name */}
+                          <div className="space-y-2">
+                            <label className="block text-xs font-bold text-primary uppercase tracking-wider">Product Name</label>
+                            <input
+                              type="text"
+                              value={prodName}
+                              onChange={(e) => setProdName(e.target.value)}
+                              className="w-full border border-outline-variant/40 rounded-xl py-3.5 px-4 text-xs text-primary focus:outline-none focus:border-secondary"
+                              placeholder="e.g. Herbal Shikakai Powder"
+                              required
+                            />
+                          </div>
+                          
+                          {/* Tamil Name */}
+                          <div className="space-y-2">
+                            <label className="block text-xs font-bold text-primary uppercase tracking-wider">Tamil Name (Optional)</label>
+                            <input
+                              type="text"
+                              value={prodTamilName}
+                              onChange={(e) => setProdTamilName(e.target.value)}
+                              className="w-full border border-outline-variant/40 rounded-xl py-3.5 px-4 text-xs text-primary focus:outline-none focus:border-secondary"
+                              placeholder="e.g. உளுத்தம் பருப்பு"
+                            />
+                          </div>
                         </div>
 
                         {/* Product Image */}

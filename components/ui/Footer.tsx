@@ -19,7 +19,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
           <div className="lg:col-span-5 pr-0 lg:pr-12">
             <Link href="/" className="mb-4 inline-block bg-white p-3 rounded-2xl">
-              <img src="/logo.png" alt="Sri Dasarathi" className="h-20 w-auto object-contain" />
+              <img src="/logo.svg" alt="Sri Dasarathi" className="h-20 w-auto object-contain" />
             </Link>
             <p className="text-white/70 text-sm leading-relaxed mb-4 max-w-sm">
               Cultivating integrity through uncompromising standards. We bring you the purest expression of ancient agriculture, preserving flavors and vital nutrients.
