@@ -424,7 +424,14 @@ export default function AdminPortal() {
     
     try {
       if (editingCouponCode) {
-        // Update existing coupon
+        // Check if the user changed the coupon code itself
+        if (editingCouponCode !== formattedCode) {
+          if (coupons.some(c => c.code === formattedCode)) {
+            alert('A coupon with this new code already exists.');
+            return;
+          }
+        }
+        
         const updatedCoupon: Coupon = {
           code: formattedCode,
           discount: newCouponDiscount,
@@ -435,6 +442,11 @@ export default function AdminPortal() {
           status: coupons.find(c => c.code === editingCouponCode)?.status || 'ACTIVE'
         };
         await upsertCoupon(updatedCoupon);
+        
+        if (editingCouponCode !== formattedCode) {
+          await dbDeleteCoupon(editingCouponCode);
+        }
+        
         setCoupons(prev => prev.map(c => c.code === editingCouponCode ? updatedCoupon : c));
         setEditingCouponCode(null);
       } else {
@@ -475,6 +487,7 @@ export default function AdminPortal() {
     setNewCouponMinOrder(cp.minOrder);
     setNewCouponExpiryDate(cp.expiryDate || '');
     setNewCouponUsageLimit(cp.usageLimit || 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const deleteCoupon = async (code: string) => {
@@ -970,7 +983,7 @@ export default function AdminPortal() {
   const completedOrdersCount = ordersFilteredByPeriod.filter(o => o.status === 'Completed').length;
 
   return (
-    <div className="min-h-screen md:h-screen bg-[#FAF9F5] flex flex-col md:flex-row font-poppins text-primary antialiased md:overflow-hidden">
+    <div className="h-[100dvh] bg-[#FAF9F5] flex flex-col md:flex-row font-poppins text-primary antialiased overflow-hidden w-full">
       
       {/* AUTHENTICATION VIEW */}
       {checkingAuth ? (
@@ -1012,9 +1025,26 @@ export default function AdminPortal() {
         </div>
       ) : (
         <>
+          {/* MOBILE OVERLAY */}
+          {isSidebarOpen && (
+            <div 
+              className="fixed inset-0 bg-black/40 z-40 md:hidden transition-opacity"
+              onClick={() => setIsSidebarOpen(false)}
+            />
+          )}
+
           {/* LEFT SIDEBAR NAVIGATION */}
-          <div className={`relative bg-white border-b md:border-b-0 md:border-r border-outline-variant/25 flex flex-col shrink-0 shadow-sm justify-between md:h-full transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-full md:w-72 p-8' : 'w-full md:w-[90px] p-4 items-center'}`}>
+          <div className={`fixed md:relative inset-y-0 left-0 z-50 bg-white border-r border-outline-variant/25 flex flex-col shrink-0 shadow-xl md:shadow-sm justify-between h-[100dvh] md:h-full transition-all duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0 w-[280px] md:w-72 p-8' : '-translate-x-full md:translate-x-0 w-[280px] md:w-[90px] p-8 md:p-4 md:items-center'}`}>
             
+            {/* Mobile Close Button */}
+            <button 
+              onClick={() => setIsSidebarOpen(false)}
+              className="absolute right-6 top-8 p-1.5 bg-red-50 text-red-600 rounded-lg md:hidden border border-red-100 active:scale-95 transition-transform z-50 cursor-pointer"
+              title="Close Menu"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
             {/* Toggle Button */}
             <button 
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -1189,21 +1219,35 @@ export default function AdminPortal() {
           </div>
 
           {/* MAIN DASHBOARD CONTENT AREA */}
-          <div data-lenis-prevent="true" className="flex-grow flex flex-col pt-5 px-6 pb-6 md:pt-6 md:px-10 md:pb-8 overflow-y-auto overscroll-contain w-full">
+          <div data-lenis-prevent="true" className="flex-grow flex flex-col pt-5 px-6 pb-6 md:pt-6 md:px-10 md:pb-8 overflow-y-auto overflow-x-hidden overscroll-contain w-full relative">
             
+            {/* Mobile Header Toggle */}
+            <div className="md:hidden flex items-center mb-6 pb-4 border-b border-outline-variant/20">
+              <button 
+                onClick={() => setIsSidebarOpen(true)}
+                className="p-2 -ml-2 mr-3 bg-white border border-outline-variant/30 rounded-xl text-primary shadow-sm active:scale-95 transition-transform"
+                title="Open Menu"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+              <span className="font-bold text-lg text-primary tracking-tight">Menu</span>
+            </div>
+
             {/* TAB 1: WHATSAPP CENTER (Matches Vercel Screenshot layout) */}
             {activeTab === 'whatsapp' && (
               <div className="space-y-10">
                 {/* Header Title Controls */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                  <div className="flex items-center gap-4">
-                    <h1 className="text-3xl font-bold tracking-tight text-primary flex items-center gap-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-[#25D366]">
+                  <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-primary flex items-center gap-2 sm:gap-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 sm:w-8 sm:h-8 text-[#25D366] shrink-0">
                         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.888-.788-1.489-1.761-1.663-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
                       </svg>
                       WhatsApp Center
                     </h1>
-                    <span className="bg-[#FEF3C7] text-[#D97706] text-xs font-bold px-3 py-1.5 rounded-full border border-[#FDE68A]">
+                    <span className="bg-[#FEF3C7] text-[#D97706] text-[10px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full border border-[#FDE68A] whitespace-nowrap">
                       {pendingOrdersCount} pending
                     </span>
                   </div>
@@ -1581,21 +1625,21 @@ export default function AdminPortal() {
 
                     {/* Order Items Card */}
                     <div className="bg-white border border-outline-variant/20 rounded-2xl p-5 shadow-sm space-y-4">
-                      <div className="flex items-center justify-between pb-3 border-b border-outline-variant/10">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-outline-variant/10">
                         <div className="flex items-center gap-2 text-primary font-bold text-sm uppercase tracking-wider">
                           <Receipt className="w-4.5 h-4.5 text-[#2B3E2F]" />
                           <span>{language === 'en' ? 'Order Items' : 'ஆர்டர் பொருட்கள்'}</span>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 w-full sm:w-auto">
                           <button
                             onClick={() => setBillingItems([])}
-                            className="bg-[#F3F4F6] hover:bg-[#E5E7EB] text-[#4B5563] font-bold text-xs px-4 py-2 rounded-xl transition-all cursor-pointer"
+                            className="flex-1 sm:flex-none bg-[#F3F4F6] hover:bg-[#E5E7EB] text-[#4B5563] font-bold text-xs px-4 py-2 rounded-xl transition-all cursor-pointer text-center"
                           >
                             {language === 'en' ? 'Clear Order' : 'ஆர்டரை அழி'}
                           </button>
                           <button
                             onClick={addCustomItem}
-                            className="bg-white hover:bg-[#2B3E2F] hover:text-white text-[#2B3E2F] border border-[#2B3E2F]/20 font-bold text-xs px-4 py-2 rounded-xl transition-all cursor-pointer"
+                            className="flex-1 sm:flex-none bg-white hover:bg-[#2B3E2F] hover:text-white text-[#2B3E2F] border border-[#2B3E2F]/20 font-bold text-xs px-4 py-2 rounded-xl transition-all cursor-pointer text-center"
                           >
                             {language === 'en' ? '+ Add Custom Item' : '+ புதிய பொருள் சேர்'}
                           </button>
@@ -1622,14 +1666,14 @@ export default function AdminPortal() {
                                     placeholder="Type custom product description..."
                                     value={it.name}
                                     onChange={(e) => updateBillingItem(it.id, 'name', e.target.value)}
-                                    className="flex-grow bg-white border border-outline-variant/35 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-primary transition-all text-[#1F2937] font-semibold"
+                                    className="flex-grow min-w-0 bg-white border border-outline-variant/35 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-primary transition-all text-[#1F2937] font-semibold"
                                   />
                                   <button
                                     onClick={() => {
                                       setActiveCatalogRowId(it.id);
                                       setShowCatalogModal(true);
                                     }}
-                                    className="bg-white border border-outline-variant/30 hover:bg-[#FAF9F6] text-primary font-bold text-[10px] uppercase px-3 py-2.5 rounded-xl flex items-center gap-1.5 shadow-sm transition-all cursor-pointer whitespace-nowrap"
+                                    className="shrink-0 bg-white border border-outline-variant/30 hover:bg-[#FAF9F6] text-primary font-bold text-[10px] uppercase px-3 py-2.5 rounded-xl flex items-center gap-1.5 shadow-sm transition-all cursor-pointer whitespace-nowrap"
                                   >
                                     <span className="w-1.5 h-1.5 rounded-full bg-[#2B3E2F]"></span>
                                     Catalog
@@ -2304,9 +2348,9 @@ export default function AdminPortal() {
                                   const isCurrentMonth = new Date().getMonth() === idx;
                                   return (
                                     <div key={idx} className="flex flex-col items-center flex-grow h-full justify-end">
-                                      <div className="relative w-full max-w-[28px] group flex flex-col justify-end items-center cursor-pointer" style={{ height: `${Math.max(4, heightPercent)}%` }}>
+                                      <div tabIndex={0} className="relative w-full max-w-[28px] group flex flex-col justify-end items-center cursor-pointer outline-none" style={{ height: `${Math.max(4, heightPercent)}%` }}>
                                         {/* Tooltip on Hover */}
-                                        <div className="absolute bottom-full mb-2 bg-primary text-white text-[10px] font-bold py-1 px-2 rounded shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                                        <div className="absolute bottom-full mb-2 bg-primary text-white text-[10px] font-bold py-1 px-2 rounded shadow-md opacity-0 group-hover:opacity-100 group-focus:opacity-100 group-active:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
                                           ₹{d.value.toLocaleString()}
                                         </div>
                                         
@@ -2358,9 +2402,9 @@ export default function AdminPortal() {
                                   const isCurrentDay = dayOfWeek === idx;
                                   return (
                                     <div key={idx} className="flex flex-col items-center flex-grow h-full justify-end">
-                                      <div className="relative w-full max-w-[28px] group flex flex-col justify-end items-center cursor-pointer" style={{ height: `${Math.max(4, heightPercent)}%` }}>
+                                      <div tabIndex={0} className="relative w-full max-w-[28px] group flex flex-col justify-end items-center cursor-pointer outline-none" style={{ height: `${Math.max(4, heightPercent)}%` }}>
                                         {/* Tooltip on Hover */}
-                                        <div className="absolute bottom-full mb-2 bg-primary text-white text-[10px] font-bold py-1 px-2 rounded shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                                        <div className="absolute bottom-full mb-2 bg-primary text-white text-[10px] font-bold py-1 px-2 rounded shadow-md opacity-0 group-hover:opacity-100 group-focus:opacity-100 group-active:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
                                           ₹{d.value.toLocaleString()}
                                         </div>
                                         
@@ -3034,9 +3078,9 @@ export default function AdminPortal() {
                         exit={{ opacity: 0, x: 10 }}
                         className="bg-white border border-outline-variant/20 rounded-2xl p-8 shadow-md space-y-6 sticky top-4"
                       >
-                        <div className="flex justify-between items-center border-b border-outline-variant/20 pb-4">
-                          <div>
-                            <h4 className="text-lg font-bold text-primary flex items-center gap-2">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-outline-variant/20 pb-4">
+                          <div className="w-full sm:w-auto">
+                            <h4 className="text-lg font-bold text-primary flex flex-wrap items-center gap-2 break-all sm:break-normal">
                               {selectedOrder.id}
                               {selectedOrder.status === 'Cancelled' && (
                                 <span className="bg-red-100 text-red-700 text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider">Cancelled</span>
@@ -3216,7 +3260,8 @@ export default function AdminPortal() {
                         </span>
                       </div>
 
-                      <table className="w-full text-left text-sm min-w-[700px]">
+                      <div className="overflow-x-auto w-full">
+                        <table className="w-full text-left text-sm min-w-[700px]">
                         <thead>
                           <tr className="bg-surface-container-low text-primary font-bold border-b border-outline-variant/25">
                             <th className="px-6 py-5">{language === 'en' ? 'Product Details' : 'பொருள் விவரங்கள்'}</th>
@@ -3282,6 +3327,7 @@ export default function AdminPortal() {
                           ))}
                         </tbody>
                       </table>
+                      </div>
                     </div>
                   </div>
                 ) : (
@@ -3366,12 +3412,12 @@ export default function AdminPortal() {
                           
                           {/* File Browser Fallback */}
                           <div className="flex items-center gap-3">
-                            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">OR BROWSE</span>
+                            <span className="shrink-0 text-[10px] text-gray-400 font-bold uppercase tracking-wider">OR BROWSE</span>
                             <input
                               type="file"
                               accept="image/*"
                               onChange={(e) => setProdImageFile(e.target.files?.[0] || null)}
-                              className="flex-1 border border-outline-variant/40 rounded-xl py-2 px-3 text-xs text-primary focus:outline-none focus:border-secondary file:mr-3 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-primary file:text-white hover:file:bg-secondary cursor-pointer"
+                              className="flex-1 min-w-0 border border-outline-variant/40 rounded-xl py-2 px-3 text-xs text-primary focus:outline-none focus:border-secondary file:mr-3 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-primary file:text-white hover:file:bg-secondary cursor-pointer"
                             />
                           </div>
 
@@ -3509,18 +3555,18 @@ export default function AdminPortal() {
                         </div>
                       </div>
 
-                      <div className="border-t border-outline-variant/20 pt-6 flex justify-end gap-4">
+                      <div className="border-t border-outline-variant/20 pt-6 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4">
                         <button
                           type="button"
                           onClick={() => { setEditingProduct(null); setIsAddingProduct(false); }}
-                          className="border border-outline-variant/40 text-primary hover:bg-[#FAF9F5] text-xs font-bold tracking-widest uppercase py-4 px-8 rounded-full transition-colors cursor-pointer"
+                          className="w-full sm:w-auto text-center border border-outline-variant/40 text-primary hover:bg-[#FAF9F5] text-xs font-bold tracking-widest uppercase py-4 px-4 sm:px-8 rounded-full transition-colors cursor-pointer"
                         >
                           Cancel
                         </button>
                         <button
                           type="submit"
                           disabled={isSavingProduct}
-                          className={`flex items-center gap-2 bg-primary hover:bg-primary-container text-on-primary text-xs font-bold tracking-widest uppercase py-4 px-10 rounded-full shadow transition-colors ${isSavingProduct ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}
+                          className={`w-full sm:w-auto flex justify-center items-center gap-2 bg-primary hover:bg-primary-container text-on-primary text-xs font-bold tracking-widest uppercase py-4 px-4 sm:px-10 rounded-full shadow transition-colors ${isSavingProduct ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}
                         >
                           {isSavingProduct ? (
                             <>
@@ -3546,18 +3592,18 @@ export default function AdminPortal() {
                 </div>
 
                 <div className="bg-white border border-outline-variant/20 rounded-2xl p-6 shadow-sm space-y-6">
-                  <form onSubmit={addCategory} className="flex gap-4">
+                  <form onSubmit={addCategory} className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                     <input
                       type="text"
                       placeholder="Enter new category name..."
                       value={newCatName}
                       onChange={(e) => setNewCatName(e.target.value)}
-                      className="flex-grow border border-outline-variant/40 rounded-xl py-3 px-4 text-xs text-primary focus:outline-none focus:border-secondary"
+                      className="flex-grow w-full min-w-0 border border-outline-variant/40 rounded-xl py-3 px-4 text-xs text-primary focus:outline-none focus:border-secondary"
                       required
                     />
                     <button
                       type="submit"
-                      className="bg-primary hover:bg-primary-container text-on-primary text-xs font-bold px-6 py-3 rounded-xl uppercase tracking-wider flex items-center gap-1.5 cursor-pointer"
+                      className="shrink-0 w-full sm:w-auto justify-center bg-primary hover:bg-primary-container text-on-primary text-xs font-bold px-6 py-3 rounded-xl uppercase tracking-wider flex items-center gap-1.5 cursor-pointer"
                     >
                       <Plus className="w-4 h-4" /> Add
                     </button>
@@ -3608,19 +3654,19 @@ export default function AdminPortal() {
                       {/* Coupon Code Input and Generate Button */}
                       <div className="space-y-1.5">
                         <label className="block text-[10px] font-bold text-[#4B5563] uppercase tracking-wider">Coupon Code *</label>
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2">
                           <input
                             type="text"
                             placeholder="e.g. Rice"
                             value={newCouponCode}
                             onChange={(e) => setNewCouponCode(e.target.value.toUpperCase())}
-                            className="flex-grow border border-outline-variant/35 rounded-xl py-3 px-4 text-xs text-primary focus:outline-none focus:border-primary uppercase font-bold"
+                            className="flex-grow w-full min-w-0 border border-outline-variant/35 rounded-xl py-3 px-4 text-xs text-primary focus:outline-none focus:border-primary uppercase font-bold"
                             required
                           />
                           <button
                             type="button"
                             onClick={handleGenerateCouponCode}
-                            className="bg-[#2B3E2F] hover:bg-[#1E2B21] text-white text-[10px] font-bold px-4 py-3 rounded-xl uppercase tracking-wider transition-colors cursor-pointer"
+                            className="shrink-0 w-full sm:w-auto justify-center bg-[#2B3E2F] hover:bg-[#1E2B21] text-white text-[10px] font-bold px-4 py-3 rounded-xl uppercase tracking-wider transition-colors cursor-pointer"
                           >
                             Generate
                           </button>
@@ -3738,12 +3784,12 @@ export default function AdminPortal() {
                               className="bg-[#FAF9F6]/50 border border-outline-variant/15 rounded-xl p-4 space-y-2 flex flex-col justify-between hover:bg-[#FAF9F6] transition-colors relative"
                             >
                               {/* Header info */}
-                              <div className="flex justify-between items-start">
-                                <div className="flex items-center gap-2">
-                                  <span className="font-bold text-primary text-base tracking-wide font-poppins">{cp.code}</span>
+                              <div className="flex flex-col sm:flex-row sm:justify-between items-start gap-2 sm:gap-4">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <span className="font-bold text-primary text-base tracking-wide font-poppins break-all">{cp.code}</span>
                                   <span 
                                     onClick={() => toggleCouponStatus(cp.code)}
-                                    className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider cursor-pointer border ${
+                                    className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider cursor-pointer border whitespace-nowrap ${
                                       cp.status === 'ACTIVE'
                                         ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100'
                                         : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100'
@@ -3752,7 +3798,7 @@ export default function AdminPortal() {
                                     {cp.status}
                                   </span>
                                 </div>
-                                <div className="flex gap-3 text-[10px] font-bold">
+                                <div className="flex gap-4 text-[10px] font-bold shrink-0">
                                   <button
                                     onClick={() => startEditCoupon(cp)}
                                     className="text-blue-600 hover:text-blue-800 transition-colors cursor-pointer"
@@ -3811,7 +3857,7 @@ export default function AdminPortal() {
             {activeTab === 'users' && (
               <div className="space-y-6 max-w-6xl text-left">
                 {/* Header Title & Refresh */}
-                <div className="flex items-center justify-between pb-4 border-b border-outline-variant/15">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-outline-variant/15 gap-4">
                   <div>
                     <h1 className="text-3xl font-extrabold tracking-tight text-primary font-poppins">User Management</h1>
                     <p className="text-xs text-on-surface-variant font-medium mt-1">
@@ -3852,7 +3898,8 @@ export default function AdminPortal() {
 
                 {/* Users Table */}
                 <div className="bg-white border border-outline-variant/20 rounded-2xl overflow-hidden shadow-sm">
-                  <table className="w-full text-left text-xs">
+                  <div className="overflow-x-auto w-full">
+                  <table className="w-full text-left text-xs min-w-[800px]">
                     <thead>
                       <tr className="bg-[#FAF9F6]/80 text-[#374151] font-bold border-b border-outline-variant/25">
                         <th className="px-6 py-4">Name</th>
@@ -3940,6 +3987,7 @@ export default function AdminPortal() {
                         })}
                     </tbody>
                   </table>
+                  </div>
                 </div>
               </div>
             )}
