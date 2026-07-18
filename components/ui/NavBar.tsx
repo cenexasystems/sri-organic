@@ -81,7 +81,8 @@ export default function NavBar() {
               </>
             );
 
-            return isHashLink ? (
+            const isRegularAnchor = isHashLink || link.href === "/";
+            return isRegularAnchor ? (
               <a key={link.name} href={link.href} {...commonProps}>
                 {innerContent}
               </a>
@@ -104,9 +105,9 @@ export default function NavBar() {
 
         {/* Center Logo */}
         <div className="absolute left-6 lg:left-1/2 lg:-translate-x-1/2 py-1 z-10">
-          <Link href="/" className="flex items-center">
+          <a href="/" className="flex items-center">
             <img src="/logo.svg" alt="Sri Dasarathi" className="h-12 md:h-14 w-auto object-contain mix-blend-multiply drop-shadow-sm" />
-          </Link>
+          </a>
         </div>
 
         {/* Right Icons */}
@@ -156,7 +157,8 @@ export default function NavBar() {
             <div className="px-8 py-8 flex flex-col space-y-6">
               {navLinks.map((link) => {
                 const isHashLink = link.href.startsWith('/#') || link.href.startsWith('#');
-                return isHashLink ? (
+                const isRegularAnchor = isHashLink || link.href === "/";
+                return isRegularAnchor ? (
                   <a
                     key={link.name}
                     href={link.href}

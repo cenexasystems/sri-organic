@@ -374,7 +374,7 @@ export default function CartPage() {
                           className="flex flex-col sm:flex-row gap-3 p-3 rounded-2xl border border-stone-100 bg-stone-50/50"
                         >
                           <div className="flex flex-row items-center gap-4 flex-1">
-                            <div className="w-14 h-14 sm:w-20 sm:h-20 shrink-0 bg-white rounded-xl flex items-center justify-center p-2 shadow-sm">
+                            <div className="w-20 h-20 sm:w-28 sm:h-28 shrink-0">
                               <img
                                 src={heroImage}
                                 alt={item.product.name}

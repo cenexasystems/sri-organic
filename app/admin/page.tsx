@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   X, Lock, Plus, Trash2, Edit3, Settings, Eye, Search, Shield, BarChart3, ShoppingCart, Receipt, 
   Package, FolderTree, Ticket, Users, RefreshCw, Award, CheckCircle2, TrendingUp,
-  Globe, ShoppingBag, Gift, ChevronLeft, ChevronRight, Download, FileText, MessageCircle
+  Globe, ShoppingBag, Gift, ChevronLeft, ChevronRight, Download, FileText, MessageCircle, Minus
 } from 'lucide-react';
 import { useRouter as useNavigate } from 'next/navigation';
 import { useAuth } from '@/lib/useAuth';
@@ -1656,14 +1656,28 @@ export default function AdminPortal() {
                                 <label className="block text-[10px] font-bold text-[#4B5563] uppercase tracking-wider">
                                   {language === 'en' ? 'Qty' : 'அளவு'}
                                 </label>
-                                <input
-                                  type="number"
-                                  min="1"
-                                  value={it.quantity || 1}
-                                  onChange={(e) => updateBillingItem(it.id, 'quantity', Math.max(1, Number(e.target.value)))}
-                                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                                  className="w-full bg-white border border-outline-variant/35 rounded-xl px-3.5 py-2.5 text-xs text-center focus:outline-none focus:border-primary transition-all text-[#1F2937] font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                />
+                                <div className="flex items-center gap-1 bg-white border border-outline-variant/35 rounded-xl px-1.5 py-1.5">
+                                  <button
+                                    onClick={() => updateBillingItem(it.id, 'quantity', Math.max(1, (it.quantity || 1) - 1))}
+                                    className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-[#FAF9F5] text-[#4B5563] transition-colors cursor-pointer shrink-0"
+                                  >
+                                    <Minus className="w-3 h-3" />
+                                  </button>
+                                  <input
+                                    type="number"
+                                    min="1"
+                                    value={it.quantity || 1}
+                                    onChange={(e) => updateBillingItem(it.id, 'quantity', Math.max(1, Number(e.target.value)))}
+                                    onWheel={(e) => (e.target as HTMLElement).blur()}
+                                    className="w-full text-xs text-center focus:outline-none text-[#1F2937] font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-transparent"
+                                  />
+                                  <button
+                                    onClick={() => updateBillingItem(it.id, 'quantity', (it.quantity || 1) + 1)}
+                                    className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-[#FAF9F5] text-[#4B5563] transition-colors cursor-pointer shrink-0"
+                                  >
+                                    <Plus className="w-3 h-3" />
+                                  </button>
+                                </div>
                               </div>
 
                               {/* Delete Action */}
