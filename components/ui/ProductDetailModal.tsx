@@ -155,37 +155,25 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
           {/* Modal Container */}
           <motion.div
             data-lenis-prevent="true"
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 250 }}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 40 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
             className="relative bg-[#FAF9F5] w-full max-w-4xl h-[100dvh] md:h-[90vh] md:rounded-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden z-10 flex flex-col"
           >
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="hidden md:flex absolute top-4 right-4 md:top-6 md:right-6 w-10 h-10 rounded-full bg-white/95 border border-[#e5e7eb]/60 hover:border-[#D4AF37] items-center justify-center text-[#111111] hover:text-[#D4AF37] shadow-md transition-all duration-300 z-40 cursor-pointer"
+              className="flex absolute top-4 right-4 md:top-6 md:right-6 w-10 h-10 rounded-full bg-white/95 border border-[#e5e7eb]/60 hover:border-[#D4AF37] items-center justify-center text-[#111111] hover:text-[#D4AF37] shadow-md transition-all duration-300 z-40 cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
-            {/* Top Action Bar (Mobile Only) */}
-            <div className="md:hidden sticky top-0 z-30 border-b border-white/60 bg-[#FAF9F5]/92 px-4 py-3 backdrop-blur sm:px-6 shrink-0">
-              <div className="mx-auto flex items-center justify-between gap-3">
-                <button
-                  onClick={onClose}
-                  className="inline-flex items-center gap-2 rounded-full border border-[#e5e7eb]/60 bg-white px-3 py-2 text-[11px] font-black text-[#111111] shadow-sm"
-                >
-                  <X size={14} /> {language === 'ta' ? 'மூடு' : 'Close'}
-                </button>
-              </div>
-            </div>
-
             <div data-lenis-prevent="true" className="flex flex-col md:flex-row flex-1 min-h-0 overflow-y-auto md:overflow-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {/* Image Section */}
-              <div className="w-full md:w-1/2 shrink-0 bg-stone-100 border-r border-stone-200 relative aspect-square md:aspect-auto md:h-full">
-                <div className="absolute top-8 left-8 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full border border-stone-200 flex flex-col gap-1 shadow-sm z-10">
-                   <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#D4AF37]">{product.category}</span>
+              <div className="w-full h-[35vh] md:w-1/2 shrink-0 bg-stone-100 border-r border-stone-200 relative md:aspect-auto md:h-full overflow-hidden flex items-center justify-center">
+                <div className="absolute top-4 left-4 md:top-6 md:left-6 bg-white/95 backdrop-blur-md px-3 py-1.5 md:px-4 md:py-2 rounded-full border border-stone-200 flex flex-col gap-1 shadow-sm z-10">
+                   <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#D4AF37]">{product.category}</span>
                 </div>
                 <img
                   src={heroImage}
@@ -193,12 +181,12 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
                   loading="lazy"
                   decoding="async"
                   onError={onImgError}
-                  className="absolute inset-0 h-full w-full object-contain md:object-cover mix-blend-multiply drop-shadow-xl"
+                  className="absolute inset-0 h-full w-full object-contain md:object-cover mix-blend-multiply drop-shadow-lg"
                 />
               </div>
 
               {/* Details Section */}
-              <div data-lenis-prevent="true" className="w-full md:w-1/2 px-5 pt-5 pb-0 md:px-12 md:pt-12 md:pb-0 flex flex-col gap-6 md:gap-10 relative bg-white md:overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <div data-lenis-prevent="true" className="w-full md:w-1/2 px-5 pt-5 pb-0 md:px-12 md:pt-12 md:pb-0 flex flex-col gap-5 md:gap-10 relative bg-white md:overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 
                 {/* Header info */}
                 <div className="space-y-2 md:space-y-4">
@@ -319,12 +307,14 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
                   className="absolute inset-0 z-50 flex items-center justify-center bg-[#111111]/60 backdrop-blur-sm p-4"
                 >
                   <motion.div 
-                    initial={{ scale: 0.9, y: 20 }}
-                    animate={{ scale: 1, y: 0 }}
-                    exit={{ scale: 0.9, y: 20 }}
+                    initial={{ scale: 0.95, y: 10, opacity: 0 }}
+                    animate={{ scale: 1, y: 0, opacity: 1 }}
+                    exit={{ scale: 0.95, y: 10, opacity: 0 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
                     className="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl flex flex-col items-center"
                   >
                     <div className="w-16 h-16 bg-[#F3FCEF] text-[#22C55E] rounded-full flex items-center justify-center mb-6">

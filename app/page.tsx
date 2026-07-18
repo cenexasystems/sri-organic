@@ -248,8 +248,9 @@ export default function Home() {
                   >
                      <ProductCard 
                        product={p} 
-                       onClick={() => {
-                         router.push('/products');
+                       onClick={(p) => {
+                         setSelectedProduct(p);
+                         setIsModalOpen(true);
                        }} 
                      />
                   </motion.div>

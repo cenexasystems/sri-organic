@@ -22,7 +22,7 @@ function ScrollToTop() {
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   
-  if (pathname.startsWith('/admin')) {
+  if (pathname.startsWith('/secure/admin')) {
     return (
       <>
         <ScrollToTop />
