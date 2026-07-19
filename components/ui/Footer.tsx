@@ -48,10 +48,7 @@ export default function Footer() {
                 <Phone className="w-4 h-4 shrink-0 mt-0.5 text-[#F3D78E]" />
                 <span>9894609057<br/>7094501036</span>
               </li>
-              <li className="flex items-center gap-3">
-                <Mail className="w-4 h-4 shrink-0 text-[#F3D78E]" />
-                <span>hello@sriorganic.com</span>
-              </li>
+
             </ul>
           </div>
           </div>

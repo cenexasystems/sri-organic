@@ -586,7 +586,7 @@ export default function AdminPortal() {
     message += `${eMoney} *Total Amount:* ₹${order.totalPrice.toLocaleString('en-IN')}\n\n`;
     
     message += `${eTruck} *Delivery Details:* Delivery charges may apply based on location.\n`;
-    message += `${ePhone} *GPay Number:* 7904199050\n\n`;
+    message += `${ePhone} *GPay Number:* 9894609057\n\n`;
     message += `Please let me know the delivery details and next steps! ${eSparkle}`;
     
     return message;
@@ -682,7 +682,7 @@ export default function AdminPortal() {
     const newOrder: Order = {
       id: nextInvoiceId,
       customerName: billingCustomerName || 'Walk-in Customer',
-      customerPhone: billingCustomerPhone || '7904199050',
+      customerPhone: billingCustomerPhone || '9894609057',
       customerEmail: '', // Not required for offline POS checkout
       customerAddress: billingSource === 'OFFLINE' ? 'Offline POS Shop' : 'Online Shipping Address',
       source: billingSource,
@@ -740,7 +740,7 @@ export default function AdminPortal() {
     navigator.clipboard.writeText(invoiceUrl).catch(() => {});
 
     // Open WhatsApp — use api.whatsapp.com/send for consistent behaviour across devices
-    const targetPhone = billingCustomerPhone ? billingCustomerPhone.replace(/\D/g, '') : '7904199050';
+    const targetPhone = billingCustomerPhone ? billingCustomerPhone.replace(/\D/g, '') : '9894609057';
     const formattedPhone = targetPhone.length === 10 ? `91${targetPhone}` : targetPhone;
     const waUrl = `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(invoiceMessage)}`;
     const waLink = document.createElement('a');
@@ -782,7 +782,7 @@ export default function AdminPortal() {
       `Have a great day!`
     ].join('\n');
 
-    const targetPhone = order.customerPhone ? order.customerPhone.replace(/\D/g, '') : '7904199050';
+    const targetPhone = order.customerPhone ? order.customerPhone.replace(/\D/g, '') : '9894609057';
     const formattedPhone = targetPhone.length === 10 ? `91${targetPhone}` : targetPhone;
     const waUrl = `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(invoiceMessage)}`;
     const waLink = document.createElement('a');
@@ -1509,8 +1509,8 @@ export default function AdminPortal() {
                                               const msg = formatWhatsAppMessage(o);
                                               navigator.clipboard.writeText(msg);
                                               alert('Message copied to clipboard!');
-                                              // Open WhatsApp Web using the override phone number "7904199050"
-                                              const adminNumber = process.env.NEXT_PUBLIC_ADMIN_WHATSAPP_1 || "917904199050";
+                                              // Open WhatsApp Web using the override phone number "9894609057"
+                                              const adminNumber = process.env.NEXT_PUBLIC_ADMIN_WHATSAPP_1 || "919894609057";
                                               window.open(`https://wa.me/${adminNumber}?text=${encodeURIComponent(msg)}`, '_blank');
                                             }}
                                             className="bg-[#10B981] hover:bg-[#059669] text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
@@ -2862,9 +2862,9 @@ export default function AdminPortal() {
 
             {/* TAB: GIFTS RECEIVED */}
             {activeTab === 'orders' && (
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              <div className="w-full relative">
                 {/* Orders List */}
-                <div className="lg:col-span-7 space-y-5">
+                <div className="w-full space-y-5">
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
                       <h1 className="text-3xl font-bold tracking-tight text-primary font-poppins">Billing & Invoice Hub</h1>
@@ -3068,17 +3068,24 @@ export default function AdminPortal() {
                 </div>
 
                 {/* Order Details Panel */}
-                <div className="lg:col-span-5">
-                  <AnimatePresence mode="wait">
-                    {selectedOrder ? (
+                <AnimatePresence>
+                  {selectedOrder && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/40 backdrop-blur-sm">
                       <motion.div
-                        key={selectedOrder.id}
-                        initial={{ opacity: 0, x: 10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 10 }}
-                        className="bg-white border border-outline-variant/20 rounded-2xl p-8 shadow-md space-y-6 sticky top-4"
+                        key="order-modal"
+                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                        className="bg-white border border-outline-variant/20 rounded-2xl p-6 sm:p-8 shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto relative space-y-6"
                       >
-                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-outline-variant/20 pb-4">
+                        <button
+                          onClick={() => setSelectedOrder(null)}
+                          className="absolute top-4 right-4 text-on-surface-variant hover:text-primary transition-colors bg-surface-container-low hover:bg-outline-variant/20 rounded-full p-1.5 cursor-pointer"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                        
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-outline-variant/20 pb-4 pr-8">
                           <div className="w-full sm:w-auto">
                             <h4 className="text-lg font-bold text-primary flex flex-wrap items-center gap-2 break-all sm:break-normal">
                               {selectedOrder.id}
@@ -3208,13 +3215,9 @@ export default function AdminPortal() {
                           </div>
                         </div>
                       </motion.div>
-                    ) : (
-                      <div className="bg-white border border-outline-variant/20 rounded-2xl p-12 text-center text-on-surface-variant text-sm italic">
-                        Select an order from the list to manage customer details, address logs, and delivery status.
-                      </div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                    </div>
+                  )}
+                </AnimatePresence>
               </div>
             )}
 

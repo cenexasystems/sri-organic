@@ -449,7 +449,7 @@ export default function Home() {
             
             <div className="w-full md:w-2/3 aspect-square md:aspect-[21/9] bg-white relative overflow-hidden rounded-[40px] shadow-xl border border-stone-200 group">
                <iframe 
-                 src="https://maps.google.com/maps?q=Andarkuppam,Ponneri,Tamil+Nadu,601204&t=m&z=16&ie=UTF8&iwloc=&output=embed" 
+                 src="https://maps.google.com/maps?q=47%2C+Ambal+Nagar%2C+Andarkuppam%2C+Nedumbarappakkam+Road%2C+Velammal+School+9th+gate+opposite%2C+Ponneri+-+601+204&t=m&z=16&ie=UTF8&iwloc=&output=embed" 
                  className="absolute inset-0 w-full h-full border-0"
                  allowFullScreen
                  loading="lazy"
@@ -459,7 +459,7 @@ export default function Home() {
                {/* Center Marker / Button */}
                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                  <a 
-                   href="https://www.google.com/maps/search/?api=1&query=Andarkuppam+Ponneri+Tamil+Nadu+601204" 
+                   href="https://www.google.com/maps/search/?api=1&query=47%2C+Ambal+Nagar%2C+Andarkuppam%2C+Nedumbarappakkam+Road%2C+Velammal+School+9th+gate+opposite%2C+Ponneri+-+601+204" 
                    target="_blank" 
                    rel="noopener noreferrer"
                    className="pointer-events-auto bg-white px-6 py-3.5 rounded-full text-[#111111] font-bold text-[15px] tracking-wide flex items-center gap-2.5 shadow-[0_4px_20px_rgba(0,0,0,0.15)] transition-all hover:scale-105 active:scale-95 group-hover:-translate-y-1 group-hover:shadow-[0_8px_30px_rgba(0,0,0,0.2)] border border-stone-100"

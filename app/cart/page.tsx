@@ -207,12 +207,12 @@ export default function CartPage() {
       message += `${eMoney} *Total Amount:* ₹${total.toLocaleString("en-IN")}\n\n`;
 
       message += `${eTruck} *Delivery Details:* Delivery charges may apply based on location.\n`;
-      message += `${ePhone} *GPay Number:* 7904199050\n\n`;
+      message += `${ePhone} *GPay Number:* 9894609057\n\n`;
       message += `Please let me know the delivery details and next steps! ${eSparkle}`;
 
       const encodedMessage = encodeURIComponent(message);
       const whatsappNumber =
-        process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "917904199050";
+        process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919894609057";
       const whatsappUrl = `https://api.whatsapp.com/send/?phone=${whatsappNumber}&text=${encodedMessage}`;
 
       // 3. Clear cart & redirect
