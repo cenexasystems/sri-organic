@@ -290,10 +290,11 @@ export default function Home() {
                   className="break-inside-avoid rounded-3xl overflow-hidden shadow-sm hover:shadow-xl group relative cursor-pointer"
                   onClick={() => setFullscreenImage(imgSrc)}
                 >
-                  <img 
+                  <Image 
                     src={`/gallery/${imgSrc}`} 
                     alt={`Gallery image ${idx + 1}`} 
-                    loading="lazy"
+                    width={800}
+                    height={800}
                     className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500 flex items-center justify-center">
@@ -571,15 +572,20 @@ export default function Home() {
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
-              <motion.img
+              <motion.div
                 initial={{ scale: 0.9 }}
                 animate={{ scale: 1 }}
                 exit={{ scale: 0.9 }}
-                src={`/gallery/${fullscreenImage}`}
-                alt="Fullscreen gallery"
-                className="max-w-full max-h-full object-contain rounded-xl relative z-0 shadow-2xl cursor-default"
                 onClick={(e) => e.stopPropagation()}
-              />
+                className="relative w-full h-full max-w-5xl max-h-[90vh] flex items-center justify-center"
+              >
+                <Image
+                  src={`/gallery/${fullscreenImage}`}
+                  alt="Fullscreen gallery"
+                  fill
+                  className="object-contain rounded-xl shadow-2xl cursor-default"
+                />
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>

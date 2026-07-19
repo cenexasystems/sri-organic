@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, Heart, Minus, Plus, ShoppingCart, Star, X } from 'lucide-react';
+import Image from 'next/image';
 import { useCartStore, useFavStore, Product, useLanguageStore } from '@/store/store';
 import {
   calculateLineTotal,
@@ -175,13 +176,12 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
                 <div className="absolute top-4 left-4 md:top-6 md:left-6 bg-white/95 backdrop-blur-md px-3 py-1.5 md:px-4 md:py-2 rounded-full border border-stone-200 flex flex-col gap-1 shadow-sm z-10">
                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#D4AF37]">{product.category}</span>
                 </div>
-                <img
+                <Image
                   src={heroImage}
                   alt={product.name}
-                  loading="lazy"
-                  decoding="async"
                   onError={onImgError}
-                  className="absolute inset-0 h-full w-full object-contain md:object-cover mix-blend-multiply drop-shadow-lg scale-105 md:scale-100"
+                  fill
+                  className="object-contain md:object-cover mix-blend-multiply drop-shadow-lg scale-105 md:scale-100"
                 />
               </div>
 

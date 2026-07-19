@@ -6,6 +6,7 @@ import { getProductImage, onImgError } from "@/lib/productImages";
 import { formatCurrency } from "@/lib/retail";
 import { Minus, Plus, Trash2, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   insertOrder,
@@ -374,12 +375,13 @@ export default function CartPage() {
                           className="flex flex-col sm:flex-row gap-3 p-3 rounded-2xl border border-stone-100 bg-stone-50/50"
                         >
                           <div className="flex flex-row items-center gap-4 flex-1">
-                            <div className="w-20 h-20 sm:w-28 sm:h-28 shrink-0">
-                              <img
+                            <div className="w-20 h-20 sm:w-28 sm:h-28 shrink-0 relative">
+                              <Image
                                 src={heroImage}
                                 alt={item.product.name}
                                 onError={onImgError}
-                                className="w-full h-full object-contain mix-blend-multiply"
+                                fill
+                                className="object-contain mix-blend-multiply"
                               />
                             </div>
                             <div className="flex-1">

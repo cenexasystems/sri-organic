@@ -10,6 +10,7 @@ import { useRouter as useNavigate } from 'next/navigation';
 import { useAuth } from '@/lib/useAuth';
 import { useLanguageStore } from '@/store/store';
 import { getProductImage, onImgError } from '@/lib/productImages';
+import Image from 'next/image';
 import {
   fetchProducts,
   upsertProduct,
@@ -3280,8 +3281,8 @@ export default function AdminPortal() {
                             <tr key={p.id} className="hover:bg-[#FAF9F5]/40 transition-colors">
                               <td className="px-6 py-5 max-w-md">
                                 <div className="flex items-center gap-4">
-                                  <div className="w-16 h-16 shrink-0 bg-white border border-outline-variant/20 rounded-xl p-1.5 shadow-sm flex items-center justify-center">
-                                    <img src={getProductImage(p.name, p.category, p.image, 'tile')} alt={p.name} onError={onImgError} className="w-full h-full object-contain mix-blend-multiply" />
+                                  <div className="w-16 h-16 shrink-0 bg-white border border-outline-variant/20 rounded-xl p-1.5 shadow-sm flex items-center justify-center relative">
+                                    <Image src={getProductImage(p.name, p.category, p.image, 'tile')} alt={p.name} onError={onImgError} fill className="object-contain mix-blend-multiply" />
                                   </div>
                                   <div>
                                     <div className="text-base font-bold text-primary">

@@ -3,6 +3,7 @@ import { ArrowRight, Star } from 'lucide-react';
 import { Product, useLanguageStore } from '@/store/store';
 import { formatCurrency } from '@/lib/retail';
 import { getProductImage, onImgError } from '@/lib/productImages';
+import Image from 'next/image';
 
 interface ProductCardProps {
   product: Product;
@@ -25,10 +26,12 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
     >
       {/* Image Section */}
       <div className="relative aspect-square overflow-hidden bg-[#FAF9F5] flex items-center justify-center p-6 border-b border-[#e5e7eb]/20">
-        <img
+        <Image
           src={getProductImage(product.name, product.category, product.imageUrl, 'tile')}
           alt={product.name}
           onError={onImgError}
+          width={400}
+          height={400}
           className="max-h-full max-w-full object-contain transition-transform duration-700 group-hover:scale-105"
         />
         <div className="absolute top-3 left-3 flex flex-col gap-2">

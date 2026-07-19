@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Leaf, Loader2, CheckCircle2 } from 'lucide-react';
+import Image from 'next/image';
 import { useAuth } from '@/lib/useAuth';
 
 export default function Login() {
@@ -44,7 +45,7 @@ export default function Login() {
         </button>
 
         <div className="mb-6 flex justify-center w-full">
-          <img src="/logo.svg" alt="Sri Organic" className="h-16 w-auto object-contain mix-blend-multiply" />
+          <Image src="/logo.svg" alt="Sri Organic" width={200} height={64} className="h-16 w-auto object-contain mix-blend-multiply" priority />
         </div>
         
         <h1 className="font-display text-4xl font-bold tracking-tight text-[#1B3022] mb-3">

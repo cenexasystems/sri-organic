@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, X, Sparkles, ShieldCheck, Leaf } from "lucide-react";
+import Image from "next/image";
 
 interface Hotspot {
   id: number;
@@ -72,10 +73,11 @@ export default function BotanicalExplorer() {
           <div className="relative w-full aspect-square md:aspect-[4/3]">
             {/* Base Image Layer with rounded corners clipping */}
             <div className="absolute inset-0 rounded-[40px] overflow-hidden bg-stone-100 shadow-2xl">
-              <img 
+              <Image 
                 src="/traditional_black_rice_1783344030589.png" 
-                alt="Organic Spices and Grains" 
-                className="absolute inset-0 w-full h-full object-cover"
+                alt="Organic Spices and Grains"
+                fill
+                className="object-cover"
               />
               {/* Dark Overlay */}
               <div className="absolute inset-0 bg-black/20 transition-opacity duration-500" style={{ opacity: activeSpot ? 0.6 : 0.2 }} />

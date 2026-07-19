@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Leaf, Mail, MapPin, Phone } from "lucide-react";
+import Image from "next/image";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -19,7 +20,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
           <div className="lg:col-span-5 pr-0 lg:pr-12">
             <Link href="/" className="mb-4 inline-block bg-white p-3 rounded-2xl">
-              <img src="/logo.svg" alt="Sri Dasarathi" className="h-20 w-auto object-contain" />
+              <Image src="/logo.svg" alt="Sri Dasarathi" width={200} height={80} className="h-20 w-auto object-contain" />
             </Link>
             <p className="text-white/70 text-sm leading-relaxed mb-4 max-w-sm">
               Cultivating integrity through uncompromising standards. We bring you the purest expression of ancient agriculture, preserving flavors and vital nutrients.
