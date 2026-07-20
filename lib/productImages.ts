@@ -11,5 +11,6 @@ export const getProductImage = (name: string, category: string, imageUrl?: strin
 };
 
 export const onImgError = (e: any) => {
+  e.currentTarget.srcset = '';
   e.currentTarget.src = 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&q=80';
 };
