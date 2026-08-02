@@ -27,6 +27,7 @@ import {
   fetchOrders,
   insertOrder,
   updateOrderStatusDb,
+  dbDeleteOrder,
   Product,
   Order,
   Coupon,
@@ -191,6 +192,13 @@ export default function AdminPortal() {
     };
     checkRoleAndLoad();
   }, [user]);
+
+  // Scroll to top when activeTab changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+    }
+  }, [activeTab]);
 
 
   const handleRefresh = async () => {
@@ -370,6 +378,22 @@ export default function AdminPortal() {
     } catch (err) {
       console.error(err);
       alert('Failed to update status');
+    }
+  };
+
+  const handleDeleteOrder = async (orderId: string) => {
+    if (!confirm(`Are you sure you want to delete invoice/order ${orderId}? This will remove it permanently and update all analytics metrics.`)) return;
+    try {
+      await dbDeleteOrder(orderId);
+      setOrders(prev => prev.filter(o => o.id !== orderId));
+      setWhatsappRequests(prev => prev.filter(o => o.id !== orderId));
+      if (selectedOrder && selectedOrder.id === orderId) {
+        setSelectedOrder(null);
+      }
+      alert(`Invoice ${orderId} deleted successfully.`);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to delete order');
     }
   };
 
@@ -725,7 +749,7 @@ export default function AdminPortal() {
     const eSparkles = String.fromCodePoint(0x2728); // ✨
 
     const invoiceMessage = [
-      `${eHerb} *Sri Organic - Purchase Successful!* ${eParty}`,
+      `${eHerb} *Sri-krupa - Purchase Successful!* ${eParty}`,
       ``,
       `Hi ${billingCustomerName || 'Customer'},`,
       `Thank you for shopping with us! ${eSparkles}`,
@@ -771,7 +795,7 @@ export default function AdminPortal() {
     const eSparkles = String.fromCodePoint(0x2728);
 
     const invoiceMessage = [
-      `${eHerb} *Sri Organic - Purchase Successful!* ${eParty}`,
+      `${eHerb} *Sri-krupa - Purchase Successful!* ${eParty}`,
       ``,
       `Hi ${order.customerName || 'Customer'},`,
       `Thank you for shopping with us! ${eSparkles}`,
@@ -1063,7 +1087,7 @@ export default function AdminPortal() {
                   {isSidebarOpen && (
                     <div className="whitespace-nowrap transition-opacity duration-300">
                       <h2 className="text-base font-bold text-primary tracking-wide">Business ERP</h2>
-                      <span className="text-[11px] text-on-surface-variant uppercase tracking-widest font-semibold block">Sri Organic</span>
+                      <span className="text-[11px] text-on-surface-variant uppercase tracking-widest font-semibold block">Sri-krupa</span>
                     </div>
                   )}
                 </div>
@@ -3055,7 +3079,22 @@ export default function AdminPortal() {
                                   </span>
                                 </td>
                                 <td className="px-6 py-4 text-right">
-                                  <Eye className="w-5 h-5 text-on-surface-variant hover:text-primary ml-auto transition-colors" />
+                                  <div className="flex items-center justify-end gap-2">
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); setSelectedOrder(o); }}
+                                      className="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-black/5 transition-colors cursor-pointer"
+                                      title="View Details"
+                                    >
+                                      <Eye className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); handleDeleteOrder(o.id); }}
+                                      className="p-1.5 rounded-lg text-red-600 hover:text-red-800 hover:bg-red-50 transition-colors cursor-pointer"
+                                      title="Delete Invoice"
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </button>
+                                  </div>
                                 </td>
                               </tr>
                             );
@@ -3198,7 +3237,7 @@ export default function AdminPortal() {
                             })()}
                           </div>
                           
-                          {/* Invoice & WhatsApp Actions */}
+                          {/* Invoice, WhatsApp & Delete Actions */}
                           <div className="flex gap-3 pt-5 border-t border-outline-variant/20">
                             <button
                               onClick={() => window.open(`/invoice/${selectedOrder.id}`, '_blank')}
@@ -3211,6 +3250,12 @@ export default function AdminPortal() {
                               className="flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white py-3 rounded-xl font-bold text-xs hover:bg-[#20b958] transition-all cursor-pointer shadow-sm"
                             >
                               <MessageCircle className="w-4 h-4" /> WhatsApp
+                            </button>
+                            <button
+                              onClick={() => handleDeleteOrder(selectedOrder.id)}
+                              className="flex-1 flex items-center justify-center gap-2 bg-red-600 text-white py-3 rounded-xl font-bold text-xs hover:bg-red-700 transition-all cursor-pointer shadow-sm"
+                            >
+                              <Trash2 className="w-4 h-4" /> Delete
                             </button>
                           </div>
                         </div>
@@ -3998,7 +4043,7 @@ export default function AdminPortal() {
             {/* Admin Footer */}
             <div className="mt-auto pt-10 border-t border-outline-variant/20 flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-bold text-gray-400 shrink-0">
               <div className="flex-1 text-left sm:text-left text-center">
-                © 2026 Sri Organic. All Rights Reserved
+                © 2026 Sri-krupa. All Rights Reserved
               </div>
               <div className="flex-1 flex justify-center items-center gap-1.5">
                 <span>Powered by</span>

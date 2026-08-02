@@ -401,6 +401,12 @@ export const updateOrderStatusDb = async (id: string, status: string) => {
   if (error) throw error;
 };
 
+export const dbDeleteOrder = async (id: string) => {
+  await supabase.from('order_items').delete().eq('order_id', id);
+  const { error } = await supabase.from('orders').delete().eq('id', id);
+  if (error) throw error;
+};
+
 // ============================
 // WHATSAPP REQUESTS
 // ============================
