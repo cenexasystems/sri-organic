@@ -197,7 +197,7 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
         {/* Footer Notes */}
         <div className="text-center text-xs text-on-surface-variant/70 font-medium">
           <p className="mb-2 font-bold text-primary">Thank you for your business!</p>
-          <p className="text-[9px] uppercase tracking-widest font-bold">Powered by Cenexa System</p>
+          <p className="text-[9px] uppercase tracking-widest font-bold">Powered by Cenexa Systems</p>
         </div>
 
       </div>
@@ -209,7 +209,7 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
           <p className="flex-1 md:text-center">
             POWERED BY {""}
             <a href="https://www.cenexasystems.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors text-white">
-              Cenexa System
+              Cenexa Systems
             </a> &copy; {new Date().getFullYear()} 
           </p>
           <p className="flex-1 md:text-right text-[#F3D78E]">PURE &bull; ORGANIC &bull; PROVEN</p>

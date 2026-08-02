@@ -45,7 +45,7 @@ export default function Login() {
         </button>
 
         <div className="mb-6 flex justify-center w-full">
-          <Image src="/logo.svg" alt="Sri Organic" width={200} height={64} className="h-16 w-auto object-contain mix-blend-multiply" priority />
+          <Image src="/logo.svg" alt="Sri-krupa" width={200} height={64} className="h-16 w-auto object-contain mix-blend-multiply" priority />
         </div>
         
         <h1 className="font-display text-4xl font-bold tracking-tight text-[#1B3022] mb-3">
@@ -117,7 +117,7 @@ export default function Login() {
 
       {/* Simple Footer */}
       <div className="absolute bottom-6 left-0 right-0 text-center text-xs text-[#6B7280] uppercase tracking-widest px-4">
-        &copy; 2026 Sri Organic. All rights reserved.<br className="md:hidden" /> <span className="hidden md:inline"> | </span>Powered by Cenexa System
+        &copy; 2026 Sri-krupa. All rights reserved.<br className="md:hidden" /> <span className="hidden md:inline"> | </span>Powered by Cenexa Systems
       </div>
     </div>
   );

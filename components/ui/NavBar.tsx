@@ -114,7 +114,7 @@ export default function NavBar() {
               className="text-[11px] sm:text-[13px] md:text-lg lg:text-xl font-extrabold tracking-[0.05em] md:tracking-widest uppercase w-full lg:text-center leading-tight transition-opacity group-hover:opacity-80 whitespace-normal break-words"
               style={{ textShadow: isHome && !isScrolled ? '0 2px 8px rgba(0,0,0,0.4)' : 'none' }}
             >
-              {language === 'ta' ? 'தாஸரதி க்ருபா டிரேடர்ஸ்' : 'Dasarathi Krubha Traders'}
+              {language === 'ta' ? 'ஸ்ரீ தாஸரதி க்ருபா டிரேடர்ஸ்' : 'Sri Dasarathi krupa Traders'}
             </span>
             <span 
               className={`text-[10px] sm:text-[11px] md:text-[13px] lg:text-sm font-serif italic tracking-[0.1em] md:tracking-[0.2em] w-full lg:text-center mt-0.5 md:mt-1 drop-shadow-sm ${isHome && !isScrolled ? 'text-[#F3D78E]' : 'text-[#9A7B4F]'}`}

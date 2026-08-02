@@ -188,7 +188,7 @@ export default function Home() {
               >
                 <Image 
                   src="/organic_groceries_1783344052624.png" 
-                  alt="Sri Organic Heritage" 
+                  alt="Sri-krupa Heritage" 
                   fill 
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover hover:scale-105 transition-transform duration-[2000ms] ease-out"
